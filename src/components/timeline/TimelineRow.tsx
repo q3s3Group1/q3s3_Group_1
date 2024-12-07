@@ -1,86 +1,57 @@
-import React, { useMemo } from 'react';
-import { ChevronDown, ChevronRight } from 'lucide-react';
+"use client"; 
+import React, { useEffect, useState } from 'react';
 import StatusIndicator from './StatusIndicator';
 import TimelineChart from './TimelineChart';
-import type { Machine } from '../../types';
+import { Machine, MachineTimeline } from '@/types/supabase';
+import { fetchChartData } from '@/lib/supabase/fetchMachineTimelines';
+import { Card } from '../ui/card';
 
 interface TimelineRowProps {
   machine: Machine;
-  isExpanded: boolean;
-  onToggle: () => void;
-  data: any[];
   targetEfficiency: number;
   style?: React.CSSProperties;
 }
 
-const TimelineRow = React.memo(({ 
-  machine, 
-  isExpanded, 
-  onToggle,
-  data,
-  targetEfficiency,
-  style
-}: TimelineRowProps) => {
-  const averageEfficiency = useMemo(() => 
-    Math.round(data.reduce((acc, d) => acc + d.efficiency, 0) / data.length),
-    [data]
-  );
+const TimelineRow: React.FC<TimelineRowProps> = ({
+  machine,
+  style,
+}) => {
+  const [liveData, setLiveData] = useState<MachineTimeline[]>([]);
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await fetchChartData(
+        machine.board,
+        machine.port,
+        new Date('2020-09-01 00:00:00'),
+        new Date('2020-09-10 23:00:00'),
+        'hour'
+      );
+      setLiveData(data);
+    };
+    fetchData();
+  }, [machine.board, machine.port]);
 
   return (
-    <div style={style} className="px-4 py-2">
-      <div className="relative bg-white rounded-lg border border-gray-200 hover:shadow-sm transition-shadow">
-        <div className="flex items-center h-16">
-          <button
-            onClick={onToggle}
-            className="w-48 flex items-center text-left px-4"
-          >
-            {isExpanded ? (
-              <ChevronDown className="h-4 w-4 text-gray-400 mr-2" />
-            ) : (
-              <ChevronRight className="h-4 w-4 text-gray-400 mr-2" />
-            )}
+    <Card style={style} className="mb-2">
+        <div className="flex items-center h-12">
+          <div className="w-32 flex items-center text-left px-4">
             <div className="flex items-center space-x-3">
-              <StatusIndicator 
-                status={machine.status} 
-                efficiency={averageEfficiency}
-                target={targetEfficiency}
+              <StatusIndicator
+                status={machine.status}
               />
               <span className="text-sm font-medium text-gray-900 truncate">
-                {machine.naam}
+                {machine.machine_name || `Machine ${machine.machine_id}`}
               </span>
             </div>
-          </button>
-
-          <div className="flex-1 h-16">
-            <TimelineChart data={data} targetEfficiency={targetEfficiency} />
+          </div>
+          <div className="flex-1 h-full">
+            <TimelineChart data={liveData}/>
           </div>
         </div>
-
-        {isExpanded && (
-          <div className="px-4 py-3 border-t border-gray-100 bg-gray-50">
-            <div className="grid grid-cols-3 gap-4 text-sm">
-              <div>
-                <span className="text-gray-500">Gemiddelde efficiency:</span>
-                <span className={`ml-2 font-medium ${averageEfficiency >= targetEfficiency ? 'text-green-600' : 'text-gray-900'}`}>
-                  {averageEfficiency}%
-                </span>
-              </div>
-              <div>
-                <span className="text-gray-500">Target:</span>
-                <span className="ml-2 font-medium">{targetEfficiency}%</span>
-              </div>
-              <div>
-                <span className="text-gray-500">Type:</span>
-                <span className="ml-2 font-medium">{machine.type}</span>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
+    </Card>
   );
-});
+};
 
-TimelineRow.displayName = 'TimelineRow';
-
-export default TimelineRow;
+export default React.memo(TimelineRow);

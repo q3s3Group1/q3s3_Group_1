@@ -1,20 +1,18 @@
 import React from 'react';
 import { format, isSameDay } from 'date-fns';
 import { nl } from 'date-fns/locale';
-import type { Planning } from '@/types';
-import { useData } from '@/context/DataContext';
 
 interface WeekHeaderProps {
   days: Date[];
 }
 
 export default function WeekHeader({ days }: WeekHeaderProps) {
-  const { planning } = useData();
 
   const getTaskCount = (date: Date) => {
-    return planning.filter(task => 
-      format(new Date(task.datum), 'yyyy-MM-dd') === format(date, 'yyyy-MM-dd')
-    ).length;
+    // log date
+    console.log(date);
+    // return tasks.filter(task => isSameDay(task.date, date)).length;
+    return 0;
   };
 
   return (

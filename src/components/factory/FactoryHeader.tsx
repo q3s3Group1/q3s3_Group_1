@@ -1,5 +1,5 @@
 import React from 'react';
-import { Activity, X, Play, Pause, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Activity, Play, Pause, ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface FactoryHeaderProps {
   currentTime: Date;
@@ -8,7 +8,6 @@ interface FactoryHeaderProps {
   onPrevious: () => void;
   onNext: () => void;
   progress: number;
-  onExit: () => void;
 }
 
 export default function FactoryHeader({
@@ -18,7 +17,6 @@ export default function FactoryHeader({
   onPrevious,
   onNext,
   progress,
-  onExit
 }: FactoryHeaderProps) {
   return (
     <div className="flex-none border-b border-gray-800">
@@ -69,12 +67,6 @@ export default function FactoryHeader({
             </div>
           </div>
         </div>
-        <button 
-          onClick={onExit}
-          className="p-2 hover:bg-gray-800 rounded-lg transition-colors"
-        >
-          <X className="h-6 w-6" />
-        </button>
       </div>
     </div>
   );
