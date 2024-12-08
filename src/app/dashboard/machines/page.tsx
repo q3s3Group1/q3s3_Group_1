@@ -11,6 +11,7 @@ import {
     TableRow,
   } from "@/components/ui/table"
 import StatusIndicator from "@/components/timeline/StatusIndicator";
+import Link from "next/link";
 
 export default async function Page() {
     
@@ -48,13 +49,19 @@ export default async function Page() {
       </TableHeader>
       <TableBody>
         {machines.map((machine) => (
-          <TableRow key={machine.machine_id}>
+           <TableRow key={machine.machine_id}>
             <TableCell className="flex items-center justify-center gap-1">
                 <StatusIndicator status={machine.status} />
                 {machine.status}</TableCell>
-            <TableCell className="font-medium">{machine.machine_name
+            <TableCell className="font-medium">
+         <Link key={machine.machine_id} href={`/dashboard/machines/${machine.machine_id}`} className="text-blue-500 underline">
+              
+              {machine.machine_name
                 || `Machine ${machine.machine_id}`
-                }</TableCell>
+                }
+          </Link>
+                
+                </TableCell>
 
             <TableCell className="text-right">{machine.avg_shot_time.toFixed(2)}</TableCell>
             <TableCell>{machine.total_shots}</TableCell>

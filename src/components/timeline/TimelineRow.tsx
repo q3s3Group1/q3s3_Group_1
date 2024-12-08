@@ -5,33 +5,40 @@ import TimelineChart from './TimelineChart';
 import { Machine, MachineTimeline } from '@/types/supabase';
 import { fetchChartData } from '@/lib/supabase/fetchMachineTimelines';
 import { Card } from '../ui/card';
+import { DateRange } from 'react-day-picker';
 
 interface TimelineRowProps {
   machine: Machine;
   targetEfficiency: number;
   style?: React.CSSProperties;
+  date: DateRange | undefined;
+  setDate: (date: DateRange | undefined) => void;
 }
 
 const TimelineRow: React.FC<TimelineRowProps> = ({
   machine,
   style,
+  date,
+  setDate,
 }) => {
   const [liveData, setLiveData] = useState<MachineTimeline[]>([]);
 
 
   useEffect(() => {
     const fetchData = async () => {
-      const data = await fetchChartData(
-        machine.board,
-        machine.port,
-        new Date('2020-09-01 00:00:00'),
-        new Date('2020-09-10 23:00:00'),
-        'hour'
-      );
-      setLiveData(data);
+      if (date?.from && date?.to) {
+        const data = await fetchChartData(
+          machine.board,
+          machine.port,
+          date.from,
+          date.to,
+          'hour'
+        );
+        setLiveData(data);
+      }
     };
     fetchData();
-  }, [machine.board, machine.port]);
+  }, [machine.board, machine.port, date]);
 
   return (
     <Card style={style} className="mb-2">

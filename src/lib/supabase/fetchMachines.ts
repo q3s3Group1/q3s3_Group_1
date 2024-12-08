@@ -16,3 +16,19 @@ export const fetchMachines = async (): Promise<Machine[]> => {
 
   return data || [];
 };
+
+
+// fetch specific machine
+export const fetchMachine = async (machine_id: string): Promise<Machine> => {
+  const { data, error } = await supabase
+    .from('v_machine_status')
+    .select('*')
+    .eq('machine_id', machine_id)
+    .single();
+
+  if (error) {
+    throw new Error(`Error fetching machine: ${error.message}`);
+  }
+
+  return data;
+};

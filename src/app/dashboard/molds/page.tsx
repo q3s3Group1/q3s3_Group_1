@@ -10,6 +10,7 @@ import {
     TableRow,
   } from "@/components/ui/table"
 import { fetchMolds } from "@/lib/supabase/fetchMolds";
+import Link from "next/link";
 
 export default async function Page() {
     
@@ -47,7 +48,9 @@ export default async function Page() {
           <TableRow key={mold.id}>
             <TableCell className="flex items-center gap-1">
                 {/* <StatusIndicator status={} /> */}
+                <Link key={mold.id} href={`/dashboard/machines/${mold.current_machine_id}`} className="text-blue-500 underline">
                 {mold.current_machine_name || "N/A"}
+                </Link>
                 </TableCell>
             <TableCell className="font-medium">{mold.description
                 || `Mold ${mold.id}`
