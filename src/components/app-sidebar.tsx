@@ -48,6 +48,15 @@ const menuItems = [
       { label: 'All molds', href: '/dashboard/molds/all' },
     ]
   },
+  {
+    icon: Wrench,
+    label: 'Maintenance',
+    href: '/dashboard/maintenance',
+    subItems: [
+      { label: 'Planning', href: '/dashboard/maintenance' },
+      { label: 'Mechanics', href: '/dashboard/maintenance/mechanics' },
+    ]
+  },
   { 
     icon: Bell, 
     label: 'Alerts', 
