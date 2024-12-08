@@ -28,7 +28,7 @@ const TimelineChart: React.FC<TimelineChartProps> = ({ data }) => (
       content={({ active, payload }) => {
         if (active && payload && payload.length) {
           return (
-            <div className="bg-white p-2 rounded-lg shadow-md">
+            <div className="bg-white p-2 relative rounded-lg shadow-md">
               <p className="text-sm text-gray-500">
                 {
                   payload[0].payload.truncated_timestamp ? new Date(payload[0].payload.truncated_timestamp).toLocaleString() : ''
@@ -49,7 +49,7 @@ const TimelineChart: React.FC<TimelineChartProps> = ({ data }) => (
       }}
     />
     <ReferenceLine y={"5"} stroke="#9CA3AF" strokeDasharray="3 3" />
-    <Line type="monotone" dataKey="total_shots" stroke="#3B82F6" strokeWidth={2} dot={false} />
+    <Line className='z-0' type="monotone" dataKey="total_shots" stroke="#3B82F6" strokeWidth={2} dot={false} />
   </LineChart>
 </ResponsiveContainer>
 ) : (
