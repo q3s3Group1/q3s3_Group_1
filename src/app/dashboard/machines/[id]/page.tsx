@@ -17,28 +17,38 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import { fetchMachine } from "@/lib/supabase/fetchMachines";
+import { fetchChartData } from "@/lib/supabase/fetchMachineTimelines";
+import { Machine, MachineTimeline } from "@/types/supabase";
+import StatusIndicator from "@/components/timeline/StatusIndicator";
+import { SelectStartEndDate } from "@/components/SelectStartEndDate";
+import { DateRange } from "react-day-picker";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { fetchMachine } from "@/lib/supabase/fetchMachines";
-import { fetchChartData } from "@/lib/supabase/fetchMachineTimelines";
-import { Machine, MachineTimeline } from "@/types/supabase";
-import StatusIndicator from "@/components/timeline/StatusIndicator";
+} from "@/components/ui/select"
+
 
 const chartConfig: ChartConfig = {
-  average_shot_time: { label: "Average Shot Time", color: "hsl(var(--chart-1))" },
-  total_shots: { label: "Total Shots", color: "hsl(var(--chart-2))" },
+  average_shot_time: { label: "Average Shot Time", color: "hsl(100, 70%, 50%)" },
+  total_shots: { label: "Total Shots", color: "hsl(100, 70%, 50%)" },
 };
 
 const MachinePage = () => {
   const { id } = useParams();
   const [machine, setMachine] = useState<Machine | null>(null);
   const [chartData, setChartData] = useState<MachineTimeline[]>([]);
-  const [timeRange, setTimeRange] = useState("7d");
+  // set interval
+  const [interval, setInterval] = useState<"minute" | "hour" | "day">("hour");
+
+  const [date, setDate] = useState<DateRange | undefined>({
+    from: new Date(2020, 8, 0),
+    to: new Date(2020, 8, 20),
+  })
+
 
 
   useEffect(() => {
@@ -50,16 +60,11 @@ const MachinePage = () => {
         const machineData = await fetchMachine(id.toString());
         setMachine(machineData);
 
-        // Calculate date range based on time range
-        const endDate = new Date("2020-09-31");
-        const startDate = new Date("2020-09-20");
-        if (timeRange === "30d") {
-          startDate.setDate(startDate.getDate() - 30);
-        } else if (timeRange === "90d") {
-          startDate.setDate(startDate.getDate() - 90);
-        } else {
-          startDate.setDate(startDate.getDate() - 7);
-        }
+        const startDate = date?.from;
+        const endDate = date?.to;
+
+      if (!startDate) return;
+      if (!endDate) return;
 
         // Fetch chart data
         const data = await fetchChartData(
@@ -67,7 +72,7 @@ const MachinePage = () => {
           machineData.port,
           startDate,
           endDate,
-          "hour"
+          interval
         );
         setChartData(
           data
@@ -80,7 +85,7 @@ const MachinePage = () => {
     };
 
     loadData();
-  }, [id, timeRange]);
+  }, [id, date, interval]);
 
   if (!machine) {
     return <div>Loading...</div>;
@@ -88,32 +93,35 @@ const MachinePage = () => {
 
   return (
     <div>
-      <CardHeader className="flex items-center gap-2 space-y-0 border-b py-5 sm:flex-row">
+      <CardHeader className="flex items-center justify-between gap-2 space-y-0 border-b py-5 sm:flex-row">
         <div className="grid flex-1 gap-1 text-center sm:text-left">
-          <CardTitle>Machine: {machine.machine_name}</CardTitle>
+          <CardTitle>Machine: {machine.machine_name || `${machine.machine_id}`
+            }</CardTitle>
           <CardDescription className="flex items-center justify-start gap-1">
             <StatusIndicator status={machine.status} />
             Status: {machine.status}</CardDescription>
         </div>
-        <Select value={timeRange} onValueChange={setTimeRange}>
-          <SelectTrigger
-            className="w-[160px] rounded-lg sm:ml-auto"
-            aria-label="Select a value"
-          >
-            <SelectValue placeholder="Last 7 days" />
+       <div className="flex items-center gap-2">
+       <SelectStartEndDate
+          date={date}
+         setDate={setDate}
+         className="w-min"
+        />
+        
+        <Select onValueChange={(value) => setInterval(value as "minute" | "hour" | "day")} value={interval}>
+          <SelectTrigger>
+            <SelectValue defaultValue={"hour"}>
+              
+            </SelectValue>
           </SelectTrigger>
-          <SelectContent className="rounded-xl">
-            <SelectItem value="7d" className="rounded-lg">
-              Last 7 days
-            </SelectItem>
-            <SelectItem value="30d" className="rounded-lg">
-              Last 30 days
-            </SelectItem>
-            <SelectItem value="90d" className="rounded-lg">
-              Last 3 months
-            </SelectItem>
+          <SelectContent>
+            <SelectItem value="minute">Minute</SelectItem>
+            <SelectItem value="hour" >Hour</SelectItem>
+            <SelectItem value="day">Day</SelectItem>
           </SelectContent>
         </Select>
+
+       </div>
       </CardHeader>
       <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
         <ChartContainer
@@ -168,21 +176,15 @@ const MachinePage = () => {
               minTickGap={32}
               tickFormatter={(value) => {
                 const date = new Date(value);
-                return date.toLocaleDateString("en-US", {
-                  month: "short",
-                  day: "numeric",
-                });
+                return date.toLocaleString("nl-NL");
               }}
             />
             <ChartTooltip
-              cursor={false}
+              cursor={true}
               content={
                 <ChartTooltipContent
                   labelFormatter={(value) =>
-                    new Date(value).toLocaleDateString("en-US", {
-                      month: "short",
-                      day: "numeric",
-                    })
+                    new Date(value).toLocaleString("nl-NL")
                   }
                   indicator="dot"
                 />

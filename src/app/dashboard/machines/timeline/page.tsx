@@ -11,6 +11,9 @@ export interface MachineWithData extends Machine {
 
 export default async function Page() {
   const machines = await fetchMachines();
+
+ 
+
   return (
     <div className="flex flex-col gap-1 ">
       <div className="sticky top-0 z-10 bg-white shadow-sm">
