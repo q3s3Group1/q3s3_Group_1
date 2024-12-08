@@ -90,7 +90,8 @@ export interface MaintenanceFull {
     maintenance_action: string;
     assigned_to: number;
     status: string;
-    mechanic_specialization: string
+    mechanic_specialization: string;
+    group_id: number | null;
 }
 
 

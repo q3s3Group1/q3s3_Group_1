@@ -5,6 +5,8 @@ import {MaintenanceFull} from "@/types/supabase";
 import {updateMaintenanceDate} from "@/lib/supabase/updateMaintenanceDate";
 import {toast} from "react-toastify";
 import {useDrop} from "react-dnd";
+import {useEffect, useState} from "react";
+import {removeMaintenanceGroup} from "@/lib/supabase/createMaintenanceGroup";
 
 interface WeekDay {
     dayDate: Date,
@@ -16,6 +18,11 @@ interface Props {
     onMaintenanceEdited: () => void,
 }
 
+interface MaintenanceGroup {
+    id: number,
+    maintenancePlans: MaintenanceFull[]
+}
+
 export default function WeekDayList(props: Props) {
     function maintenanceDroppedOn(item: { id: number, planned_date: Date }) {
         const newDate = new Date(props.weekDay.dayDate)
@@ -24,13 +31,27 @@ export default function WeekDayList(props: Props) {
         newDate.setMinutes(item.planned_date.getMinutes())
 
         updateMaintenanceDate(item.id, newDate).then(() => {
+            removeMaintenanceGroup(item.id).then()
             toast("Datum van onderhoudsbeurt is aangepast.", {type: 'success'})
+            props.weekDay.dayDate = newDate
             props.onMaintenanceEdited()
         }).catch((e) => {
             toast("Kon datum van onderhoudsbeurt niet aanpassen.", {type: "error"})
             console.error(e)
         });
     }
+
+    const [sortedPlans, setSortedPlans] = useState<MaintenanceFull[]>([]);
+    const [sortedGroups, setSortedGroups] = useState<Map<number, MaintenanceFull[]>>();
+
+    useEffect(() => {
+        setSortedPlans(props.weekDay.maintenancePlans.filter(m => m.group_id == null).sort(m => m.planned_date.getTime()))
+
+        const withGroup = props.weekDay.maintenancePlans.filter(m => m.group_id != null)
+        const groupedByGroup = Map.groupBy(withGroup, m => m.group_id!)
+
+        setSortedGroups(groupedByGroup)
+    }, [props.weekDay.maintenancePlans]);
 
 
     const [{isOver}, drop] = useDrop(() => ({
@@ -52,10 +73,30 @@ export default function WeekDayList(props: Props) {
                                     <span
                                         className={"block text-sm text-neutral-400"}>Er is vandaag niks gepland.</span>
             </div>
-            {props.weekDay.maintenancePlans.sort(m => m.planned_date.getTime()).map((maintenancePlan) => (
+            {sortedGroups?.entries().map(m => (
+                <div key={m[0]} className="flex flex-col gap-2 w-full p-2 bg-blue-50 rounded">
+                    {
+                        m[1].map(mm => (
+                            <Dialog key={mm.id}>
+                                <DialogTrigger>
+                                    <PlanningCalendarTile refreshCalendar={props.onMaintenanceEdited}
+                                                          maintenancePlan={mm}/>
+                                </DialogTrigger>
+                                <DialogContent className={"rounded-xl"}>
+                                    <DialogTitle>Onderhoudsbeurt</DialogTitle>
+                                    <FullMaintenanceDetails onEdited={props.onMaintenanceEdited}
+                                                            maintenance={mm}/>
+                                </DialogContent>
+                            </Dialog>
+                        ))
+                    }
+                </div>
+            ))}
+            {sortedPlans.map((maintenancePlan) => (
                 <Dialog key={maintenancePlan.id}>
                     <DialogTrigger>
-                        <PlanningCalendarTile maintenancePlan={maintenancePlan}/>
+                        <PlanningCalendarTile refreshCalendar={props.onMaintenanceEdited}
+                                              maintenancePlan={maintenancePlan}/>
                     </DialogTrigger>
                     <DialogContent className={"rounded-xl"}>
                         <DialogTitle>Onderhoudsbeurt</DialogTitle>

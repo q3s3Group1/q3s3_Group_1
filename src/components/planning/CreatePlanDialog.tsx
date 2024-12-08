@@ -78,21 +78,21 @@ export default function CreatePlanDialog(props: Props) {
                                name="planned_date" onChange={updateFormValue}/>
 
                         <span className={"text-sm font-semibold"}>Matrijs</span>
-                        <select required name="mold_id" onChange={updateFormValue}>
+                        <select required defaultValue={""} name="mold_id" onChange={updateFormValue}>
                             <option value="" disabled>Selecteer een optie</option>
                             {molds.map((m, index) => <option value={m.id}
                                                              key={index}>{m.description}</option>)}
                         </select>
 
                         <span className={"text-sm font-semibold"}>Onderhoudstype</span>
-                        <select required name="maintenance_type" onChange={updateFormValue}>
+                        <select defaultValue={""} required name="maintenance_type" onChange={updateFormValue}>
                             <option value="" disabled>Selecteer een optie</option>
                             <option value={"Preventative"}>Preventief</option>
                             <option value={"Corrective"}>Correctief</option>
                         </select>
 
                         <span className={"text-sm font-semibold"}>Onderhoudsactie</span>
-                        <select required name="maintenance_action" onChange={updateFormValue}>
+                        <select defaultValue={""} required name="maintenance_action" onChange={updateFormValue}>
                             <option value="" disabled>Selecteer een optie</option>
                             <option>Kalibreren</option>
                             <option>Poetsen</option>
@@ -102,7 +102,7 @@ export default function CreatePlanDialog(props: Props) {
                         <input type='text' required name="description" onChange={updateFormValue}/>
 
                         <span className={"text-sm font-semibold"}>Monteur</span>
-                        <select required name="assigned_to" onChange={updateFormValue}>
+                        <select defaultValue={""} required name="assigned_to" onChange={updateFormValue}>
                             <option value="" disabled>Selecteer een optie</option>
                             {mechanics.map((mechanic) => (
                                 <option value={mechanic.id}

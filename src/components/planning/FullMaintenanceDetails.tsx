@@ -34,7 +34,7 @@ export default function FullMaintenanceDetails(props: Props) {
             description: editedForm.description,
             maintenance_type: editedForm.maintenance_type,
             maintenance_action: editedForm.maintenance_action,
-            planned_date: editedForm.planned_date,
+            planned_date: new Date(editedForm.planned_date),
             mold_id: editedForm.mold_id
         }).then(() => {
             toast("Onderhoudsplan is aangepast.", {type: 'success'})

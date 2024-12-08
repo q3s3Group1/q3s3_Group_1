@@ -3,9 +3,12 @@
 
 import {MaintenanceFull} from "@/types/supabase"
 import {useDrag, useDrop} from "react-dnd";
+import {addMaintenanceToGroup} from "@/lib/supabase/createMaintenanceGroup";
+import {toast} from "react-toastify";
 
 interface Props {
     maintenancePlan: MaintenanceFull;
+    refreshCalendar: () => void
 }
 
 export default function PlanningCalendarTile(props: Props) {
@@ -23,6 +26,13 @@ export default function PlanningCalendarTile(props: Props) {
     const [{isOver}, drop] = useDrop(() => ({
         accept: "PlanningCalendarTile",
         drop: (item: { id: number, planned_date: Date }) => {
+            addMaintenanceToGroup(item.id, props.maintenancePlan.id).then(() => {
+                toast("Groep aangemaakt.", {type: "success"})
+                props.refreshCalendar()
+            }).catch((e) => {
+                toast("Kon groep niet aanmaken.", {type: "error"})
+                console.error(e)
+            })
         },
         collect: monitor => ({
             isOver: monitor.isOver(),

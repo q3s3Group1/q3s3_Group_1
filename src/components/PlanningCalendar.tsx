@@ -4,7 +4,7 @@ import {useEffect, useState} from "react";
 import {addDays} from "date-fns";
 import {getDayName, sameDay} from "@/lib/utils";
 import CreatePlanDialog from "./planning/CreatePlanDialog";
-import {fetchMaintenance} from "@/lib/supabase/fetchMaintenance";
+import {fetchAllMaintenance} from "@/lib/supabase/fetchAllMaintenance";
 import {MaintenanceFull} from "@/types/supabase";
 import WeekDayList from "@/components/planning/WeekDayList";
 
@@ -36,7 +36,7 @@ export default function PlanningCalendar() {
     function refreshCalendar() {
         let fetchedMaintenancePlans: MaintenanceFull[] = []
 
-        fetchMaintenance(currentDate, addDays(currentDate, 7)).then((fetchedPlans) => {
+        fetchAllMaintenance(currentDate, addDays(currentDate, 7)).then((fetchedPlans) => {
             fetchedMaintenancePlans = fetchedPlans
             const weekDaysTemp = []
             for (let i = 0; i < 7; i++) {
@@ -59,10 +59,15 @@ export default function PlanningCalendar() {
             <div className="flex gap-2 w-full bg-white px-6 py-4 rounded text-md font-medium border-b items-center">
                 <span className="block mr-3">Onderhoudsplanning</span>
                 <div className="flex gap-2 text-sm items-center mr-auto">
-                    <button onClick={removeWeek}><ChevronLeft/></button>
+                    <button
+                        className="flex items-center justify-center aspect-square w-8 rounded hover:bg-neutral-100 transition-colors"
+                        onClick={removeWeek}>
+                        <ChevronLeft/></button>
                     <span
                         className="block w-24 text-center">{new Intl.DateTimeFormat("nl", {dateStyle: "medium"}).format(currentDate)}</span>
-                    <button onClick={addWeek}><ChevronRight/></button>
+                    <button
+                        className="flex items-center justify-center aspect-square w-8 rounded hover:bg-neutral-100 transition-colors"
+                        onClick={addWeek}><ChevronRight/></button>
                 </div>
 
                 <CreatePlanDialog formData={{}} onCreatedNewPlanning={refreshCalendar}/>
