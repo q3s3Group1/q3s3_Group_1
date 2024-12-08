@@ -21,7 +21,7 @@ export default async function Page() {
        <div >
          <Table>
       <TableCaption>
-        Dit zijn dus alleen de matrijzen die in gebruik zijn op dit moment
+        Dit zijn alle matrijzen
       </TableCaption>
       <TableHeader>
         <TableRow>
