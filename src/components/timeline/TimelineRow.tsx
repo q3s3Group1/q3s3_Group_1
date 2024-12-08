@@ -38,7 +38,7 @@ const TimelineRow: React.FC<TimelineRowProps> = ({
       }
     };
     fetchData();
-  }, [machine.board, machine.port]);
+  }, [machine.board, machine.port, date]);
 
   return (
     <Card style={style} className="mb-2">
