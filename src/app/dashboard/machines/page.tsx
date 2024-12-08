@@ -54,7 +54,7 @@ export default async function Page() {
                 <StatusIndicator status={machine.status} />
                 {machine.status}</TableCell>
             <TableCell className="font-medium">
-         <Link key={machine.machine_id} href={`/dashboard/machines/${machine.machine_id}`}>
+         <Link key={machine.machine_id} href={`/dashboard/machines/${machine.machine_id}`} className="text-blue-500 underline">
               
               {machine.machine_name
                 || `Machine ${machine.machine_id}`

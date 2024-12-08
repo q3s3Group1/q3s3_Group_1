@@ -48,7 +48,7 @@ export default async function Page() {
           <TableRow key={mold.id}>
             <TableCell className="flex items-center gap-1">
                 {/* <StatusIndicator status={} /> */}
-                <Link key={mold.id} href={`/dashboard/machines/${mold.current_machine_id}`}>
+                <Link key={mold.id} href={`/dashboard/machines/${mold.current_machine_id}`} className="text-blue-500 underline">
                 {mold.current_machine_name || "N/A"}
                 </Link>
                 </TableCell>
