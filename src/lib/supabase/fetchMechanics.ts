@@ -1,9 +1,9 @@
-import { Mechanic } from "@/types/supabase";
-import { supabase } from "./client";
+import {Mechanic} from "@/types/supabase";
+import {supabase} from "./client";
 
 export async function fetchMechanics(): Promise<Mechanic[]> {
     const {data, error} = await supabase
-        .from('v_mechanics')
+        .from('i_mechanics')
         .select('*')
 
     if (error) {

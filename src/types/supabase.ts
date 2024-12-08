@@ -13,7 +13,7 @@ export interface MachineTimeline {
     average_shot_time: number;
     truncated_timestamp: string;
     total_shots: number;
-  }
+}
 
 export interface Machine {
     machine_id: number;
@@ -24,7 +24,7 @@ export interface Machine {
     total_shots: number;
     avg_shot_time: number;
     last_update: string;
-  }
+}
 
 
 //   Mold
@@ -65,48 +65,48 @@ export interface Mold {
     id: number;
     current_machine_id: number;
     current_machine_name: string;
-  }
+}
 
-  export interface MonitoringData {
+export interface MonitoringData {
     id: number;
     shot_time: number;
     timestamp: string;
     board: number;
     port: number;
     mac_address: string;
-  }
-  
+}
+
 
 export interface MaintenanceFull {
-  mechanic_name: string;
-  mechanic_id: number;
-  maintenance_type: string;
-  description: string;
-  mold_name: string;
-  mold_id: number;
-  mold_description: string;
-  id: number;
-  planned_date: string;
-  maintenance_action: string;
-  assigned_to: number;
-  status: string;
-  mechanic_specialization: string
+    mechanic_name: string;
+    mechanic_id: number;
+    maintenance_type: "Preventative" | "Corrective";
+    description: string;
+    mold_name: string;
+    mold_id: number;
+    mold_description: string;
+    id: number;
+    planned_date: Date;
+    maintenance_action: string;
+    assigned_to: number;
+    status: string;
+    mechanic_specialization: string
 }
 
 
 export interface Mechanic {
-  id: string;
-  name: string;
-  specialization: string;
+    id: string;
+    name: string;
+    specialization: string;
 }
 
 export interface Maintenance {
-  id: number;
-  planned_date: Date
-  mold_id: number,
-  maintenance_type: "Preventative" | "Corrective",
-  description: string,
-  assigned_to: number,
-  status: "Planned" | "Busy" | "Finished"
-  maintenance_action: string
+    id: number;
+    planned_date: Date
+    mold_id: number,
+    maintenance_type: "Preventative" | "Corrective",
+    description: string,
+    assigned_to: number,
+    status: "Planned" | "Busy" | "Finished"
+    maintenance_action: string
 }

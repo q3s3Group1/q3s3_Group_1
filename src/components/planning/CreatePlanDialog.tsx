@@ -1,13 +1,16 @@
-import {Dialog, DialogContent, DialogTrigger} from "@/components/ui/dialog";
+"use client";
+
+import {Dialog, DialogContent, DialogTitle, DialogTrigger} from "@/components/ui/dialog";
 import {Plus} from "lucide-react";
 import {Input} from "@/components/ui/input";
 import {ChangeEvent, FormEvent, useEffect, useState} from "react";
 import {Maintenance, Mechanic, Mold} from "@/types/supabase";
 import 'react-toastify/dist/ReactToastify.css';
 import {toast, ToastContainer} from "react-toastify";
-import { insertNewMaintenance } from "@/lib/supabase/insertNewMaintenance";
-import { fetchAllMolds } from "@/lib/supabase/fetchMolds";
-import { fetchMechanics } from "@/lib/supabase/fetchMechanics";
+import {insertNewMaintenance} from "@/lib/supabase/insertNewMaintenance";
+import {fetchAllMolds} from "@/lib/supabase/fetchMolds";
+import {fetchMechanics} from "@/lib/supabase/fetchMechanics";
+import {formatDateToISO} from "@/lib/utils";
 
 interface Props {
     formData: Partial<Omit<Maintenance, "id" | "status">>
@@ -66,41 +69,41 @@ export default function CreatePlanDialog(props: Props) {
                 theme="light"
             />
             <DialogTrigger className="button"><Plus size={20}/> Onderhoud plannen</DialogTrigger>
-            <DialogContent>
-                <form onSubmit={handleSubmit}>
-                    <span className={"small font-semibold block mb-4"}>Onderhoud plannen</span>
-                    <div className={"grid grid-cols-2 items-center gap-3"}>
+            <DialogContent className={"rounded-xl"}>
+                <DialogTitle>Onderhoud plannen</DialogTitle>
+                <form className="" onSubmit={handleSubmit}>
+                    <div className={"grid grid-cols-2 z-form items-center gap-3"}>
                         <span className={"text-sm font-semibold"}>Datum</span>
-                        <Input required type={"datetime-local"} name="planned_date" onChange={updateFormValue}/>
+                        <Input required type={"datetime-local"} min={formatDateToISO(new Date(Date.now()))}
+                               name="planned_date" onChange={updateFormValue}/>
 
                         <span className={"text-sm font-semibold"}>Matrijs</span>
                         <select required name="mold_id" onChange={updateFormValue}>
-                            <option value="" disabled selected>Selecteer een optie</option>
-                            {molds.map((m) => <option value={m.id} key={m.id}>{m.description}</option>)}
+                            <option value="" disabled>Selecteer een optie</option>
+                            {molds.map((m, index) => <option value={m.id}
+                                                             key={index}>{m.description}</option>)}
                         </select>
 
                         <span className={"text-sm font-semibold"}>Onderhoudstype</span>
                         <select required name="maintenance_type" onChange={updateFormValue}>
-                            <option value="" disabled selected>Selecteer een optie</option>
+                            <option value="" disabled>Selecteer een optie</option>
                             <option value={"Preventative"}>Preventief</option>
                             <option value={"Corrective"}>Correctief</option>
                         </select>
 
                         <span className={"text-sm font-semibold"}>Onderhoudsactie</span>
                         <select required name="maintenance_action" onChange={updateFormValue}>
-                            <option value="" disabled selected>Selecteer een optie</option>
+                            <option value="" disabled>Selecteer een optie</option>
                             <option>Kalibreren</option>
                             <option>Poetsen</option>
                         </select>
 
                         <span className={"text-sm font-semibold"}>Beschrijving</span>
-                        <textarea required name="description" onChange={updateFormValue}>
-
-                        </textarea>
+                        <input type='text' required name="description" onChange={updateFormValue}/>
 
                         <span className={"text-sm font-semibold"}>Monteur</span>
                         <select required name="assigned_to" onChange={updateFormValue}>
-                            <option value="" disabled selected>Selecteer een optie</option>
+                            <option value="" disabled>Selecteer een optie</option>
                             {mechanics.map((mechanic) => (
                                 <option value={mechanic.id}
                                         key={mechanic.id}>{mechanic.name} ({mechanic.specialization})</option>

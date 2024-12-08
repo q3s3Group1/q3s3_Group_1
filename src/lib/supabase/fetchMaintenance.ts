@@ -1,5 +1,5 @@
-import { MaintenanceFull } from "@/types/supabase";
-import { supabase } from "./client";
+import {MaintenanceFull} from "@/types/supabase";
+import {supabase} from "./client";
 
 export async function fetchMaintenance(from: Date | null = null, to: Date | null = null): Promise<MaintenanceFull[]> {
     from = from == null ? new Date(0) : from
@@ -12,6 +12,8 @@ export async function fetchMaintenance(from: Date | null = null, to: Date | null
     if (error) {
         throw new Error(`Error fetching mechanics: ${error.message}`);
     }
+
+    data.forEach((m) => m.planned_date = new Date(m.planned_date))
 
     return data || []
 }
