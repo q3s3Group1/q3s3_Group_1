@@ -4,6 +4,7 @@ import MachineCard from './MachineCard';
 import { Machine, MachineTimeline, Mold } from '@/types/supabase';
 import { fetchMachineMolds } from '@/lib/supabase/fetchMachineMolds';
 import { fetchChartData } from '@/lib/supabase/fetchMachineTimelines';
+import { supabase } from '@/lib/supabase/client';
 import { addDays } from 'date-fns';
 
 interface FactoryGridProps {
@@ -16,6 +17,17 @@ export default function FactoryGrid({ machines }: FactoryGridProps) {
   }>({});
 
   const today = new Date("2020-09-05");
+
+  const fetchAndSetChartData = async (machineId: string, board: number, port: number) => {
+    const chartData = await fetchChartData(board, port, addDays(today, -1), today, "hour");
+    setMachineData((prev) => ({
+      ...prev,
+      [machineId]: {
+        ...prev[machineId],
+        chartData,
+      },
+    }));
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -43,6 +55,37 @@ export default function FactoryGrid({ machines }: FactoryGridProps) {
     };
 
     fetchData();
+
+    // Subscribe to real-time changes in the monitoring_data table
+    const subscriptions = machines.map((machine) => {
+      const channel = supabase
+        .channel(`monitoring_data:${machine.machine_id}`)
+        .on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: 'monitoring_data_202009',
+            // Optionally re-add filters
+            filter: `board=eq.${machine.board},port=eq.${machine.port}`,
+          },
+          (payload) => {
+            console.log(`Change detected for machine ${machine.machine_id}`, payload);
+            // Fetch updated chart data for the specific machine
+            fetchAndSetChartData(machine.machine_id.toString(), machine.board, machine.port);
+          }
+        )
+        .subscribe();
+
+      return channel;
+    });
+
+    // Cleanup subscriptions on unmount
+    return () => {
+      subscriptions.forEach((channel) => {
+        supabase.removeChannel(channel);
+      });
+    };
   }, [machines]);
 
   return (

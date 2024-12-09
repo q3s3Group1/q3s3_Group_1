@@ -56,6 +56,17 @@ export default function MachineCard({ machine, molds, chartData = [] }: MachineC
 
   // median hourly shots
   const medianHourlyShots = chartData.length > 0 ? chartData.reduce((acc, item) => acc + item.total_shots, 0) / chartData.length : 0;
+
+  // Status based on chart data
+  const getStatus = (chartData: MachineTimeline[]) => {
+    if (chartData.length === 0) return 'Stilstand';
+    const lastData = chartData[chartData.length - 1];
+    if (lastData.average_shot_time === 0) return 'Stilstand';
+    if (lastData.total_shots === 0) return 'Inactief';
+
+    return 'Actief';
+  };
+
   return (
     <div className="relative bg-gray-800 rounded-lg p-6 flex flex-col justify-between hover:bg-gray-750 transition-colors overflow-hidden">
       {/* Background Chart */}
@@ -78,10 +89,13 @@ export default function MachineCard({ machine, molds, chartData = [] }: MachineC
             <Line
               type="step"
               dataKey="total_shots"
-              stroke={getStatusHex(machine.status)}
+              stroke={getStatusHex(
+                getStatus(chartData)
+              )}
               strokeWidth={3}
               dot={false}
             />
+
 
             <ReferenceLine y={
               medianHourlyShots
@@ -96,14 +110,14 @@ export default function MachineCard({ machine, molds, chartData = [] }: MachineC
       <div className="relative z-0">
         <div className="flex items-center justify-between mb-4">
           <div
-            className={`w-3 h-3 rounded-full ${getStatusColor(machine.status)}`}
+            className={`w-3 h-3 rounded-full ${getStatusColor(getStatus(chartData))}`}
           />
           <span
             className={`text-sm px-2.5 py-1 rounded-full ${getStatusBadgeStyle(
-              machine.status
+              getStatus(chartData)
             )}`}
           >
-            {machine.status}
+            {getStatus(chartData)}
           </span>
         </div>
         <h3 className="text-4xl font-bold mb-2">
