@@ -31,3 +31,18 @@ export async function fetchMaintenance(id: number): Promise<MaintenanceFull> {
 
     return data
 }
+
+// get by mold_id
+export async function fetchMaintenanceByMoldId(mold_id: number): Promise<MaintenanceFull[]> {
+    const {data, error} = await supabase
+        .from('v_maintenance')
+        .select('*').eq("mold_id", mold_id)
+
+    if (error) {
+        throw new Error(`Error fetching maintenance: ${error.message}`);
+    }
+
+    data.forEach((m) => m.planned_date = new Date(m.planned_date))
+
+    return data || []
+}

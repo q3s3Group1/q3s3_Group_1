@@ -34,3 +34,16 @@ export const fetchAllMolds = async (): Promise<Mold[]> => {
 
     return filtered || [];
 };
+
+// fetch mold by id
+export const fetchMold = async (id: number): Promise<Mold> => {
+    const {data, error} = await supabase
+        .from('v_molds')
+        .select('*').eq("id", id).single()
+
+    if (error) {
+        throw new Error(`Error fetching machine timelines: ${error.message}`);
+    }
+
+    return data;
+};

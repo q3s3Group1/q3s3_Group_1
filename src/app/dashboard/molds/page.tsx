@@ -52,9 +52,13 @@ export default async function Page() {
                 {mold.current_machine_name || "N/A"}
                 </Link>
                 </TableCell>
-            <TableCell className="font-medium">{mold.description
+            <TableCell className="font-medium">
+              <Link key={mold.id} href={`/dashboard/molds/${mold.id}`} className="text-blue-500 underline">
+              {mold.description
                 || `Mold ${mold.id}`
-                }</TableCell>
+                }
+                </Link>
+              </TableCell>
 
             <TableCell className="text-right">{mold.name}</TableCell>
             <TableCell>{
