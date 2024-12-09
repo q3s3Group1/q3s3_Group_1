@@ -12,6 +12,7 @@ import {
   } from "@/components/ui/table"
 import StatusIndicator from "@/components/timeline/StatusIndicator";
 import Link from "next/link";
+import Header from "../header";
 
 export default async function Page() {
     
@@ -20,6 +21,8 @@ export default async function Page() {
     
     
     return (
+      <>
+      <Header/>
        <div>
          <Table>
       <TableCaption>
@@ -82,6 +85,7 @@ export default async function Page() {
       </TableFooter>
     </Table>
        </div>
+        </>
     );
     }
 

@@ -1,7 +1,7 @@
 import { SidebarTrigger } from "@/components/ui/sidebar";
 
 interface Props {
-    children: React.ReactNode
+    children?: React.ReactNode
     }
 
 export default function Header({ children }: Props) {
