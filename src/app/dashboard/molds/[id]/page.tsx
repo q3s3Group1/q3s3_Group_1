@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import {
+  Card,
   CardContent,
   CardDescription,
   CardHeader,
@@ -19,7 +20,7 @@ import {
 } from "@/components/ui/chart";
 import { fetchMachine } from "@/lib/supabase/fetchMachines";
 import { fetchChartData } from "@/lib/supabase/fetchMachineTimelines";
-import { Machine, MachineTimeline, Mold } from "@/types/supabase";
+import { Machine, MachineTimeline, MaintenanceFull, Mold } from "@/types/supabase";
 import StatusIndicator from "@/components/timeline/StatusIndicator";
 import { SelectStartEndDate } from "@/components/SelectStartEndDate";
 import { DateRange } from "react-day-picker";
@@ -43,6 +44,10 @@ const MachinePage = () => {
   const { id } = useParams();
   const [mold, setMold] = useState<Mold | null>(null);
   const [chartData, setChartData] = useState<MachineTimeline[]>([]);
+
+  const [maintenance, setMaintenance] = useState<MaintenanceFull[]>([]);
+
+
   
   // set interval
   const [interval, setInterval] = useState<"minute" | "hour" | "day">("hour");
@@ -64,6 +69,12 @@ const MachinePage = () => {
           parseInt(id as string)
         );
         setMold(moldData);
+
+        const maintenanceData = await fetchMaintenanceByMoldId(
+          parseInt(id as string)
+        );
+
+        setMaintenance(maintenanceData);
 
         const startDate = date?.from;
         const endDate = date?.to;
@@ -214,6 +225,45 @@ const MachinePage = () => {
           </AreaChart>
         </ChartContainer>
       </CardContent>
+
+      <div className="container px-4 mx-auto">
+        <Card>
+        <CardHeader className="flex items-center justify-between gap-2 space-y-0 border-b py-5 sm:flex-row">
+        <div className="grid flex-1 gap-1 text-center sm:text-left">
+          <CardTitle>Onderhoudsgeschiedenis</CardTitle>
+          <CardDescription className="flex items-center justify-start gap-1">
+            
+          </CardDescription>
+        </div>
+      </CardHeader>
+        <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
+        {
+          maintenance.length > 0 ? (
+            maintenance.map((m) => (
+          
+              <div key={m.id} className="flex items-center gap-2">
+    
+                <div>
+                  <p>{m.planned_date.toLocaleDateString("nl-NL")}</p>
+                  <p>
+    
+                    {m.maintenance_action} by {m.mechanic_name}
+    
+                  </p>
+                  
+                </div>
+    
+              </div>
+            ))
+          ) : (
+            <div>No maintaince planned</div>
+          )
+        }
+
+        </CardContent>
+
+        </Card>
+      </div>
     </div>
   );
 };
