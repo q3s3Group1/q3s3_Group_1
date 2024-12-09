@@ -21,7 +21,18 @@ const TimelineChart: React.FC<TimelineChartProps> = ({ data }) => (
     <XAxis
       dataKey="truncated_timestamp"
       tick={{ fontSize: 10 }}
-      tickFormatter={(value) => value && new Date(value).toLocaleTimeString()}
+      tickFormatter={(value) => value && new Date(value).toLocaleString(
+        'nl-NL',
+        {
+          day: '2-digit',
+          month: '2-digit',
+
+
+          hour: '2-digit',
+          minute: '2-digit',
+
+        }
+      )}
     />
     <YAxis hide domain={[0, 5]} />
     <Tooltip
@@ -31,7 +42,9 @@ const TimelineChart: React.FC<TimelineChartProps> = ({ data }) => (
             <div className="bg-white p-2 relative rounded-lg shadow-md">
               <p className="text-sm text-gray-500">
                 {
-                  payload[0].payload.truncated_timestamp ? new Date(payload[0].payload.truncated_timestamp).toLocaleString() : ''
+                  payload[0].payload.truncated_timestamp ? new Date(payload[0].payload.truncated_timestamp).toLocaleString(
+                    'nl-NL',
+                  ) : ''
                 }
               </p>
               <p className="text-sm text-gray-500">
