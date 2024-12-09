@@ -1,14 +1,4 @@
 export interface MachineTimeline {
-//     // 
-// average_shot_time
-// : 
-// 9.12545
-// minute
-// : 
-// "2020-09-01T11:59:00"
-// total_shots
-// : 
-// 2
 
     average_shot_time: number;
     truncated_timestamp: string;
