@@ -11,7 +11,7 @@ interface MachineCardProps {
   chartData?: MachineTimeline[];
 }
 
-export default function MachineCard({ machine, molds, chartData }: MachineCardProps) {
+export default function MachineCard({ machine, molds, chartData = [] }: MachineCardProps) {
   
 
   const getStatusColor = (status: string) => {
@@ -54,25 +54,40 @@ export default function MachineCard({ machine, molds, chartData }: MachineCardPr
     }
   };
 
+  // median hourly shots
+  const medianHourlyShots = chartData.length > 0 ? chartData.reduce((acc, item) => acc + item.total_shots, 0) / chartData.length : 0;
   return (
     <div className="relative bg-gray-800 rounded-lg p-6 flex flex-col justify-between hover:bg-gray-750 transition-colors overflow-hidden">
       {/* Background Chart */}
       <div className="absolute scale-105 transform inset-0 z-0 opacity-30">
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={chartData}>
-            <XAxis hide dataKey="truncated_timestamp" tick={{ fontSize: 12 }} stroke="#ccc" />
+          <LineChart data={chartData} margin={
+            { top: 5, right: 0, bottom: 0, left: 0 }
+          }>
+            <XAxis dataKey="truncated_timestamp" tick={{ fontSize: 12 }} stroke="#ccc" 
+              tickFormatter={(value) => {
+                const date = new Date(value);
+                return date.toLocaleString("nl-NL", { hour: '2-digit', minute: '2-digit' });
+              }}
+            />
             <YAxis hide={true} />
             {/* Reference line */}
 
-            <ReferenceLine y={machine.avg_shot_time} stroke="#ccc" strokeDasharray="3 3" />
-            {/* <Tooltip /> */}
+            
+            {/* total_shots */}
             <Line
-              type="monotone"
-              dataKey="average_shot_time"
+              type="step"
+              dataKey="total_shots"
               stroke={getStatusHex(machine.status)}
               strokeWidth={3}
               dot={false}
             />
+
+            <ReferenceLine y={
+              medianHourlyShots
+            } stroke="#ccc" strokeDasharray="3 3" />
+            
+
           </LineChart>
         </ResponsiveContainer>
       </div>
@@ -94,9 +109,6 @@ export default function MachineCard({ machine, molds, chartData }: MachineCardPr
         <h3 className="text-4xl font-bold mb-2">
           {machine.machine_name || machine.machine_id}
         </h3>
-        <div className="text-sm text-gray-400">
-          Avg shot: {machine.avg_shot_time.toFixed(2)}s
-        </div>
 
         <div className="flex flex-wrap justify-around gap-2 mt-2">
           {molds &&
