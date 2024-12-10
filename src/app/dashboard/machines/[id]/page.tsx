@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import {
+  Card,
   CardContent,
   CardDescription,
   CardHeader,
@@ -19,7 +20,7 @@ import {
 } from "@/components/ui/chart";
 import { fetchMachine } from "@/lib/supabase/fetchMachines";
 import { fetchChartData } from "@/lib/supabase/fetchMachineTimelines";
-import { Machine, MachineTimeline } from "@/types/supabase";
+import { Machine, MachineTimeline, Mold } from "@/types/supabase";
 import StatusIndicator from "@/components/timeline/StatusIndicator";
 import { SelectStartEndDate } from "@/components/SelectStartEndDate";
 import { DateRange } from "react-day-picker";
@@ -31,6 +32,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import Header from "../../header";
+import { fetchMachineMolds } from "@/lib/supabase/fetchMachineMolds";
 
 
 const chartConfig: ChartConfig = {
@@ -42,6 +44,8 @@ const MachinePage = () => {
   const { id } = useParams();
   const [machine, setMachine] = useState<Machine | null>(null);
   const [chartData, setChartData] = useState<MachineTimeline[]>([]);
+  // molds
+  const [molds, setMolds] = useState<Mold[]>([]);
   // set interval
   const [interval, setInterval] = useState<"minute" | "hour" | "day">("hour");
 
@@ -60,6 +64,12 @@ const MachinePage = () => {
         // Fetch machine data
         const machineData = await fetchMachine(id.toString());
         setMachine(machineData);
+        
+        const moldsfetched = await fetchMachineMolds(
+          machineData.machine_id
+        );
+
+        setMolds(moldsfetched);
 
         const startDate = date?.from;
         const endDate = date?.to;
@@ -211,6 +221,24 @@ const MachinePage = () => {
           </AreaChart>
         </ChartContainer>
       </CardContent>
+
+      <div className="p-4 container mx-auto">
+      <Card>
+        <CardHeader>
+        <CardTitle>Molds</CardTitle>
+        </CardHeader>
+        <CardContent>
+         
+          <ul className="list-disc">
+            {molds.map((mold) => (
+              <li key={mold.id}>
+                {mold.description} ({mold.id})
+              </li>
+            ))}
+          </ul>
+        </CardContent>
+      </Card>
+      </div>
     </div></>
   );
 };
