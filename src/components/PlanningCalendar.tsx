@@ -5,21 +5,15 @@ import {addDays} from "date-fns";
 import {getDayName, sameDay} from "@/lib/utils";
 import CreatePlanDialog from "./planning/CreatePlanDialog";
 import {fetchAllMaintenance} from "@/lib/supabase/fetchAllMaintenance";
-import {MaintenanceFull, Mechanic} from "@/types/supabase";
+import {MaintenanceFull} from "@/types/supabase";
 import WeekDayList from "@/components/planning/WeekDayList";
-import {fetchMechanics} from "@/lib/supabase/fetchMechanics";
-import {fetchMechanic} from "@/lib/supabase/fetchMechanic";
 
 interface WeekDay {
     dayDate: Date,
     maintenancePlans: MaintenanceFull[]
 }
 
-interface Props {
-    mechanic: number | null
-}
-
-export default function PlanningCalendar(props: Props) {
+export default function PlanningCalendar() {
     function addWeek() {
         setCurrentDate(addDays(currentDate, 7));
     }
@@ -38,20 +32,11 @@ export default function PlanningCalendar(props: Props) {
 
     const [currentDate, setCurrentDate] = useState(getCurrentDateStartingMonday);
     const [weekDays, setWeekDays] = useState<WeekDay[]>([]);
-    const [mechanic, setMechanic] = useState<Mechanic | null>(null)
-
-    useEffect(() => {
-        if (props.mechanic !== null) {
-            fetchMechanic(props.mechanic).then((retrievedMechanic) => {
-                setMechanic(retrievedMechanic)
-            })
-        }
-    });
 
     function refreshCalendar() {
         let fetchedMaintenancePlans: MaintenanceFull[] = []
 
-        fetchAllMaintenance(currentDate, addDays(currentDate, 7), props.mechanic).then((fetchedPlans) => {
+        fetchAllMaintenance(currentDate, addDays(currentDate, 7)).then((fetchedPlans) => {
             fetchedMaintenancePlans = fetchedPlans
             const weekDaysTemp = []
             for (let i = 0; i < 7; i++) {
@@ -71,17 +56,8 @@ export default function PlanningCalendar(props: Props) {
     return (
 
         <div className={"w-full h-full"}>
-            {
-                props.mechanic !== null && mechanic !== null && (
-                    <div className="flex w-full p-3 bg-orange-100">
-                        <span className="block mr-auto">Je bekijkt nu de planning voor {mechanic.name}</span>
-                        <a href="/dashboard/maintenance/mechanics" className="">Terug</a>
-                    </div>
-                )
-            }
-
             <div className="flex gap-2 w-full bg-white px-6 py-4 rounded text-md font-medium border-b items-center">
-                <span className="hidden md:block mr-3 ">Onderhoudsplanning</span>
+                <span className="block mr-3">Onderhoudsplanning</span>
                 <div className="flex gap-2 text-sm items-center mr-auto">
                     <button
                         className="flex items-center justify-center aspect-square w-8 rounded hover:bg-neutral-100 transition-colors"

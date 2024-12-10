@@ -9,7 +9,7 @@ export default function Page() {
     return (
         <DndProvider backend={HTML5Backend}>
             <Header/>
-            <PlanningCalendar mechanic={null}/>
+            <PlanningCalendar/>
         </DndProvider>
     )
 }

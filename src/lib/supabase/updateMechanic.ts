@@ -1,13 +1,13 @@
 import {Mechanic} from "@/types/supabase";
 import {supabase} from "./client";
 
-export async function updateMechanic(mechanic: Mechanic) {
+export async function updateMechanic() {
     const {data, error} = await supabase
         .from('i_mechanics')
-        .update({name: mechanic.name, specialization: mechanic.specialization}).eq("id", mechanic.id)
+        .select('*')
 
     if (error) {
-        throw new Error(`Error updating mechanic: ${error.message}`);
+        throw new Error(`Error fetching mechanics: ${error.message}`);
     }
 
     return data || []
