@@ -22,7 +22,10 @@ export default async function Page() {
     
     return (
       <>
-      <Header/>
+      <Header
+      title={"Machines"}
+      description="Dit zijn alle machines"
+      />
        <div>
          <Table>
       <TableCaption>

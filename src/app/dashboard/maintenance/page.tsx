@@ -8,7 +8,10 @@ import Header from "../header";
 export default function Page() {
     return (
         <DndProvider backend={HTML5Backend}>
-            <Header/>
+            <Header
+                title={"Onderhoud"}
+                description={"Plan hier het onderhoud van de machines."}
+            />
             <PlanningCalendar mechanic={null}/>
         </DndProvider>
     )

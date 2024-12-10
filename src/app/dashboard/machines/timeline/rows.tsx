@@ -24,7 +24,10 @@ export default function Rows({ machines }: RowsProps) {
     
     <div className="flex flex-col gap-1 ">
         <div className="sticky top-0 z-10 bg-white shadow-sm">
-        <Header>
+        <Header
+        title={"Historische data"}
+        description="Hier kun je de historische data van de machines shots bekijken"
+        >
         <SelectStartEndDate
             date={date}
             setDate={setDate}

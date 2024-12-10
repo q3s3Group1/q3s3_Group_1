@@ -30,7 +30,10 @@ export default function Page() {
 
   return (
     <>
-      <Header />
+      <Header
+        title={"Monteurs"}
+        description={"Hier kun je monteurs toevoegen, verwijderen en aanpassen."}
+      />
       <div>
         <Table>
           <TableHeader className="sticky top-0 z-10">

@@ -2,7 +2,6 @@
 import {
     Table,
     TableBody,
-    TableCaption,
     TableCell,
     TableFooter,
     TableHead,
@@ -48,12 +47,12 @@ export default async function Page() {
     
     return (
       <>
-      <Header/>
+      <Header
+      title={"Actieve Matrijzen"}
+      description="Dit zijn de matrijzen die op dit moment in gebruik zijn"
+      />
        <div >
          <Table>
-      <TableCaption>
-        Dit zijn dus alleen de matrijzen die in gebruik zijn op dit moment
-      </TableCaption>
       <TableHeader>
         <TableRow>
           <TableHead>Machine</TableHead>

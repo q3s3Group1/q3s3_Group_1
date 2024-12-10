@@ -2,7 +2,6 @@
 import {
     Table,
     TableBody,
-    TableCaption,
     TableCell,
     TableFooter,
     TableHead,
@@ -21,12 +20,12 @@ export default async function Page() {
     
     return (
       <>
-      <Header/>
+      <Header
+      title={"Alle Matrijzen"}
+      description="Dit zijn alle matrijzen"
+      />
        <div >
          <Table>
-      <TableCaption>
-        Dit zijn alle matrijzen
-      </TableCaption>
       <TableHeader>
         <TableRow>
           <TableHead>Machine</TableHead>

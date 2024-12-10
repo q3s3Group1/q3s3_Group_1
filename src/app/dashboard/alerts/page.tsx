@@ -5,7 +5,10 @@ import { AlertCard } from "./alert";
 export default function Page() {
     return (
        <>
-       <Header/>
+       <Header
+              title="Alerts"
+              description="Hier vind je alle alerts."
+       />
        <div className="flex flex-col space-y-4 px-2 pt-2">
         <AlertCard 
             title="Heads up!" 
