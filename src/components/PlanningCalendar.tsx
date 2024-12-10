@@ -81,7 +81,7 @@ export default function PlanningCalendar(props: Props) {
             }
 
             <div className="flex gap-2 w-full bg-white px-6 py-4 rounded text-md font-medium border-b items-center">
-                <span className="hidden md:block mr-3 ">Onderhoudsplanning</span>
+                <span className="hidden lg:block mr-3 ">Onderhoudsplanning</span>
                 <div className="flex gap-2 text-sm items-center mr-auto">
                     <button
                         className="flex items-center justify-center aspect-square w-8 rounded hover:bg-neutral-100 transition-colors"
@@ -102,7 +102,7 @@ export default function PlanningCalendar(props: Props) {
                     <div key={weekDay.dayDate.getTime()} className="flex w-full">
                         <div className="aspect-square w-40 min-w-40 bg-white p-5 flex flex-col border-b border-r">
                             <span
-                                className={"flex items-center justify-center text-neutral-800 w-9 mb-auto bg-neutral-300 rounded-full aspect-square"}>{weekDay.dayDate.getDate()}</span>
+                                className={"flex items-center justify-center text-neutral-800 w-9 mb-auto bg-neutral-200 rounded-full aspect-square " + ((new Date(Date.now()).getDate() == weekDay.dayDate.getDate() && new Date(Date.now()).getMonth() == weekDay.dayDate.getMonth()) ? '!bg-blue-200' : '')}>{weekDay.dayDate.getDate()}</span>
                             <div className="block">
                               <span
                                   className="block">{getDayName(weekDay.dayDate)}</span>

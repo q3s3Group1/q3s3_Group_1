@@ -16,6 +16,12 @@ export interface Machine {
     last_update: string;
 }
 
+export interface Group {
+    id: number,
+    name: string,
+    created_at: string,
+}
+
 
 //   Mold
 // name	
