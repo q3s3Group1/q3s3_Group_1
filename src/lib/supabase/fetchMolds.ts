@@ -7,7 +7,7 @@ import {Mold} from '../../types/supabase';
 // with machine id as parameter
 export const fetchMolds = async (): Promise<Mold[]> => {
     const {data, error} = await supabase
-        .from('v_molds')
+        .from('v17_molds')
         .select('*');
 
     if (error) {
@@ -16,6 +16,7 @@ export const fetchMolds = async (): Promise<Mold[]> => {
 
     return data || [];
 };
+
 
 export const fetchAllMolds = async (): Promise<Mold[]> => {
     const {data, error} = await supabase

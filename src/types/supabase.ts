@@ -55,6 +55,9 @@ export interface Mold {
     id: number;
     current_machine_id: number;
     current_machine_name: string;
+
+    total_shots_since_last_maintenance?: number;
+    last_maintenance?: string;
 }
 
 export interface MonitoringData {
