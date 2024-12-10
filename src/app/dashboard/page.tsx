@@ -1,10 +1,9 @@
-import Header from "./header";
-
-export default function Page() {
-  return (
-    <div>
-      <Header/>
-      test
-    </div>
-  )
+'use server'
+ 
+import { redirect } from 'next/navigation'
+ 
+export default async function Page() {
+  
+ 
+  redirect(`/dashboard/machines`) 
 }

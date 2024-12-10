@@ -24,11 +24,11 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import Link from 'next/link'
 
 const menuItems = [
-  { 
-    icon: Home, 
-    label: 'Dashboard', 
-    href: '/dashboard' 
-  },
+  // { 
+  //   icon: Home, 
+  //   label: 'Dashboard', 
+  //   href: '/dashboard' 
+  // },
   { 
     icon: Cpu, 
     label: 'Machines', 
