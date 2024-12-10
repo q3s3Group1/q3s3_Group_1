@@ -1,5 +1,3 @@
-"use client"
-
 import { fetchMechanics } from "@/lib/supabase/fetchMechanics";
 import {
   Table,
