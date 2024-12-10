@@ -1,3 +1,5 @@
+"use client"
+
 import { fetchMechanics } from "@/lib/supabase/fetchMechanics";
 import {
   Table,
@@ -9,30 +11,38 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import Link from "next/link";
 import Header from "../../header";
 import {Calendar1, Pencil} from "lucide-react";
-import {Calendar} from "@/components/ui/calendar";
-import {Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger} from "@/components/ui/dialog";
 import UpdateMechanic from "@/components/planning/UpdateMechanic";
+import CreateMechanic from "@/components/planning/CreateMechanic";
+import {useEffect, useState} from "react";
+import {Mechanic} from "@/types/supabase";
 
-export default async function Page() {
-  const mechanics = await fetchMechanics();
+export default function Page() {
+  const [mechanics, setMechanics] = useState<Mechanic[]>([]);
+
+  function refreshMechanics(): void {
+    fetchMechanics().then(fetched => setMechanics(fetched));
+
+  }
+
+  useEffect(refreshMechanics);
 
   return (
     <>
       <Header />
       <div>
         <Table>
-          <TableCaption>Mechanics</TableCaption>
           <TableHeader className="sticky top-0 z-10">
             <TableRow>
-              <TableHead>Name</TableHead>
-              <TableHead>Specialization</TableHead>
+              <TableHead>Naam</TableHead>
+              <TableHead>Specialisatie</TableHead>
+              <TableHead/>
+              <TableHead className={"flex items-center justify-center"} rowSpan={2}><CreateMechanic refresh={refreshMechanics}/></TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {mechanics.map((mechanic) => (
+            {mechanics.sort(m => Number(m.id)).map((mechanic) => (
               <TableRow key={mechanic.id}>
                 <TableCell className="font-medium">{mechanic.name}</TableCell>
                 <TableCell className="">{mechanic.specialization}</TableCell>
@@ -45,15 +55,15 @@ export default async function Page() {
                   </a>
                 </TableCell>
                 <TableCell className={"w-14"}>
-                  <UpdateMechanic mechanic={mechanic} />
+                  <UpdateMechanic refresh={refreshMechanics} mechanic={mechanic} />
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
           <TableFooter>
             <TableRow>
-              <TableCell colSpan={3}>
-                Total: {mechanics.length} mechanics
+              <TableCell colSpan={4}>
+                Totaal: {mechanics.length} monteurs
               </TableCell>
             </TableRow>
           </TableFooter>
