@@ -57,12 +57,12 @@ const menuItems = [
       { label: 'Mechanics', href: '/dashboard/maintenance/mechanics' },
     ]
   },
-  { 
-    icon: Bell, 
-    label: 'Alerts', 
-    href: '/dashboard/alerts',
-    badge: 3
-  },
+  // { 
+  //   icon: Bell, 
+  //   label: 'Alerts', 
+  //   href: '/dashboard/alerts',
+  //   badge: 3
+  // },
 ]
 
 export function AppSidebar() {
@@ -93,11 +93,11 @@ export function AppSidebar() {
                       <item.icon className="h-5 w-5" />
                       <span>{item.label}</span>
                     </div>
-                    {item.badge && (
+                    {/* {item.badge && (
                       <Badge variant="destructive" className="ml-auto">
                         {item.badge}
                       </Badge>
-                    )}
+                    )} */}
                   </Link>
                 </SidebarMenuButton>
                 {item.subItems && (
