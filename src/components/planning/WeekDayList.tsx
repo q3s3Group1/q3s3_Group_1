@@ -42,7 +42,7 @@ export default function WeekDayList(props: Props) {
     }
 
     const [sortedPlans, setSortedPlans] = useState<MaintenanceFull[]>([]);
-    const [sortedGroups, setSortedGroups] = useState<Map<number, MaintenanceFull[]>>();
+    const [sortedGroups, setSortedGroups] = useState<Map<number, MaintenanceFull[]>>(new Map());
 
     useEffect(() => {
         setSortedPlans(props.weekDay.maintenancePlans.filter(m => m.group_id == null).sort(m => m.planned_date.getTime()))
@@ -73,7 +73,7 @@ export default function WeekDayList(props: Props) {
                                     <span
                                         className={"block text-sm text-neutral-400"}>Er is vandaag niks gepland.</span>
             </div>
-            {sortedGroups?.entries().map(m => (
+            {sortedGroups.entries().map(m => (
                 <div key={m[0]} className="flex flex-col gap-2 w-full p-2 bg-blue-50 rounded">
                     {
                         m[1].map(mm => (

@@ -76,7 +76,7 @@ export default function PlanningCalendar() {
             <div className={"flex flex-col "}>
                 {weekDays.map((weekDay) => (
                     <div key={weekDay.dayDate.getTime()} className="flex w-full">
-                        <div className="w-44 aspect-square bg-white p-5 flex flex-col border-b border-r">
+                        <div className="aspect-square w-40 min-w-40 bg-white p-5 flex flex-col border-b border-r">
                             <span
                                 className={"flex items-center justify-center text-neutral-800 w-9 mb-auto bg-neutral-300 rounded-full aspect-square"}>{weekDay.dayDate.getDate()}</span>
                             <div className="block">
