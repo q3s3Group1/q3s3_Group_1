@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts";
+import { Line, LineChart, ReferenceLine, Tooltip, XAxis, YAxis } from "recharts";
 import {
   Card,
   CardContent,
@@ -13,34 +13,16 @@ import {
 import {
   ChartConfig,
   ChartContainer,
-  ChartLegend,
-  ChartLegendContent,
-  ChartTooltip,
-  ChartTooltipContent,
 } from "@/components/ui/chart";
-import { fetchMachine } from "@/lib/supabase/fetchMachines";
 import { fetchChartData } from "@/lib/supabase/fetchMachineTimelines";
-import { Machine, MachineTimeline, MaintenanceFull, Mold } from "@/types/supabase";
-import StatusIndicator from "@/components/timeline/StatusIndicator";
+import { MachineTimeline, MaintenanceFull, Mold } from "@/types/supabase";
 import { SelectStartEndDate } from "@/components/SelectStartEndDate";
 import { DateRange } from "react-day-picker";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 import { fetchMaintenanceByMoldId } from "@/lib/supabase/fetchAllMaintenance";
-import { fetchMold, fetchMolds } from "@/lib/supabase/fetchMolds";
+import { fetchMold } from "@/lib/supabase/fetchMolds";
 import Header from "../../header";
 import { IntervalType, SelectInterval } from "@/components/SelectInterval";
 
-
-const chartConfig: ChartConfig = {
-  average_shot_time: { label: "Average Shot Time", color: "hsl(100, 70%, 50%)" },
-  total_shots: { label: "Total Shots", color: "hsl(100, 70%, 50%)" },
-};
 
 const MachinePage = () => {
   const { id } = useParams();
@@ -52,7 +34,10 @@ const MachinePage = () => {
 
   
   // set interval
-  const [interval, setInterval] = useState<IntervalType>(IntervalType.Hour);
+  const [interval, setInterval] = useState<IntervalType>(IntervalType.Day);
+
+  // reference line
+  const [referenceLine, setReferenceLine] = useState<number | undefined>();
 
   const [date, setDate] = useState<DateRange | undefined>({
     from: new Date(2020, 8, 0),
@@ -96,6 +81,10 @@ const MachinePage = () => {
           data
         );
 
+        setReferenceLine(
+          data.reduce((acc, item) => acc + item.total_shots, 0) / data.length
+        );
+
 
       } catch (error) {
         console.error("Error loading data:", error);
@@ -108,6 +97,7 @@ const MachinePage = () => {
   if (!mold) {
     return <div>Loading...</div>;
   }
+
 
   return (
     <>
@@ -140,87 +130,51 @@ const MachinePage = () => {
       </CardHeader>
       <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
         <ChartContainer
-          config={chartConfig}
+          config={
+           {} as ChartConfig
+          }
           className="aspect-auto h-[250px] w-full"
         >
-          <AreaChart data={chartData}>
-            <defs>
-              <linearGradient id="fillTotalShots" x1="0" y1="0" x2="0" y2="1">
-                <stop
-                  offset="5%"
-                  stopColor="var(--color-total-shots)"
-                  stopOpacity={0.8}
+              <LineChart
+                data={chartData}
+                margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                >
+                 
+                <XAxis
+                  dataKey="truncated_timestamp"
+                  tick={{ fontSize: 10 }}
+                  tickFormatter={(value) => value && new Date(value).toLocaleString(
+                    'nl-NL',
+                    {
+                      day: '2-digit',
+                      month: '2-digit',
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    }
+                  )}
                 />
-                <stop
-                  offset="95%"
-                  stopColor="var(--color-total-shots)"
-                  stopOpacity={0.1}
+                <YAxis
+                  tick={{ fontSize: 10 }}
+                  tickFormatter={(value) => value.toFixed(0)}
+                  domain={[0, 5]}
                 />
-              </linearGradient>
-              <linearGradient
-                id="fillAverageShotTime"
-                x1="0"
-                y1="0"
-                x2="0"
-                y2="1"
-              >
-                <stop
-                  offset="5%"
-                  stopColor="var(--color-average-shot-time)"
-                  stopOpacity={0.8}
+                <Line
+                  type="monotone"
+                  dataKey="total_shots"
+                  stroke="#3B82F6"
+                  strokeWidth={2}
+                  dot={false}
+                  
                 />
-                <stop
-                  offset="95%"
-                  stopColor="var(--color-average-shot-time)"
-                  stopOpacity={0.1}
-                />
-              </linearGradient>
-            </defs>
-            <YAxis
-                axisLine={false}
-                tickLine={false}
-                tickMargin={8}
-                tickFormatter={(value) => value.toFixed(0)}
-            />
-            <CartesianGrid vertical={false} />
-            <XAxis
-              dataKey="truncated_timestamp"
-              tickLine={false}
-              axisLine={false}
-              tickMargin={8}
-              minTickGap={32}
-              tickFormatter={(value) => {
-                const date = new Date(value);
-                return date.toLocaleString("nl-NL");
-              }}
-            />
-            <ChartTooltip
-              cursor={true}
-              content={
-                <ChartTooltipContent
-                  labelFormatter={(value) =>
-                    new Date(value).toLocaleString("nl-NL")
-                  }
-                  indicator="dot"
-                />
-              }
-            />
-            <Area
-              dataKey="total_shots"
-              type="natural"
-              fill="url(#fillTotalShots)"
-              stroke="var(--color-total-shots)"
-              stackId="a"
-            />
-            <Area
-              dataKey="average_shot_time"
-              type="natural"
-              fill="url(#fillAverageShotTime)"
-              stroke="var(--color-average-shot-time)"
-              stackId="a"
-            />
-            <ChartLegend content={<ChartLegendContent />} />
-          </AreaChart>
+                 <ReferenceLine y={referenceLine} stroke="black" 
+                  label={{ position: 'insideBottomLeft', value: `Avg. ${referenceLine?.toFixed(0)} Shots / ${interval}`, fill: 'black', fontSize: 12 }} />
+                  <Tooltip
+                  formatter={(value) => value.toLocaleString("nl-NL", {
+                    maximumFractionDigits: 0,
+                    
+                  })}
+                  />
+                </LineChart>
         </ChartContainer>
       </CardContent>
 
