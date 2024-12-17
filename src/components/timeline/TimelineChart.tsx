@@ -1,3 +1,4 @@
+import { formatTimestampToInterval } from '@/lib/utils';
 import { MachineTimeline } from '@/types/supabase';
 import React from 'react';
 import {
@@ -9,30 +10,21 @@ import {
   ReferenceLine,
   ResponsiveContainer,
 } from 'recharts';
+import { IntervalType } from '../SelectInterval';
 
 interface TimelineChartProps {
   data: MachineTimeline[];
+  interval: IntervalType;
 }
 
-const TimelineChart: React.FC<TimelineChartProps> = ({ data }) => (
+const TimelineChart: React.FC<TimelineChartProps> = ({ data, interval }) => (
  data && data.length > 0 ? (
   <ResponsiveContainer width="100%" height="100%">
   <LineChart data={data} margin={{ top: 5, right: 0, bottom: -10, left: 0 }}>
     <XAxis
       dataKey="truncated_timestamp"
       tick={{ fontSize: 10 }}
-      tickFormatter={(value) => value && new Date(value).toLocaleString(
-        'nl-NL',
-        {
-          day: '2-digit',
-          month: '2-digit',
-
-
-          hour: '2-digit',
-          minute: '2-digit',
-
-        }
-      )}
+      tickFormatter={(value) => value && formatTimestampToInterval(value, interval)}
     />
     <YAxis
       tick={{ fontSize: 10 }}

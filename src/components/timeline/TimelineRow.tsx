@@ -55,7 +55,9 @@ const TimelineRow: React.FC<TimelineRowProps> = ({
             </div>
           </div>
           <div className="flex-1 h-full">
-            <TimelineChart data={liveData}/>
+            <TimelineChart
+              interval={interval}
+            data={liveData}/>
           </div>
         </div>
     </Card>

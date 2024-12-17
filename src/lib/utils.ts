@@ -1,3 +1,4 @@
+import { IntervalType } from "@/components/SelectInterval";
 import {type ClassValue, clsx} from "clsx"
 import {twMerge} from "tailwind-merge"
 
@@ -15,6 +16,30 @@ export function formatDateToISO(date: Date) {
     const minutes = padZero(date.getMinutes());
 
     return `${year}-${month}-${day}T${hours}:${minutes}`;
+}
+
+export function formatTimestampToInterval(timestamp: string, interval: IntervalType) {
+    const date = new Date(timestamp);
+    const padZero = (num: number) => String(num).padStart(2, '0');
+
+    const year = date.getFullYear();
+    const month = padZero(date.getMonth() + 1);
+    const day = padZero(date.getDate());
+    const hours = padZero(date.getHours());
+    const minutes = padZero(date.getMinutes());
+
+    switch (interval) {
+        case 'minute':
+            return `${hours}:${minutes}`;
+        case '5 minute':
+            return `${hours}:${minutes}`;
+        case 'hour':
+            return `${hours}:${minutes}`;
+        case 'day':
+            return `${day}-${month}`;
+        case 'week':
+            return `${day}-${month}`;
+    }
 }
 
 export function getDayName(date: Date, locale: string = "nl") {
