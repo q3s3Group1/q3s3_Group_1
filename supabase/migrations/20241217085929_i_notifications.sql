@@ -1,4 +1,4 @@
-CREATE TABLE notifications (
+CREATE TABLE i_notifications (
     id SERIAL PRIMARY KEY,
     board INT NOT NULL,
     port INT NOT NULL,
