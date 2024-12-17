@@ -13,8 +13,8 @@ export const fetchChartData = async (
     const { data, error } = await supabase.rpc('get_monitoring_intervals', {
         board_input: board,
         port_input: port,
-        start_date: startDate.toISOString(),
-        end_date: endDate.toISOString(),
+        start_date: startDate.toISOString().split('T')[0],
+        end_date: endDate.toISOString().split('T')[0],
         interval_input: interval,
     });
 

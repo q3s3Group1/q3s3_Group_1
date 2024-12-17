@@ -37,7 +37,7 @@ const TimelineChart: React.FC<TimelineChartProps> = ({ data }) => (
     <YAxis
       tick={{ fontSize: 10 }}
       tickFormatter={(value) => value.toFixed(0)}
-    domain={[0, 100]} />
+    domain={[0, 5]} />
     
     <ReferenceLine y={"5"} stroke="#9CA3AF" strokeDasharray="3 3" />
     <Line className='z-0 relative' type="monotone" dataKey="total_shots" stroke="#3B82F6" strokeWidth={2} dot={false} />
