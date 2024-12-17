@@ -7,6 +7,7 @@ import { SelectStartEndDate } from "@/components/SelectStartEndDate";
 import { useState } from "react";
 import { DateRange } from "react-day-picker";
 import { addDays } from "date-fns";
+import { IntervalType, SelectInterval } from "@/components/SelectInterval";
 
 interface RowsProps {
     machines: Machine[];
@@ -20,6 +21,10 @@ export default function Rows({ machines }: RowsProps) {
         to: new Date(2020, 8, 17),
       })
 
+    const [interval, setInterval] = useState<IntervalType>(
+      IntervalType.Hour
+    );
+
   return (
     
     <div className="flex flex-col gap-1 ">
@@ -28,11 +33,22 @@ export default function Rows({ machines }: RowsProps) {
         title={"Historische data"}
         description="Hier kun je de historische data van de machines shots bekijken"
         >
+
+<div className="flex gap-2">
+<SelectInterval
+            interval={interval}
+            setInterval={setInterval}
+
+          />
+          
         <SelectStartEndDate
             date={date}
             setDate={setDate}
             className="w-min"
         />
+</div>
+        
+
         </Header>
       <TimelineLegend />
       </div>
@@ -43,7 +59,8 @@ export default function Rows({ machines }: RowsProps) {
           machine={machine} 
           targetEfficiency={0} 
             date={date}
-            setDate={setDate}
+            interval={interval}
+            
         />
       ))}
       </div>

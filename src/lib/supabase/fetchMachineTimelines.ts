@@ -1,5 +1,6 @@
 import { supabase } from './client';
 import { MachineTimeline } from '../../types/supabase';
+import { IntervalType } from '@/components/SelectInterval';
 
 
 export const fetchChartData = async (
@@ -7,9 +8,9 @@ export const fetchChartData = async (
     port: number,
     startDate: Date,
     endDate: Date,
-    interval: "minute" | "hour" | "day" = "minute"
+    interval: IntervalType
 ): Promise<MachineTimeline[]> => {
-    const { data, error } = await supabase.rpc('get_chart_data_grouped', {
+    const { data, error } = await supabase.rpc('get_monitoring_intervals', {
         board_input: board,
         port_input: port,
         start_date: startDate.toISOString(),

@@ -6,20 +6,21 @@ import { Machine, MachineTimeline } from '@/types/supabase';
 import { fetchChartData } from '@/lib/supabase/fetchMachineTimelines';
 import { Card } from '../ui/card';
 import { DateRange } from 'react-day-picker';
+import { IntervalType } from '../SelectInterval';
 
 interface TimelineRowProps {
   machine: Machine;
   targetEfficiency: number;
   style?: React.CSSProperties;
   date: DateRange | undefined;
-  setDate: (date: DateRange | undefined) => void;
+  interval: IntervalType;
 }
 
 const TimelineRow: React.FC<TimelineRowProps> = ({
   machine,
   style,
   date,
-  setDate,
+  interval,
 }) => {
   const [liveData, setLiveData] = useState<MachineTimeline[]>([]);
 
@@ -32,13 +33,13 @@ const TimelineRow: React.FC<TimelineRowProps> = ({
           machine.port,
           date.from,
           date.to,
-          'hour'
+          interval
         );
         setLiveData(data);
       }
     };
     fetchData();
-  }, [machine.board, machine.port, date]);
+  }, [machine.board, machine.port, date, interval]);
 
   return (
     <Card style={style} className="mb-2">

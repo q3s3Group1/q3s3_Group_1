@@ -34,6 +34,7 @@ import {
 import { fetchMaintenanceByMoldId } from "@/lib/supabase/fetchAllMaintenance";
 import { fetchMold, fetchMolds } from "@/lib/supabase/fetchMolds";
 import Header from "../../header";
+import { IntervalType, SelectInterval } from "@/components/SelectInterval";
 
 
 const chartConfig: ChartConfig = {
@@ -51,7 +52,7 @@ const MachinePage = () => {
 
   
   // set interval
-  const [interval, setInterval] = useState<"minute" | "hour" | "day">("hour");
+  const [interval, setInterval] = useState<IntervalType>(IntervalType.Hour);
 
   const [date, setDate] = useState<DateRange | undefined>({
     from: new Date(2020, 8, 0),
@@ -130,18 +131,10 @@ const MachinePage = () => {
          className="w-min"
         />
         
-        <Select onValueChange={(value) => setInterval(value as "minute" | "hour" | "day")} value={interval}>
-          <SelectTrigger>
-            <SelectValue defaultValue={"hour"}>
-              
-            </SelectValue>
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="minute">Minute</SelectItem>
-            <SelectItem value="hour" >Hour</SelectItem>
-            <SelectItem value="day">Day</SelectItem>
-          </SelectContent>
-        </Select>
+       <SelectInterval
+         interval={interval}
+         setInterval={setInterval}
+        />
 
        </div>
       </CardHeader>

@@ -34,12 +34,19 @@ const TimelineChart: React.FC<TimelineChartProps> = ({ data }) => (
         }
       )}
     />
-    <YAxis hide domain={[0, 5]} />
+    <YAxis
+      tick={{ fontSize: 10 }}
+      tickFormatter={(value) => value.toFixed(0)}
+    domain={[0, 100]} />
+    
+    <ReferenceLine y={"5"} stroke="#9CA3AF" strokeDasharray="3 3" />
+    <Line className='z-0 relative' type="monotone" dataKey="total_shots" stroke="#3B82F6" strokeWidth={2} dot={false} />
+
     <Tooltip
       content={({ active, payload }) => {
         if (active && payload && payload.length) {
           return (
-            <div className="bg-white p-2 relative rounded-lg shadow-md">
+            <div className="bg-white fixed left-0 p-2 z-50 rounded-lg shadow-md">
               <p className="text-sm text-gray-500">
                 {
                   payload[0].payload.truncated_timestamp ? new Date(payload[0].payload.truncated_timestamp).toLocaleString(
@@ -61,8 +68,6 @@ const TimelineChart: React.FC<TimelineChartProps> = ({ data }) => (
         return null;
       }}
     />
-    <ReferenceLine y={"5"} stroke="#9CA3AF" strokeDasharray="3 3" />
-    <Line className='z-0' type="monotone" dataKey="total_shots" stroke="#3B82F6" strokeWidth={2} dot={false} />
   </LineChart>
 </ResponsiveContainer>
 ) : (

@@ -53,6 +53,8 @@ export interface Group {
 
 // string
 
+// Enum for intervals
+
 export interface Mold {
     name: string;
     board: number;

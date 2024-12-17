@@ -72,8 +72,11 @@ export function AppSidebar() {
     <Sidebar className="border-r border-zinc-200 bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900">
       <SidebarHeader className="border-b border-zinc-200 dark:border-zinc-800 h-20">
         <div className="flex items-center gap-2 px-6 py-4">
-          <Power className="h-8 w-8 text-blue-600" />
-          <span className="text-2xl font-bold text-zinc-900 dark:text-zinc-50">Q3</span>
+          <img
+            src="/logo.svg"
+            alt="Logo"
+            className="h-8 w-auto"
+          />
         </div>
       </SidebarHeader>
       <SidebarContent>

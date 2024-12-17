@@ -6,6 +6,7 @@ import { fetchMachineMolds } from '@/lib/supabase/fetchMachineMolds';
 import { fetchChartData } from '@/lib/supabase/fetchMachineTimelines';
 import { supabase } from '@/lib/supabase/client';
 import { addDays } from 'date-fns';
+import { IntervalType } from '../SelectInterval';
 
 interface FactoryGridProps {
   machines: Machine[];
@@ -19,7 +20,7 @@ export default function FactoryGrid({ machines }: FactoryGridProps) {
   const today = new Date("2020-09-05");
 
   const fetchAndSetChartData = async (machineId: string, board: number, port: number) => {
-    const chartData = await fetchChartData(board, port, addDays(today, -1), today, "hour");
+    const chartData = await fetchChartData(board, port, addDays(today, -1), today, IntervalType.Hour);
     setMachineData((prev) => ({
       ...prev,
       [machineId]: {
@@ -47,7 +48,7 @@ export default function FactoryGrid({ machines }: FactoryGridProps) {
             machine.port,
             addDays(today, -1),
             today,
-            "hour"
+            IntervalType.Hour
           );
           return { machineId: machine.machine_id, matrijzen, chartData };
         })
