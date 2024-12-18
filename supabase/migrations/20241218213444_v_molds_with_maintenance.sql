@@ -17,6 +17,6 @@ SELECT
 FROM
     v_molds vm
 LEFT JOIN
-    mold_maintenance_milestones mm ON vm.mold_id = mm.mold_id
+    i_mold_maintenance_milestones mm ON vm.mold_id = mm.mold_id
 ORDER BY
     vm.mold_id, mm.milestone_shots;

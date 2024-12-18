@@ -1,4 +1,4 @@
-CREATE TABLE mold_maintenance_milestones (
+CREATE TABLE i_mold_maintenance_milestones (
     id SERIAL PRIMARY KEY, -- Uniek ID voor elke mijlpaal
 
     mold_id INT NOT NULL, -- Verwijzing naar de mold_id
