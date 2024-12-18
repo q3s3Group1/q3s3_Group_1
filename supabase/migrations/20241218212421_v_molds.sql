@@ -1,5 +1,5 @@
 CREATE VIEW v_molds AS
-SELECT
+SELECT distinct
     mh.mold_id,
     mh.mold_name,
     mh.board,
