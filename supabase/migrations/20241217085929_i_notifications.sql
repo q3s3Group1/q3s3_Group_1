@@ -5,5 +5,9 @@ CREATE TABLE i_notifications (
     status VARCHAR(50) NOT NULL, -- Bijvoorbeeld: 'offline', 'online', 'error'
     message TEXT NOT NULL,       -- Omschrijving van de notificatie
     detected_at TIMESTAMP DEFAULT NOW(), -- Tijdstip van detectie
-    send_sms BOOLEAN DEFAULT FALSE -- Of er een SMS verstuurd moet worden
+    send_sms BOOLEAN DEFAULT FALSE,-- Of er een SMS verstuurd moet worden
+
+
+    -- sms sent success
+    sms_sent BOOLEAN DEFAULT FALSE
 );
