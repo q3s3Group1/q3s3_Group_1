@@ -22,8 +22,11 @@ Deno.serve(async (req) => {
     resolved_at } = await req.json()
 
   const data = {
-    message: `Hello ${name}!`,
+    message: `Alert: ${board} on port ${port} is ${status}. ${message}`,
   }
+
+  // log
+  console.log(data.message)
 
   return new Response(
     JSON.stringify(data),
