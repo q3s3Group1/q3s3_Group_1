@@ -1,18 +1,23 @@
 import { supabase } from './client';
-import { Mold } from '../../types/supabase';
+import { Machine, Mold, MoldHistory } from '../../types/supabase';
 
 /**
  * Fetch all machines
  */
 // with machine id as parameter
-export const fetchMachineMolds = async (machine_id: number): Promise<Mold[]> => {
+export const fetchMoldsByDateRange = async (startDate: Date, endDate: Date, board: number, port: number): Promise<MoldHistory[]> => {
+  const startDateString = startDate.toISOString().split('T')[0];
+  const endDateString = endDate.toISOString().split('T')[0];
   const { data, error } = await supabase
-    .from('v_molds')
+    .from('mv_molds_history')
     .select('*')
-    .eq('current_machine_id', machine_id);
+    .gte('start_date', startDateString) // Greater than or equal to startDate
+    .lte('end_date', endDateString) // Less than or equal to endDate
+    .eq('board', board)
+    .eq('port', port); // Less than or equal to endDate
 
   if (error) {
-    throw new Error(`Error fetching machine timelines: ${error.message}`);
+    throw new Error(`Error fetching molds between ${startDate} and ${endDate}: ${error.message}`);
   }
 
   return data || [];

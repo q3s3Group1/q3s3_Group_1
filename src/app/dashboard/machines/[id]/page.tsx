@@ -32,7 +32,6 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import Header from "../../header";
-import { fetchMachineMolds } from "@/lib/supabase/fetchMachineMolds";
 import { IntervalType, SelectInterval } from "@/components/SelectInterval";
 import { fetchMoldHistoryByBoardPort } from "@/lib/supabase/fetchMoldHistory";
 import { MoldHistoryTable } from "../../../../components/molds/moldsHistory";

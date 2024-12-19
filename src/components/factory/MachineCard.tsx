@@ -1,11 +1,11 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine } from "recharts";
-import { Machine, MachineTimeline, Mold } from "@/types/supabase";
+import { Machine, MachineTimeline, Mold, MoldHistory } from "@/types/supabase";
 
 interface MachineCardProps {
   machine: Machine;
-  molds?: Mold[];
+  molds?: MoldHistory[];
   chartData?: MachineTimeline[];
 }
 

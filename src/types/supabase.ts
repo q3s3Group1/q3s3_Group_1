@@ -18,6 +18,15 @@ export interface MoldHistory {
 
 }
 
+export interface Milestone {
+    id: number;
+    mold_id: number;
+    milestone_shots: number;
+    maintenance_type: string;
+    send_sms: boolean;
+    completed: boolean;
+}
+
 export interface MachineTimeline {
 
     average_shot_time: number;

@@ -1,34 +1,21 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import MachineCard from './MachineCard';
-import { Machine, MachineTimeline, Mold } from '@/types/supabase';
-import { fetchMachineMolds } from '@/lib/supabase/fetchMachineMolds';
+import { Machine, MachineTimeline, Mold, MoldHistory } from '@/types/supabase';
 import { fetchChartData } from '@/lib/supabase/fetchMachineTimelines';
 import { supabase } from '@/lib/supabase/client';
 import { addDays } from 'date-fns';
 import { IntervalType } from '../SelectInterval';
+import { fetchMoldsByDateRange } from '@/lib/supabase/fetchMachineMolds';
 
 interface FactoryGridProps {
   machines: Machine[];
 }
 
 export default function FactoryGrid({ machines }: FactoryGridProps) {
-  const [machineData, setMachineData] = useState<{
-    [machineId: string]: { matrijzen: Mold[]; chartData: MachineTimeline[] };
-  }>({});
+  const [machineData, setMachineData] = useState<Record<string, { matrijzen: MoldHistory[]; chartData: MachineTimeline[] }>>({});
 
-  const today = new Date("2020-09-05");
-
-  const fetchAndSetChartData = async (machineId: string, board: number, port: number) => {
-    const chartData = await fetchChartData(board, port, addDays(today, -1), today, IntervalType.Hour);
-    setMachineData((prev) => ({
-      ...prev,
-      [machineId]: {
-        ...prev[machineId],
-        chartData,
-      },
-    }));
-  };
+  const today = new Date("2020-09-05"); 
 
   const getStatus = (chartData: MachineTimeline[]) => {
     if (chartData.length === 0) return 'Stilstand';
@@ -42,7 +29,7 @@ export default function FactoryGrid({ machines }: FactoryGridProps) {
     const fetchData = async () => {
       const data = await Promise.all(
         machines.map(async (machine) => {
-          const matrijzen = await fetchMachineMolds(machine.machine_id);
+          const matrijzen = await fetchMoldsByDateRange(addDays(today, -1), today, machine.board, machine.port);
           const chartData = await fetchChartData(
             machine.board,
             machine.port,
@@ -54,47 +41,18 @@ export default function FactoryGrid({ machines }: FactoryGridProps) {
         })
       );
 
-      // Transform array into a map for faster access
-      const dataMap = data.reduce((acc, item) => {
-        acc[item.machineId] = { matrijzen: item.matrijzen, chartData: item.chartData };
-        return acc;
-      }, {} as { [machineId: string]: { matrijzen: Mold[]; chartData: MachineTimeline[] } });
 
-      setMachineData(dataMap);
+      setMachineData(
+        data.reduce((acc, { machineId, matrijzen, chartData }) => {
+          acc[machineId.toString()] = { matrijzen, chartData };
+          return acc;
+        }, {} as Record<string, { matrijzen: MoldHistory[]; chartData: MachineTimeline[] }
+        >)
+      );
+
     };
 
     fetchData();
-
-    // Subscribe to real-time changes in the monitoring_data table
-    const subscriptions = machines.map((machine) => {
-      const channel = supabase
-        .channel(`monitoring_data:${machine.machine_id}`)
-        .on(
-          'postgres_changes',
-          {
-            event: '*',
-            schema: 'public',
-            table: 'monitoring_data_202009',
-            // Optionally re-add filters
-            filter: `board=eq.${machine.board},port=eq.${machine.port}`,
-          },
-          (payload) => {
-            console.log(`Change detected for machine ${machine.machine_id}`, payload);
-            // Fetch updated chart data for the specific machine
-            fetchAndSetChartData(machine.machine_id.toString(), machine.board, machine.port);
-          }
-        )
-        .subscribe();
-
-      return channel;
-    });
-
-    // Cleanup subscriptions on unmount
-    return () => {
-      subscriptions.forEach((channel) => {
-        supabase.removeChannel(channel);
-      });
-    };
   }, [machines]);
 
   const sortedMachines = [...machines].sort((a, b) => {
