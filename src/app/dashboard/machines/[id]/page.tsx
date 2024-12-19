@@ -234,6 +234,8 @@ const MachinePage = () => {
           <MoldHistoryTable
             moldsHistory={moldsHistory}
             setRange={setDate}
+            showMachine={false}
+            showMold={true}
           />
         </CardContent>
       </Card>

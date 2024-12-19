@@ -18,18 +18,33 @@ interface MoldHistoryProps {
     moldsHistory: MoldHistory[];
 
     setRange?: (range: DateRange) => void;
+
+    showMold?: boolean;
+    showMachine?: boolean;
 }
 
 export const MoldHistoryTable = ({ moldsHistory
-    , setRange
+    , setRange, showMold, showMachine
  }: MoldHistoryProps) => {
     return (
         <Table>
             <TableCaption>Matrijs Historie</TableCaption>
             <TableHeader>
                 <TableRow>
-                    {/* Matrijs */}
-                    <TableHead>Matrijs</TableHead>
+                    {
+                        showMold && (
+                            <TableHead>
+                                Matrijs
+                            </TableHead>
+                        )
+                    }
+                    {
+                        showMachine && (
+                            <TableHead>
+                                Machine
+                            </TableHead>
+                        )
+                    }
                     <TableHead>Start</TableHead>
                     <TableHead>Eind</TableHead>
 
@@ -48,8 +63,16 @@ export const MoldHistoryTable = ({ moldsHistory
             <TableBody>
                 {moldsHistory.map((moldHistory) => (
                     <TableRow key={moldHistory.mold_id}>
-                        <TableCell>{moldHistory.mold_name  || moldHistory.mold_id}</TableCell>
-                            
+                        {
+                            showMold && (
+                                <TableCell>{moldHistory.mold_name || moldHistory.mold_id}</TableCell>
+                            )
+                        }
+                        {
+                            showMachine && (
+                                <TableCell>{moldHistory.board} - {moldHistory.port}</TableCell>
+                            )
+                        }                            
 
                         <TableCell>{moldHistory.start_date}</TableCell>
                         <TableCell>{moldHistory.end_date}</TableCell>

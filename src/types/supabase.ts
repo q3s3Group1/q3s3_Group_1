@@ -6,6 +6,7 @@ export interface MoldHistory {
 
     board: number;
     port: number;
+    machine_id: number;
 
     start_date: string;
     start_time: string;
