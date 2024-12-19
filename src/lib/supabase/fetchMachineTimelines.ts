@@ -10,9 +10,6 @@ export const fetchChartData = async (
     endDate: Date,
     interval: IntervalType
 ): Promise<MachineTimeline[]> => {
-    // process start date and end date so its the right hours
-    startDate.setHours(0, 0, 0, 0);
-    endDate.setHours(23, 59, 59, 999);
 
 
     const { data, error } = await supabase.rpc('get_monitoring_intervals', {

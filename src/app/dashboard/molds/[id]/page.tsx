@@ -25,6 +25,10 @@ import { IntervalType, SelectInterval } from "@/components/SelectInterval";
 import { fetchMoldHistoryByMoldId } from "@/lib/supabase/fetchMoldHistory";
 import { MoldHistoryTable } from "@/components/molds/moldsHistory";
 
+export interface BoardPort {
+  board: number;
+  port: number;
+}
 
 const MachinePage = () => {
   const { id } = useParams();
@@ -35,10 +39,11 @@ const MachinePage = () => {
 
   const [moldsHistory, setMoldsHistory] = useState<MoldHistory[]>([]);
 
-
+  // board and port
+  const [boardPort, setBoardPort] = useState<BoardPort | null>(null);
   
   // set interval
-  const [interval, setInterval] = useState<IntervalType>(IntervalType.Day);
+  const [interval, setInterval] = useState<IntervalType>(IntervalType.Hour);
 
   // reference line
   const [referenceLine, setReferenceLine] = useState<number | undefined>();
@@ -61,11 +66,8 @@ const MachinePage = () => {
         );
         setMold(moldData);
 
-        const moldHistoryData = await fetchMoldHistoryByMoldId(
-          parseInt(id as string)
-        );
+        
 
-        setMoldsHistory(moldHistoryData);
 
 
 
@@ -81,22 +83,12 @@ const MachinePage = () => {
       if (!startDate) return;
       if (!endDate) return;
 
-        // Fetch chart data
-        const data = await fetchChartData(
-          moldData.board,
-          moldData.port,
-          startDate,
-          endDate,
-          interval
-        );
-        setChartData(
-          data
-        );
+      
 
-        setReferenceLine(
-          data.reduce((acc, item) => acc + item.total_shots, 0) / data.length
-        );
 
+       
+
+        
 
       } catch (error) {
         console.error("Error loading data:", error);
@@ -105,6 +97,64 @@ const MachinePage = () => {
 
     loadData();
   }, [id, date, interval]);
+
+  useEffect(() => {
+      const loadMoldHistory = async () => {
+        const moldHistoryData = await fetchMoldHistoryByMoldId(
+          parseInt(id as string)
+        );
+  
+        setMoldsHistory(moldHistoryData);
+      };
+  
+      loadMoldHistory();
+    }, [id]);
+
+  useEffect(() => {
+    if (moldsHistory.length > 0) {
+      setBoardPort({
+        board: moldsHistory[0].board,
+        port: moldsHistory[0].port,
+      });
+
+
+      
+    }
+  }
+  , [moldsHistory]);
+
+  useEffect(() => {
+    // Chart data
+    const startDate = date?.from;
+    const endDate = date?.to;
+
+    if (!startDate) return;
+    if (!endDate) return;
+
+    const loadData = async () => {
+      if (!boardPort) return;
+
+      try {
+        const data = await fetchChartData(
+          boardPort.board,
+          boardPort.port,
+          startDate,
+          endDate,
+          interval
+        );
+        setChartData(data);
+
+        const totalShots = data.map((d) => d.total_shots);
+        const avg = totalShots.reduce((a, b) => a + b, 0) / totalShots.length;
+        setReferenceLine(avg);
+      } catch (error) {
+        console.error("Error loading data:", error);
+      }
+    };
+
+    loadData();
+  }, [boardPort, date, interval]);
+
 
   if (!mold) {
     return <div>Loading...</div>;
