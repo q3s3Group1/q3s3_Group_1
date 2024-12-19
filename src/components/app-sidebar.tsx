@@ -54,6 +54,8 @@ const menuItems = [
     subItems: [
       { label: 'Planning', href: '/dashboard/maintenance' },
       { label: 'Mechanics', href: '/dashboard/maintenance/mechanics' },
+      // Milestones
+      { label: 'Milestones', href: '/dashboard/maintenance/milestones' },
     ]
   },
   // { 
