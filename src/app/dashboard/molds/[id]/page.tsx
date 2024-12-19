@@ -15,13 +15,15 @@ import {
   ChartContainer,
 } from "@/components/ui/chart";
 import { fetchChartData } from "@/lib/supabase/fetchMachineTimelines";
-import { MachineTimeline, MaintenanceFull, Mold } from "@/types/supabase";
+import { MachineTimeline, MaintenanceFull, Mold, MoldHistory } from "@/types/supabase";
 import { SelectStartEndDate } from "@/components/SelectStartEndDate";
 import { DateRange } from "react-day-picker";
 import { fetchMaintenanceByMoldId } from "@/lib/supabase/fetchAllMaintenance";
 import { fetchMold } from "@/lib/supabase/fetchMolds";
 import Header from "../../header";
 import { IntervalType, SelectInterval } from "@/components/SelectInterval";
+import { fetchMoldHistoryByMoldId } from "@/lib/supabase/fetchMoldHistory";
+import { MoldHistoryTable } from "@/components/molds/moldsHistory";
 
 
 const MachinePage = () => {
@@ -30,6 +32,8 @@ const MachinePage = () => {
   const [chartData, setChartData] = useState<MachineTimeline[]>([]);
 
   const [maintenance, setMaintenance] = useState<MaintenanceFull[]>([]);
+
+  const [moldsHistory, setMoldsHistory] = useState<MoldHistory[]>([]);
 
 
   
@@ -56,6 +60,14 @@ const MachinePage = () => {
           parseInt(id as string)
         );
         setMold(moldData);
+
+        const moldHistoryData = await fetchMoldHistoryByMoldId(
+          parseInt(id as string)
+        );
+
+        setMoldsHistory(moldHistoryData);
+
+
 
         const maintenanceData = await fetchMaintenanceByMoldId(
           parseInt(id as string)
@@ -102,13 +114,12 @@ const MachinePage = () => {
   return (
     <>
       <Header
-        title={`Mold: ${mold.description}`}
+        title={`Mold: ${mold.mold_name || mold.mold_id}`}
       />
     <div>
       <CardHeader className="flex items-center justify-between gap-2 space-y-0 border-b py-5 sm:flex-row">
         <div className="grid flex-1 gap-1 text-center sm:text-left">
-          <CardTitle>Mold: {mold.description}
-            </CardTitle>
+         
           <CardDescription className="flex items-center justify-start gap-1">
             Status
             
@@ -178,7 +189,7 @@ const MachinePage = () => {
         </ChartContainer>
       </CardContent>
 
-      <div className="container px-4 mx-auto">
+      <div className="container px-4 mx-auto flex flex-col gap-4">
         <Card>
         <CardHeader className="flex items-center justify-between gap-2 space-y-0 border-b py-5 sm:flex-row">
         <div className="grid flex-1 gap-1 text-center sm:text-left">
@@ -213,6 +224,19 @@ const MachinePage = () => {
         }
 
         </CardContent>
+
+        </Card>
+
+        <Card>
+          <CardHeader>
+                  <CardTitle>Molds History</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+
+          <MoldHistoryTable
+            moldsHistory={moldsHistory}
+          />
+                  </CardContent>
 
         </Card>
       </div>

@@ -8,7 +8,7 @@ CREATE OR REPLACE FUNCTION get_monitoring_intervals(
 RETURNS TABLE (
     truncated_timestamp TIMESTAMP,
     total_shots INT,
-    average_shot_time NUMERIC
+    average_shot_time DOUBLE PRECISION
 ) AS $$
 BEGIN
     RETURN QUERY

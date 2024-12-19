@@ -1,13 +1,13 @@
 import {supabase} from './client';
-import {Mold} from '../../types/supabase';
+import {Mold, MoldMaintenance} from '../../types/supabase';
 
 /**
  * Fetch all machines
  */
 // with machine id as parameter
-export const fetchMolds = async (): Promise<Mold[]> => {
+export const fetchMolds = async (): Promise<MoldMaintenance[]> => {
     const {data, error} = await supabase
-        .from('v17_molds')
+        .from('v_molds_with_maintenance')
         .select('*');
 
     if (error) {
@@ -20,7 +20,7 @@ export const fetchMolds = async (): Promise<Mold[]> => {
 
 export const fetchAllMolds = async (): Promise<Mold[]> => {
     const {data, error} = await supabase
-        .from('v_all_molds').select('*');
+        .from('v_molds').select('*');
 
     if (error) {
         throw new Error(`Error fetching machine timelines: ${error.message}`);
@@ -40,11 +40,21 @@ export const fetchAllMolds = async (): Promise<Mold[]> => {
 export const fetchMold = async (id: number): Promise<Mold> => {
     const {data, error} = await supabase
         .from('v_molds')
-        .select('*').eq("id", id).single()
+        .select('*')
+        .eq('mold_id', id);
+
+
 
     if (error) {
         throw new Error(`Error fetching machine timelines: ${error.message}`);
     }
 
-    return data;
+    const filtered: Mold[] = []
+    data?.forEach((v) => {
+        if (!filtered.includes(v)) {
+            filtered.push(v)
+        }
+    })
+
+    return filtered[0] || [];
 };

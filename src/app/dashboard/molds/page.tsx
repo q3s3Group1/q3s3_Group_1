@@ -11,7 +11,7 @@ import {
 import { fetchMolds } from "@/lib/supabase/fetchMolds";
 import Link from "next/link";
 import Header from "../header";
-import { Mold } from "@/types/supabase";
+import { Mold, MoldMaintenance } from "@/types/supabase";
 import { Progress } from "@/components/ui/progress";
 
 export default async function Page() {
@@ -20,7 +20,7 @@ export default async function Page() {
 
     const maintenance_interval = 100000;
     // calculate levels duur
-    const calculateLevensduurLeft = (mold: Mold) => {
+    const calculateLevensduurLeft = (mold: MoldMaintenance) => {
         
       // return a number between 0 and 100
       // if low shots, return 0
@@ -30,17 +30,17 @@ export default async function Page() {
 
       // if high shots, return 100
 
-      const shots = mold.total_shots_since_last_maintenance || 0;
-      const interval = maintenance_interval;
-
-
-      const percentage = (shots / interval) * 100;
-
-      // reversed
-      const percentageLeft = 100 - percentage;
+      const shots = mold.total_shots - mold.milestone_shots;
       
+      if (shots <= 0) {
+        return 0;
+      }
 
-      return percentageLeft;
+      if (shots >= maintenance_interval) {
+        return 100;
+      }
+
+      return (shots / maintenance_interval) * 100;
     }
 
     
@@ -55,15 +55,10 @@ export default async function Page() {
          <Table>
       <TableHeader>
         <TableRow>
-          <TableHead>Machine</TableHead>
-
           <TableHead className="w-[100px]">
-            Beschrijving
+            Matrijs
           </TableHead>
 
-          <TableHead className="text-right">
-            Naam
-          </TableHead>
           {/* total shots */}
           <TableHead>
             Board - Port
@@ -79,28 +74,25 @@ export default async function Page() {
       </TableHeader>
       <TableBody>
         {molds.map((mold) => (
-          <TableRow key={mold.id}>
-            <TableCell className="flex items-center gap-1">
-                {/* <StatusIndicator status={} /> */}
-                <Link key={mold.id} href={`/dashboard/machines/${mold.current_machine_id}`} className="text-blue-500 underline">
-                {mold.current_machine_name || "N/A"}
-                </Link>
-                </TableCell>
+          <TableRow key={mold.mold_id}>
             <TableCell className="font-medium">
-              <Link key={mold.id} href={`/dashboard/molds/${mold.id}`} className="text-blue-500 underline">
-              {mold.description
-                || `Mold ${mold.id}`
-                }
+              <Link key={mold.mold_id} href={`/dashboard/molds/${mold.mold_id}`} className="text-blue-500 underline">
+              {mold.mold_name || mold.mold_id}
                 </Link>
               </TableCell>
 
-            <TableCell className="text-right">{mold.name}</TableCell>
             <TableCell>{
                 mold.board}-{mold.port}</TableCell>
 
 
             <TableCell>
+
+              <div>
+                <div>
+                  {mold.total_shots} 
+                </div>
               <Progress value={calculateLevensduurLeft(mold)} />
+              </div>
             </TableCell>
           </TableRow>
         ))}

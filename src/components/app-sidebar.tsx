@@ -44,8 +44,7 @@ const menuItems = [
     label: 'Molds', 
     href: '/dashboard/molds',
     subItems: [
-      { label: 'Active molds', href: '/dashboard/molds' },
-      { label: 'All molds', href: '/dashboard/molds/all' },
+      { label: 'All molds', href: '/dashboard/molds' },
     ]
   },
   {

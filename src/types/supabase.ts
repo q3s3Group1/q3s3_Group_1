@@ -1,3 +1,22 @@
+// Mold history
+export interface MoldHistory {
+    production_id: number;
+    mold_id: number;
+    mold_name: string;
+
+    board: number;
+    port: number;
+
+    start_date: string;
+    start_time: string;
+
+    end_date: string;
+    end_time: string;
+
+    real_amount: number; // in that period
+
+}
+
 export interface MachineTimeline {
 
     average_shot_time: number;
@@ -22,51 +41,26 @@ export interface Group {
     created_at: string,
 }
 
-
-//   Mold
-// name	
-// character varying
-
-// string	
-// board	
-// smallint
-
-// number	
-// port	
-// smallint
-
-// number	
-// description	
-// character varying
-
-// string	
-// id	
-// integer
-
-// number	
-// current_machine_id	
-// integer
-
-// number	
-// current_machine_name	
-// character varying
-
-// string
-
-// Enum for intervals
-
 export interface Mold {
-    name: string;
+    mold_id: number;
+    mold_name: string;
+
     board: number;
     port: number;
-    description: string;
-    id: number;
-    current_machine_id: number;
-    current_machine_name: string;
 
-    total_shots_since_last_maintenance?: number;
-    last_maintenance?: string;
+    total_shots: number;
+    usage_periods: number;
+
+    first_used: string;
+    last_used: string;
 }
+
+// Extend mold with maintaince
+export interface MoldMaintenance extends Mold {
+    milestone_shots: number;
+    maintenance_status: number;
+}
+
 
 export interface MonitoringData {
     id: number;

@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/chart";
 import { fetchMachine } from "@/lib/supabase/fetchMachines";
 import { fetchChartData } from "@/lib/supabase/fetchMachineTimelines";
-import { Machine, MachineTimeline, Mold } from "@/types/supabase";
+import { Machine, MachineTimeline, Mold, MoldHistory } from "@/types/supabase";
 import StatusIndicator from "@/components/timeline/StatusIndicator";
 import { SelectStartEndDate } from "@/components/SelectStartEndDate";
 import { DateRange } from "react-day-picker";
@@ -34,6 +34,8 @@ import {
 import Header from "../../header";
 import { fetchMachineMolds } from "@/lib/supabase/fetchMachineMolds";
 import { IntervalType, SelectInterval } from "@/components/SelectInterval";
+import { fetchMoldHistoryByBoardPort } from "@/lib/supabase/fetchMoldHistory";
+import { MoldHistoryTable } from "../../../../components/molds/moldsHistory";
 
 
 const chartConfig: ChartConfig = {
@@ -46,7 +48,7 @@ const MachinePage = () => {
   const [machine, setMachine] = useState<Machine | null>(null);
   const [chartData, setChartData] = useState<MachineTimeline[]>([]);
   // molds
-  const [molds, setMolds] = useState<Mold[]>([]);
+  const [moldsHistory, setMoldsHistory] = useState<MoldHistory[]>([]);
   // set interval
   const [interval, setInterval] = useState<IntervalType>(
     IntervalType.Hour
@@ -68,11 +70,15 @@ const MachinePage = () => {
         const machineData = await fetchMachine(id.toString());
         setMachine(machineData);
         
-        const moldsfetched = await fetchMachineMolds(
-          machineData.machine_id
+        const moldsfetched = await fetchMoldHistoryByBoardPort(
+          machineData.board,
+          machineData.port
         );
 
-        setMolds(moldsfetched);
+        setMoldsHistory(moldsfetched);
+
+        // log molds history
+        console.log('moldsHistory', moldsfetched);
 
         const startDate = date?.from;
         const endDate = date?.to;
@@ -113,8 +119,7 @@ const MachinePage = () => {
     <div>
       <CardHeader className="flex items-center justify-between gap-2 space-y-0 border-b py-5 sm:flex-row">
         <div className="grid flex-1 gap-1 text-center sm:text-left">
-          <CardTitle>Machine: {machine.machine_name || `${machine.machine_id}`
-            }</CardTitle>
+          
           <CardDescription className="flex items-center justify-start gap-1">
             <StatusIndicator status={machine.status} />
             Status: {machine.status}</CardDescription>
@@ -222,17 +227,14 @@ const MachinePage = () => {
       <div className="p-4 container mx-auto">
       <Card>
         <CardHeader>
-        <CardTitle>Molds</CardTitle>
+        <CardTitle>Molds History</CardTitle>
         </CardHeader>
         <CardContent>
          
-          <ul className="list-disc">
-            {molds.map((mold) => (
-              <li key={mold.id}>
-                {mold.description} ({mold.id})
-              </li>
-            ))}
-          </ul>
+          <MoldHistoryTable
+            moldsHistory={moldsHistory}
+            setRange={setDate}
+          />
         </CardContent>
       </Card>
       </div>
