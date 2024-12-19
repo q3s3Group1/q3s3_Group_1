@@ -80,8 +80,11 @@ export default function CreatePlanDialog(props: Props) {
                         <span className={"text-sm font-semibold"}>Matrijs</span>
                         <select required defaultValue={""} name="mold_id" onChange={updateFormValue}>
                             <option value="" disabled>Selecteer een optie</option>
-                            {molds.map((m, index) => <option value={m.id}
-                                                             key={index}>{m.description}</option>)}
+                            {molds.map((m, index) => <option value={m.mold_id}
+                                                             key={index}>{m.mold_name
+                                                            || m.mold_id
+                                                             }
+                                                             </option>)}
                         </select>
 
                         <span className={"text-sm font-semibold"}>Onderhoudstype</span>

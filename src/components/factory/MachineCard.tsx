@@ -138,8 +138,8 @@ export default function MachineCard({ machine, molds, chartData = [] }: MachineC
               ))
           : molds &&
             molds.map((matrijs) => (
-              <div className="w-full" key={matrijs.id}>
-                <div className="text-sm font-medium mb-2">{matrijs.description}</div>
+              <div className="w-full" key={matrijs.mold_id}>
+                <div className="text-sm font-medium mb-2">{matrijs.mold_name || matrijs.mold_id}</div>
               </div>
             ))}
       </div>
