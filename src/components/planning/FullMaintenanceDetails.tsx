@@ -55,7 +55,7 @@ export default function FullMaintenanceDetails(props: Props) {
             <form onSubmit={handleFormSubmit} className="block w-full h-full z-form">
                 <div className="grid grid-cols-2 gap-4">
                     <span className="block font-semibold">Matrijs</span>
-                    <span>{props.maintenance.mold_description}</span>
+                    <span>{props.maintenance.mold_name || props.maintenance.mold_id  }</span>
 
                     <span className="block font-semibold">Gepland voor</span>
                     <Input onChange={updateFormValue} name="planned_date" type='datetime-local'
@@ -76,9 +76,6 @@ export default function FullMaintenanceDetails(props: Props) {
                         <option value={"Kalibreren"}>Kalibreren</option>
                     </select>
 
-                    <span className="block font-semibold">Beschrijving</span>
-                    <input type={"text"} onChange={updateFormValue} name="description" value={editedForm.description}/>
-
                     <span className="block font-semibold">Toegewezen monteur</span>
                     <select onChange={updateFormValue} value={editedForm.assigned_to} name="assigned_to">
                         <option value="" disabled>Selecteer een optie</option>
@@ -97,7 +94,7 @@ export default function FullMaintenanceDetails(props: Props) {
             <div className="block w-full h-full">
                 <div className="grid grid-cols-2 gap-4">
                     <span className="block font-semibold">Matrijs</span>
-                    <span>{props.maintenance.mold_description}</span>
+                    <span>{props.maintenance.mold_name || props.maintenance.mold_id}</span>
 
                     <span className="block font-semibold">Gepland voor</span>
                     <span>{new Intl.DateTimeFormat("nl", {
@@ -111,8 +108,6 @@ export default function FullMaintenanceDetails(props: Props) {
                     <span className="block font-semibold">Onderhoudsactie</span>
                     <span>{props.maintenance.maintenance_action}</span>
 
-                    <span className="block font-semibold">Beschrijving</span>
-                    <span>{props.maintenance.description}</span>
 
                     <span className="block font-semibold">Toegewezen monteur</span>
                     <span>{props.maintenance.mechanic_name} ({props.maintenance.mechanic_specialization})</span>
