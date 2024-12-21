@@ -25,8 +25,11 @@ export default function NotificationItem({ notification }: NotificationItemProps
 
     useEffect(() => {
         const loadData = async () => {
+        if (notification.board && notification.port) {
+
             const data = await fetchChartData(notification.board, notification.port, startDate, endDate, IntervalType.Hour);
             setChartData(data);
+        }
         };
 
         loadData();

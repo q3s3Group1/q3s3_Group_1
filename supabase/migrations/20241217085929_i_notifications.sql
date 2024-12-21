@@ -1,7 +1,5 @@
 CREATE TABLE i_notifications (
     id SERIAL PRIMARY KEY,
-    board INT NOT NULL,
-    port INT NOT NULL,
     status VARCHAR(50) NOT NULL, -- Bijvoorbeeld: 'offline', 'online', 'error', 'maintenance', 'milestone'
     message TEXT NOT NULL,       -- Omschrijving van de notificatie
     detected_at TIMESTAMP DEFAULT NOW(), -- Tijdstip van detectie

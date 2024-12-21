@@ -3,7 +3,7 @@ import { Notification } from '@/types/supabase';
 
 export const fetchNotifications = async (): Promise<Notification[]> => {
   const { data, error } = await supabase
-    .from('i_notifications')
+    .from('v_notifications')
     .select('*');
 
   if (error) {
@@ -16,7 +16,7 @@ export const fetchNotifications = async (): Promise<Notification[]> => {
 
 export const fetchNotificationsByMachineId = async (machine_id: number): Promise<Notification[]> => {
   const { data, error } = await supabase
-    .from('i_notifications')
+    .from('v_notifications')
     .select('*')
     .eq('machine_id', machine_id);
 
@@ -29,7 +29,7 @@ export const fetchNotificationsByMachineId = async (machine_id: number): Promise
 
 export const fetchNotificationsByMoldId = async (mold_id: number): Promise<Notification[]> => {
   const { data, error } = await supabase
-    .from('i_notifications')
+    .from('v_notifications')
     .select('*')
     .eq('mold_id', mold_id);
 

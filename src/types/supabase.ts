@@ -128,8 +128,8 @@ export enum NotificationStatus {
 
 export interface Notification {
     id: number;
-    board: number;
-    port: number;
+    board: number | null;
+    port: number | null;
 
     status: NotificationStatus;
 
