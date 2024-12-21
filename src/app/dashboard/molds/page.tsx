@@ -64,10 +64,22 @@ export default async function Page() {
             Board - Port
             </TableHead>
 
+            <TableHead>
+            Eerste gebruik
+            </TableHead>
+            
+            <TableHead>
+            Laatst gebruikt
+            </TableHead>
+
           {/* Levensduur */}
           <TableHead>
             Levensduur
             </TableHead>
+
+            
+
+           
 
           
         </TableRow>
@@ -84,6 +96,18 @@ export default async function Page() {
             <TableCell>{
                 mold.board}-{mold.port}</TableCell>
 
+
+            <TableCell>{
+              new Date(mold.first_used).toLocaleDateString(
+                "nl-NL",
+              )
+              }</TableCell>
+            <TableCell>{
+              new Date(mold.last_used).toLocaleDateString(
+                "nl-NL",
+              )
+              
+              }</TableCell>
 
             <TableCell>
 

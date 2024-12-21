@@ -55,8 +55,8 @@ export interface Mold {
     mold_id: number;
     mold_name: string;
 
-    board: number;
-    port: number;
+    board: number | null;
+    port: number | null;
 
     total_shots: number;
     usage_periods: number;
