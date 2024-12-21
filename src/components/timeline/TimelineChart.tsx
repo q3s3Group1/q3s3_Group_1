@@ -15,26 +15,39 @@ import { IntervalType } from '../SelectInterval';
 interface TimelineChartProps {
   data: MachineTimeline[];
   interval: IntervalType;
+
+  hideAxis?: boolean;
+  hideTooltip?: boolean;
+  lineColor?: string;
 }
 
-const TimelineChart: React.FC<TimelineChartProps> = ({ data, interval }) => (
+const TimelineChart: React.FC<TimelineChartProps> = ({ data, interval, hideAxis = false, lineColor = '#3B82F6', hideTooltip = false }) => (
  data && data.length > 0 ? (
   <ResponsiveContainer width="100%" height="100%">
-  <LineChart data={data} margin={{ top: 5, right: 0, bottom: -10, left: 0 }}>
-    <XAxis
+  <LineChart data={data} margin={
+    !hideAxis ? { top: 5, right: 30, left: 20, bottom: 5 } : { top: 0, right: 0, left: 0, bottom: 0 }
+  }>
+    {!hideAxis && (
+      <XAxis
       dataKey="truncated_timestamp"
       tick={{ fontSize: 10 }}
       tickFormatter={(value) => value && formatTimestampToInterval(value, interval)}
-    />
+    /> 
+    )}
+
+    {!hideAxis && (
+     
     <YAxis
       tick={{ fontSize: 10 }}
       tickFormatter={(value) => value.toFixed(0)}
     domain={[0, 5]} />
+    )}
     
     <ReferenceLine y={"5"} stroke="#9CA3AF" strokeDasharray="3 3" />
-    <Line className='z-0 relative' type="monotone" dataKey="total_shots" stroke="#3B82F6" strokeWidth={2} dot={false} />
+    <Line className='z-0 relative' type="monotone" dataKey="total_shots" stroke={lineColor} strokeWidth={2} dot={false} />
 
-    <Tooltip
+    {!hideTooltip && (
+      <Tooltip
       content={({ active, payload }) => {
         if (active && payload && payload.length) {
           return (
@@ -60,6 +73,7 @@ const TimelineChart: React.FC<TimelineChartProps> = ({ data, interval }) => (
         return null;
       }}
     />
+    )}
   </LineChart>
 </ResponsiveContainer>
 ) : (

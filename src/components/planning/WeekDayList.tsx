@@ -78,7 +78,7 @@ export default function WeekDayList(props: Props) {
             {sortedGroups.entries().map(m => (
                 <div key={m[0]} className="flex flex-col gap-2 w-full p-2 bg-blue-50 rounded">
                     <div className={"flex items-center gap-2"}>
-                        <span className="text-sm text-black/90">Groep</span>
+                        <span className="text-sm text-black/90">Route</span>
                         <Group size={17} className={"mr-auto"} />
                         <span className={"text-xs text-black/70"}>{m[1].length} {m[1].length == 1 ? 'item' : 'items'}</span>
                     </div>
