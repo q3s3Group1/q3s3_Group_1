@@ -102,6 +102,7 @@ export default function FactoryOverview() {
 
             <FactoryGrid 
               machines={machines}
+              currentTime={currentTime}
             />
           </div>
         </div>

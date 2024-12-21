@@ -10,12 +10,13 @@ import { fetchMoldsByDateRange } from '@/lib/supabase/fetchMachineMolds';
 
 interface FactoryGridProps {
   machines: Machine[];
+  currentTime: Date;
 }
 
-export default function FactoryGrid({ machines }: FactoryGridProps) {
+export default function FactoryGrid({ machines, currentTime }: FactoryGridProps) {
   const [machineData, setMachineData] = useState<Record<string, { matrijzen: MoldHistory[]; chartData: MachineTimeline[] }>>({});
 
-  const today = new Date("2020-09-05"); 
+  const today = currentTime;
 
   const getStatus = (chartData: MachineTimeline[]) => {
     if (chartData.length === 0) return 'Stilstand';
