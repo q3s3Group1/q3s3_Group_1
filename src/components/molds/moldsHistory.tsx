@@ -21,10 +21,11 @@ interface MoldHistoryProps {
 
     showMold?: boolean;
     showMachine?: boolean;
+    setBoardPort?: (boardPort: { board: number, port: number }) => void;
 }
 
 export const MoldHistoryTable = ({ moldsHistory
-    , setRange, showMold, showMachine
+    , setRange, showMold, showMachine, setBoardPort
  }: MoldHistoryProps) => {
     return (
         <Table>
@@ -87,6 +88,11 @@ export const MoldHistoryTable = ({ moldsHistory
                                             setRange({
                                                 from: new Date(moldHistory.start_date),
                                                 to: new Date(moldHistory.end_date),
+                                            });
+
+                                            setBoardPort && setBoardPort({
+                                                board: moldHistory.board,
+                                                port: moldHistory.port,
                                             });
                                         }}
                                     >

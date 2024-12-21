@@ -288,6 +288,7 @@ const MachinePage = () => {
             showMachine={true}
             showMold={false}
             setRange={setDate}
+            setBoardPort={setBoardPort}
           />
                   </CardContent>
 
