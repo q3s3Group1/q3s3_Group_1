@@ -116,3 +116,30 @@ export interface Maintenance {
     status: "Planned" | "Busy" | "Finished"
     maintenance_action: string
 }
+
+
+export enum NotificationStatus {
+    offline = 'offline',
+    online = 'online',
+    error = 'error',
+    maintenance = 'maintenance',
+    milestone = 'milestone'
+}
+
+export interface Notification {
+    id: number;
+    board?: number;
+    port?: number;
+
+    status: NotificationStatus;
+
+    message: string;
+
+    detected_at: Date;
+    
+    send_sms: boolean;
+
+    sms_sent: boolean;
+
+    read_at?: Date | null;
+}

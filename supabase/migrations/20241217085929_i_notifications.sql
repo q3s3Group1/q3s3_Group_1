@@ -9,5 +9,7 @@ CREATE TABLE i_notifications (
 
 
     -- sms sent success
-    sms_sent BOOLEAN DEFAULT FALSE
+    sms_sent BOOLEAN DEFAULT FALSE,
+
+    read_at TIMESTAMP, -- Tijdstip van lezen
 );
