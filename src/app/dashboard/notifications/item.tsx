@@ -7,6 +7,7 @@ import { addDays } from "date-fns";
 import { IntervalType } from "@/components/SelectInterval";
 import TimelineChart from "@/components/timeline/TimelineChart";
 import { Badge } from "@/components/ui/badge";
+import Link from "next/link";
 
 interface NotificationItemProps {
     notification: Notification;
@@ -39,17 +40,32 @@ export default function NotificationItem({ notification }: NotificationItemProps
             <div className="relative z-20 w-full">
             <div className={notification.read_at ? "opacity-50" : ""}>
                 <Badge color="blue" className="absolute top-2 right-2">{notification.board} - {notification.port}</Badge>
+                <div className="flex flex-col">
+                    {/* Mold_id, machine_id */}
+                    <span className="text-sm">
+                        <Link href={`/machines/${notification.machine_id}`}>
+                               Machine {notification.machine_id}
+                        </Link>
+
+                        <span className="mx-1">-</span>
+
+
+                        <Link href={`/molds/${notification.mold_id}`}>
+                               Matrijs {notification.mold_id}
+                        </Link>
+                    </span>
                 <h3 className="text-lg font-semibold">{notification.message}</h3>
                 <p className="text-sm">{
                     new Date(notification.detected_at).toLocaleString('nl-NL')
                     }</p>
+                </div>
             </div>
             </div>
 
             <div className="absolute top-0 right-0 bottom-0 w-full bg-gradient-to-l from-transparent to-white opacity-50 z-10
             "></div>
 
-            <div className="absolute top-0 right-0 bottom-0 w-full z-0">
+            <div className="absolute top-0 right-0 bottom-0 w-full z-0 opacity-50">
             <TimelineChart data={chartData} interval={IntervalType.Hour} hideAxis hideTooltip lineColor={lineColor} />
 
             </div>

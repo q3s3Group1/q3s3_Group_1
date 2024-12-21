@@ -141,5 +141,8 @@ export interface Notification {
 
     sms_sent: boolean;
 
-    read_at?: Date | null;
+    read_at?: Date;
+
+    mold_id?: number;
+    machine_id?: number;
 }
