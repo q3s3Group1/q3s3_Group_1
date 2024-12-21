@@ -36,15 +36,20 @@ export default function NotificationItem({ notification }: NotificationItemProps
     
     return (
         <div className={`flex items-center p-4 rounded-lg shadow-md relative overflow-hidden border-l-8 cursor-pointer ${getNotificationColor(notification)} hover:border-opacity-80 transition-colors duration-300 hover:shadow-lg`}>
+            <div className="relative z-20 w-full">
             <div className={notification.read_at ? "opacity-50" : ""}>
                 <Badge color="blue" className="absolute top-2 right-2">{notification.board} - {notification.port}</Badge>
                 <h3 className="text-lg font-semibold">{notification.message}</h3>
-                <p className="text-sm">{notification.detected_at.toLocaleString(
-                    "nl-NL",
-                )}</p>
+                <p className="text-sm">{
+                    new Date(notification.detected_at).toLocaleString('nl-NL')
+                    }</p>
+            </div>
             </div>
 
-            <div className="absolute top-0 right-0 bottom-0 w-full">
+            <div className="absolute top-0 right-0 bottom-0 w-full bg-gradient-to-l from-transparent to-white opacity-50 z-10
+            "></div>
+
+            <div className="absolute top-0 right-0 bottom-0 w-full z-0">
             <TimelineChart data={chartData} interval={IntervalType.Hour} hideAxis hideTooltip lineColor={lineColor} />
 
             </div>
