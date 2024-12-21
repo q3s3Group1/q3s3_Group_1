@@ -18,16 +18,34 @@ export default function NotificationTabs({ notifications }: NotificationTabsProp
             <p>No notifications found</p>
         ) : (
 
-            <Tabs className="w-full" defaultValue="all">
+            <Tabs className="w-full" defaultValue="unread">
 
         <TabsList className="flex justify-around w-full">
+            <TabsTrigger value="unread">Ongelezen</TabsTrigger>
              <TabsTrigger value="all">Alle</TabsTrigger>
+             <TabsTrigger value="read">Gelezen</TabsTrigger>
         </TabsList>
 
         <div className="w-full container mx-auto px-2">
         <TabsContent value="all">
             <ul className="grid gap-4">
                 {notifications.map((notification) => (
+                    <NotificationItem key={notification.id} notification={notification} />  
+                ))}
+            </ul>
+        </TabsContent>
+
+        <TabsContent value="unread">
+            <ul className="grid gap-4">
+                {notifications.filter((n) => !n.read_at).map((notification) => (
+                    <NotificationItem key={notification.id} notification={notification} />  
+                ))}
+            </ul>
+        </TabsContent>
+
+        <TabsContent value="read">
+            <ul className="grid gap-4">
+                {notifications.filter((n) => n.read_at).map((notification) => (
                     <NotificationItem key={notification.id} notification={notification} />  
                 ))}
             </ul>
