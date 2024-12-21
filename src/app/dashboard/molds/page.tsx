@@ -48,8 +48,8 @@ export default async function Page() {
     return (
       <>
       <Header
-      title={"Actieve Matrijzen"}
-      description="Dit zijn de matrijzen die op dit moment in gebruik zijn"
+      title={"Levensduur matrijzen"}
+      description="Overzicht van alle matrijzen en hun levensduur"
       />
        <div >
          <Table>
@@ -93,8 +93,13 @@ export default async function Page() {
                 </Link>
               </TableCell>
 
-            <TableCell>{
-                mold.board}-{mold.port}</TableCell>
+            <TableCell>
+              {
+                mold.board && mold.port ? `${mold.board} - ${mold.port}` : (
+                  "N/A"
+                )
+              }
+            </TableCell>
 
 
             <TableCell>{
@@ -106,7 +111,7 @@ export default async function Page() {
               new Date(mold.last_used).toLocaleDateString(
                 "nl-NL",
               )
-              
+
               }</TableCell>
 
             <TableCell>

@@ -29,32 +29,32 @@ const menuItems = [
     label: 'Machines', 
     href: '/dashboard/machines',
     subItems: [
-      { label: 'Overview', href: '/dashboard/machines' },
-      { label: 'Shots Timeline', href: '/dashboard/machines/timeline' },
+      { label: 'Alle machines', href: '/dashboard/machines' },
+      { label: 'Historische data', href: '/dashboard/machines/timeline' },
     ]
   },
   // Molds
   { 
     icon: Shield, 
-    label: 'Molds', 
+    label: 'Matrijzen', 
     href: '/dashboard/molds',
     subItems: [
-      { label: 'All molds', href: '/dashboard/molds' },
+      { label: 'Levensduur', href: '/dashboard/molds' },
     ]
   },
   {
     icon: Wrench,
-    label: 'Maintenance',
+    label: 'Onderhoud',
     href: '/dashboard/maintenance',
     subItems: [
-      { label: 'Calendar', href: '/dashboard/maintenance' },
-      { label: 'Mechanics', href: '/dashboard/maintenance/mechanics' },
-      { label: 'Preventive planning', href: '/dashboard/maintenance/milestones' },
+      { label: 'Kalender', href: '/dashboard/maintenance' },
+      { label: 'Monteurs', href: '/dashboard/maintenance/mechanics' },
+      { label: 'Preventieve planning', href: '/dashboard/maintenance/milestones' },
     ]
   },
   { 
     icon: Bell, 
-    label: 'Notifications', 
+    label: 'Meldingen', 
     href: '/dashboard/notifications',
     badge: 3
   },

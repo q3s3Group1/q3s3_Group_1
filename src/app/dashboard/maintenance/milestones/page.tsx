@@ -2,6 +2,7 @@ import { fetchMolds } from "@/lib/supabase/fetchMolds";
 import Header from "../../header";
 import { MilestoneTable } from "./table";
 import { fetchMilestones } from "@/lib/supabase/milestones";
+import { Button } from "@/components/ui/button";
 
 // Get all molds
 
@@ -10,18 +11,24 @@ export default async function Page() {
     const molds = await fetchMolds();
 
     const milestones = await fetchMilestones();
+
     
     return (
         <div>
            <Header
-              title={"Milestones"}   
-                description={"Plan hier bij welke total shot milestones onderhoud nodig is."}
-              />
+              title={"Preventieve onderhoudsplanning"} 
+                description={"Alle preventieve onderhoudsplanningen voor matrijzen"}
+            >
+                <Button>
+                    Nieuwe onderhoudsbeurt toevoegen
+                </Button>
+            </Header>
 
             {/* All molds and its milestones, and a way to add a new one */}
             <div className="flex flex-col">
                 <MilestoneTable
                     milestones={milestones}
+                    molds={molds}
                     />
             </div>
         </div>
