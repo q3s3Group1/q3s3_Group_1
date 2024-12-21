@@ -43,14 +43,14 @@ export default function NotificationItem({ notification }: NotificationItemProps
                 <div className="flex flex-col">
                     {/* Mold_id, machine_id */}
                     <span className="text-sm">
-                        <Link href={`/machines/${notification.machine_id}`}>
+                        <Link href={`/dashboard/machines/${notification.machine_id}`}>
                                Machine {notification.machine_id}
                         </Link>
 
                         <span className="mx-1">-</span>
 
 
-                        <Link href={`/molds/${notification.mold_id}`}>
+                        <Link href={`/dashboard/molds/${notification.mold_id}`}>
                                Matrijs {notification.mold_id}
                         </Link>
                     </span>

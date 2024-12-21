@@ -24,11 +24,6 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import Link from 'next/link'
 
 const menuItems = [
-  // { 
-  //   icon: Home, 
-  //   label: 'Dashboard', 
-  //   href: '/dashboard' 
-  // },
   { 
     icon: Cpu, 
     label: 'Machines', 
@@ -52,18 +47,17 @@ const menuItems = [
     label: 'Maintenance',
     href: '/dashboard/maintenance',
     subItems: [
-      { label: 'Planning', href: '/dashboard/maintenance' },
+      { label: 'Calendar', href: '/dashboard/maintenance' },
       { label: 'Mechanics', href: '/dashboard/maintenance/mechanics' },
-      // Milestones
-      { label: 'Milestones', href: '/dashboard/maintenance/milestones' },
+      { label: 'Preventive planning', href: '/dashboard/maintenance/milestones' },
     ]
   },
-  // { 
-  //   icon: Bell, 
-  //   label: 'Alerts', 
-  //   href: '/dashboard/alerts',
-  //   badge: 3
-  // },
+  { 
+    icon: Bell, 
+    label: 'Notifications', 
+    href: '/dashboard/notifications',
+    badge: 3
+  },
 ]
 
 export function AppSidebar() {
@@ -97,11 +91,11 @@ export function AppSidebar() {
                       <item.icon className="h-5 w-5" />
                       <span>{item.label}</span>
                     </div>
-                    {/* {item.badge && (
+                    {item.badge && (
                       <Badge variant="destructive" className="ml-auto">
                         {item.badge}
                       </Badge>
-                    )} */}
+                    )}
                   </Link>
                 </SidebarMenuButton>
                 {item.subItems && (

@@ -15,7 +15,7 @@ import {
   ChartContainer,
 } from "@/components/ui/chart";
 import { fetchChartData } from "@/lib/supabase/fetchMachineTimelines";
-import { MachineTimeline, MaintenanceFull, Mold, MoldHistory } from "@/types/supabase";
+import { MachineTimeline, MaintenanceFull, Mold, MoldHistory, Notification } from "@/types/supabase";
 import { SelectStartEndDate } from "@/components/SelectStartEndDate";
 import { DateRange } from "react-day-picker";
 import { fetchMaintenanceByMoldId } from "@/lib/supabase/fetchAllMaintenance";
@@ -24,6 +24,8 @@ import Header from "../../header";
 import { IntervalType, SelectInterval } from "@/components/SelectInterval";
 import { fetchMoldHistoryByMoldId } from "@/lib/supabase/fetchMoldHistory";
 import { MoldHistoryTable } from "@/components/molds/moldsHistory";
+import NotificationTabs from "../../notifications/tabs";
+import { fetchNotificationsByMoldId } from "@/lib/supabase/notification";
 
 export interface BoardPort {
   board: number;
@@ -39,6 +41,8 @@ const MachinePage = () => {
 
   const [moldsHistory, setMoldsHistory] = useState<MoldHistory[]>([]);
 
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+
   // board and port
   const [boardPort, setBoardPort] = useState<BoardPort | null>(null);
   
@@ -52,6 +56,14 @@ const MachinePage = () => {
     from: new Date(2020, 8, 0),
     to: new Date(2020, 8, 20),
   })
+
+  useEffect(() => {
+    // notifcations
+    fetchNotificationsByMoldId(parseInt(id as string)).then((data) => {
+      setNotifications(data);
+    });
+  }
+  , [id]);
 
 
 
@@ -155,6 +167,8 @@ const MachinePage = () => {
     loadData();
   }, [boardPort, date, interval]);
 
+  
+
 
   if (!mold) {
     return <div>Loading...</div>;
@@ -240,6 +254,17 @@ const MachinePage = () => {
       </CardContent>
 
       <div className="container px-4 mx-auto flex flex-col gap-4">
+      <Card>
+        <CardHeader>
+                  <CardTitle>Notifications</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+            <NotificationTabs notifications={
+              notifications
+            } />
+            </CardContent>
+          </Card>
+          
         <Card>
         <CardHeader className="flex items-center justify-between gap-2 space-y-0 border-b py-5 sm:flex-row">
         <div className="grid flex-1 gap-1 text-center sm:text-left">
@@ -292,7 +317,11 @@ const MachinePage = () => {
           />
                   </CardContent>
 
+          
+
         </Card>
+
+        
       </div>
     </div>
     </>

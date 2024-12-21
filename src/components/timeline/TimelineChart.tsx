@@ -25,7 +25,7 @@ const TimelineChart: React.FC<TimelineChartProps> = ({ data, interval, hideAxis 
  data && data.length > 0 ? (
   <ResponsiveContainer width="100%" height="100%">
   <LineChart data={data} margin={
-    !hideAxis ? { top: 5, right: 30, left: 20, bottom: 5 } : { top: 0, right: 0, left: 0, bottom: 0 }
+    !hideAxis ? { top: 1, right: 0, left: 0, bottom: -10 } : { top: 0, right: 0, left: 0, bottom: 0 }
   }>
     {!hideAxis && (
       <XAxis

@@ -13,24 +13,30 @@ interface NotificationTabsProps {
 
 export default function NotificationTabs({ notifications }: NotificationTabsProps) {
     return (
-           <Tabs className="w-full" defaultValue="all">
+        <>
+        {notifications.length === 0 ? (
+            <p>No notifications found</p>
+        ) : (
 
-                <TabsList className="flex justify-around w-full">
-                     <TabsTrigger value="all">Alle</TabsTrigger>
-                </TabsList>
-    
-                <div className="w-full container mx-auto px-2">
-                <TabsContent value="all">
-                    <ul className="grid gap-4">
-                        {notifications.map((notification) => (
-                            <NotificationItem key={notification.id} notification={notification} />  
-                        ))}
-                    </ul>
-                </TabsContent>
+            <Tabs className="w-full" defaultValue="all">
 
-                </div>
+        <TabsList className="flex justify-around w-full">
+             <TabsTrigger value="all">Alle</TabsTrigger>
+        </TabsList>
 
-            </Tabs>
+        <div className="w-full container mx-auto px-2">
+        <TabsContent value="all">
+            <ul className="grid gap-4">
+                {notifications.map((notification) => (
+                    <NotificationItem key={notification.id} notification={notification} />  
+                ))}
+            </ul>
+        </TabsContent>
+
+        </div>
+
+    </Tabs>
+        )}</>
 
             
     );

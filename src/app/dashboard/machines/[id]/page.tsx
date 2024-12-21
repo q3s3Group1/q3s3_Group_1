@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/chart";
 import { fetchMachine } from "@/lib/supabase/fetchMachines";
 import { fetchChartData } from "@/lib/supabase/fetchMachineTimelines";
-import { Machine, MachineTimeline, Mold, MoldHistory } from "@/types/supabase";
+import { Machine, MachineTimeline, Mold, MoldHistory, Notification } from "@/types/supabase";
 import StatusIndicator from "@/components/timeline/StatusIndicator";
 import { SelectStartEndDate } from "@/components/SelectStartEndDate";
 import { DateRange } from "react-day-picker";
@@ -35,6 +35,8 @@ import Header from "../../header";
 import { IntervalType, SelectInterval } from "@/components/SelectInterval";
 import { fetchMoldHistoryByBoardPort } from "@/lib/supabase/fetchMoldHistory";
 import { MoldHistoryTable } from "../../../../components/molds/moldsHistory";
+import { fetchNotificationsByMachineId } from "@/lib/supabase/notification";
+import NotificationTabs from "../../notifications/tabs";
 
 
 const chartConfig: ChartConfig = {
@@ -46,6 +48,9 @@ const MachinePage = () => {
   const { id } = useParams();
   const [machine, setMachine] = useState<Machine | null>(null);
   const [chartData, setChartData] = useState<MachineTimeline[]>([]);
+
+    const [notifications, setNotifications] = useState<Notification[]>([]);
+  
   // molds
   const [moldsHistory, setMoldsHistory] = useState<MoldHistory[]>([]);
   // set interval
@@ -57,6 +62,13 @@ const MachinePage = () => {
     from: new Date(2020, 8, 0),
     to: new Date(2020, 8, 20),
   })
+
+  useEffect(() => {
+    fetchNotificationsByMachineId(parseInt(id as string)).then((data) => {
+      setNotifications(data);
+    });
+  }
+  , [id]);
 
 
 
@@ -223,7 +235,18 @@ const MachinePage = () => {
         </ChartContainer>
       </CardContent>
 
-      <div className="p-4 container mx-auto">
+      <div className="p-4 container mx-auto grid gap-2">
+        <Card>
+                <CardHeader>
+                          <CardTitle>Notifications</CardTitle>
+                          </CardHeader>
+                          <CardContent>
+                    <NotificationTabs notifications={
+                      notifications
+                    } />
+                    </CardContent>
+                  </Card>
+
       <Card>
         <CardHeader>
         <CardTitle>Molds History</CardTitle>
