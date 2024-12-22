@@ -39,3 +39,18 @@ export const fetchNotificationsByMoldId = async (mold_id: number): Promise<Notif
 
   return data || [];
 };
+
+// Mark as read
+export const markAsRead = async (id: number) => {
+  const { error } = await supabase
+    .from('i_notifications')
+    .update({ read_at: new Date() })
+    .eq('id', id);
+
+    // log response
+    console.log('markAsRead', { error });
+
+  if (error) {
+    throw new Error(`Error marking notification as read: ${error.message}`);
+  }
+};

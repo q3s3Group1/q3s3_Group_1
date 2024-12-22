@@ -38,6 +38,7 @@ export default function Rows({ machines }: RowsProps) {
 <SelectInterval
             interval={interval}
             setInterval={setInterval}
+            date={date}
 
           />
           

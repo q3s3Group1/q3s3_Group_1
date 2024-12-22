@@ -47,7 +47,7 @@ export function getNotificationHex(notification: Notification) {
             color = "#FF0000";
             break;
         case NotificationStatus.online:
-            color = "#00FF00";
+            color = "#5ec269";
             break;
         case NotificationStatus.error:
             color = "#FF0000";

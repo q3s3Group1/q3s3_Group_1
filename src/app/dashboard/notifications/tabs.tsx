@@ -1,3 +1,4 @@
+"use client";
 import { Notification } from "@/types/supabase";
 import {
     Tabs,
@@ -6,12 +7,24 @@ import {
     TabsTrigger,
   } from "@/components/ui/tabs"
 import NotificationItem from "./item";
+import { useEffect, useState } from "react";
+import { markAsRead } from "@/lib/supabase/notification";
+
+
 
 interface NotificationTabsProps {
     notifications: Notification[];
 }
 
-export default function NotificationTabs({ notifications }: NotificationTabsProps) {
+export default function NotificationTabs(props: NotificationTabsProps) {
+    const [notifications, setNotifications] = useState<Notification[]>(props.notifications);
+
+    useEffect(() => {
+        setNotifications(props.notifications);
+    }
+    , [props.notifications]);
+
+
     return (
         <>
         {notifications.length === 0 ? (
@@ -30,7 +43,22 @@ export default function NotificationTabs({ notifications }: NotificationTabsProp
         <TabsContent value="all">
             <ul className="grid gap-4">
                 {notifications.map((notification) => (
-                    <NotificationItem key={notification.id} notification={notification} />  
+                    <NotificationItem key={notification.id} notification={notification} onClick={
+                        () => {
+                            markAsRead(notification.id).then(() => {
+                                setNotifications(notifications.map((n) => {
+                                    if (n.id === notification.id) {
+                                        return {
+                                            ...n,
+                                            read_at: new Date()
+                                        }
+                                    }
+                                    return n;
+                                }))
+                            }
+                            )
+                        }
+                    }/>  
                 ))}
             </ul>
         </TabsContent>

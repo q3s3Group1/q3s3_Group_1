@@ -2,7 +2,16 @@
 
 import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { Line, LineChart, ReferenceLine, Tooltip, XAxis, YAxis } from "recharts";
+import { Bar, BarChart, CartesianGrid, Line, XAxis, YAxis } from "recharts"
+ 
+import {
+  ChartConfig,
+  ChartContainer,
+  ChartLegend,
+  ChartLegendContent,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "@/components/ui/chart"
 import {
   Card,
   CardContent,
@@ -10,10 +19,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  ChartConfig,
-  ChartContainer,
-} from "@/components/ui/chart";
 import { fetchChartData } from "@/lib/supabase/fetchMachineTimelines";
 import { MachineTimeline, MaintenanceFull, Mold, MoldHistory, Notification } from "@/types/supabase";
 import { SelectStartEndDate } from "@/components/SelectStartEndDate";
@@ -26,6 +31,7 @@ import { fetchMoldHistoryByMoldId } from "@/lib/supabase/fetchMoldHistory";
 import { MoldHistoryTable } from "@/components/molds/moldsHistory";
 import NotificationTabs from "../../notifications/tabs";
 import { fetchNotificationsByMoldId } from "@/lib/supabase/notification";
+import { LineChart } from "lucide-react";
 
 export interface BoardPort {
   board: number;
@@ -47,7 +53,7 @@ const MachinePage = () => {
   const [boardPort, setBoardPort] = useState<BoardPort | null>(null);
   
   // set interval
-  const [interval, setInterval] = useState<IntervalType>(IntervalType.Hour);
+  const [interval, setInterval] = useState<IntervalType>(IntervalType.Day);
 
   // reference line
   const [referenceLine, setReferenceLine] = useState<number | undefined>();
@@ -198,6 +204,7 @@ const MachinePage = () => {
         
        <SelectInterval
          interval={interval}
+         date={date}
          setInterval={setInterval}
         />
 
@@ -210,46 +217,26 @@ const MachinePage = () => {
           }
           className="aspect-auto h-[250px] w-full"
         >
-              <LineChart
-                data={chartData}
-                margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                >
-                 
-                <XAxis
-                  dataKey="truncated_timestamp"
-                  tick={{ fontSize: 10 }}
-                  tickFormatter={(value) => value && new Date(value).toLocaleString(
-                    'nl-NL',
-                    {
-                      day: '2-digit',
-                      month: '2-digit',
-                      hour: '2-digit',
-                      minute: '2-digit',
-                    }
-                  )}
-                />
-                <YAxis
-                  tick={{ fontSize: 10 }}
-                  tickFormatter={(value) => value.toFixed(0)}
-                  domain={[0, 5]}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="total_shots"
-                  stroke="#3B82F6"
-                  strokeWidth={2}
-                  dot={false}
-                  
-                />
-                 <ReferenceLine y={referenceLine} stroke="black" 
-                  label={{ position: 'insideBottomLeft', value: `Avg. ${referenceLine?.toFixed(0)} Shots / ${interval}`, fill: 'black', fontSize: 12 }} />
-                  <Tooltip
-                  formatter={(value) => value.toLocaleString("nl-NL", {
-                    maximumFractionDigits: 0,
-                    
-                  })}
-                  />
-                </LineChart>
+              <BarChart accessibilityLayer data={chartData}>
+        <CartesianGrid vertical={false} />
+        <XAxis
+          dataKey="truncated_timestamp"
+          tickLine={false}
+          tickMargin={10}
+          axisLine={false}
+          // Format to the week, so eg 2021-01-01 - 2021-01-07
+          tickFormatter={(value) => value && new Date(value).toLocaleDateString("nl-NL")}
+        />
+        <YAxis
+          tickLine={false}
+          tickMargin={10}
+          axisLine={false}
+          domain={[0, 100]}
+        />
+        <ChartTooltip  content={<ChartTooltipContent />} 
+        />
+        <Bar dataKey="total_shots" fill="var(--color-desktop)" radius={4} />
+      </BarChart>
         </ChartContainer>
       </CardContent>
 
@@ -264,7 +251,7 @@ const MachinePage = () => {
             } />
             </CardContent>
           </Card>
-          
+
         <Card>
         <CardHeader className="flex items-center justify-between gap-2 space-y-0 border-b py-5 sm:flex-row">
         <div className="grid flex-1 gap-1 text-center sm:text-left">

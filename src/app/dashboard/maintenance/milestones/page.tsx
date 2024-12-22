@@ -3,6 +3,7 @@ import Header from "../../header";
 import { MilestoneTable } from "./table";
 import { fetchMilestones } from "@/lib/supabase/milestones";
 import { Button } from "@/components/ui/button";
+import MilestoneSheet from "./sheet";
 
 // Get all molds
 
@@ -19,9 +20,7 @@ export default async function Page() {
               title={"Preventieve onderhoudsplanning"} 
                 description={"Alle preventieve onderhoudsplanningen voor matrijzen"}
             >
-                <Button>
-                    Nieuwe onderhoudsbeurt toevoegen
-                </Button>
+                <MilestoneSheet molds={molds} />
             </Header>
 
             {/* All molds and its milestones, and a way to add a new one */}

@@ -11,11 +11,12 @@ import Link from "next/link";
 
 interface NotificationItemProps {
     notification: Notification;
+    onClick?: () => void;
 }
 
 
 
-export default function NotificationItem({ notification }: NotificationItemProps) {
+export default function NotificationItem({ notification, onClick }: NotificationItemProps) {
     const [chartData, setChartData] = useState<MachineTimeline[]>([]);
 
     const startDate = new Date(notification.detected_at);
@@ -39,7 +40,11 @@ export default function NotificationItem({ notification }: NotificationItemProps
 
     
     return (
-        <div className={`flex items-center p-4 rounded-lg shadow-md relative overflow-hidden border-l-8 cursor-pointer ${getNotificationColor(notification)} hover:border-opacity-80 transition-colors duration-300 hover:shadow-lg`}>
+        <div className={`flex items-center p-4 rounded-lg shadow-md relative overflow-hidden border-l-8 cursor-pointer ${getNotificationColor(notification)} hover:border-opacity-80 transition-colors duration-300 hover:shadow-lg`}
+        onClick={
+            onClick
+        }
+            >
             <div className="relative z-20 w-full">
             <div className={notification.read_at ? "opacity-50" : ""}>
                 <Badge color="blue" className="absolute top-2 right-2">{notification.board} - {notification.port}</Badge>
