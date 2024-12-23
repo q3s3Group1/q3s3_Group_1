@@ -13,7 +13,7 @@
 
 ## Requirements
 - Docker
-- Supabase CLI
+- Supabase CLI (of `npx supabase` gebruiken)
 
 ## Setup
 1. cd supabase
