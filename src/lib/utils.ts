@@ -1,4 +1,5 @@
-import { IntervalType } from "@/components/SelectInterval";
+import { IntervalType } from '@/types/enum';
+
 import {type ClassValue, clsx} from "clsx"
 import {twMerge} from "tailwind-merge"
 

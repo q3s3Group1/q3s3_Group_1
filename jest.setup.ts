@@ -1,1 +1,4 @@
-import '@testing-library/jest-dom'; // For DOM assertions (if testing React components)
+
+import dotenv from 'dotenv';
+
+dotenv.config({ path: '.env' }); // Explicitly load .env file

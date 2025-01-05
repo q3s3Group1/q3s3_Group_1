@@ -10,14 +10,8 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { DateRange } from "react-day-picker"
+import { IntervalType } from "@/types/enum";
 
-export enum IntervalType {
-  Minute = "minute",
-  FiveMinutes = "5 minute",
-  Hour = "hour",
-  Day = "day",
-  Week = "week",
-}
 
 interface SelectIntervalProps {
   interval: IntervalType,

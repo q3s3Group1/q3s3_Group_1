@@ -2,13 +2,13 @@ import type { Config } from 'jest';
 
 const config: Config = {
   preset: 'ts-jest',
-  testEnvironment: 'jsdom', // Use 'node' for backend-only tests
+  testEnvironment: 'jsdom',
   moduleDirectories: ['node_modules', 'src'],
   moduleNameMapper: {
-    '^@/(.*)$': 'src/$1', // Adjust for alias paths like "@/components"
+    '^@/(.*)$': '<rootDir>/src/$1',
   },
-//   setupFilesAfterEnv: ['jest.setup.ts'], // Optional, for global setup
-  testPathIgnorePatterns: ['.next/', 'node_modules/'], // Ignore build files
+  roots: ['<rootDir>/tests'], // Ensure Jest searches the right paths
+    setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
 };
 
 export default config;

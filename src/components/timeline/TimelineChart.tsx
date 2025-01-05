@@ -10,7 +10,7 @@ import {
   ReferenceLine,
   ResponsiveContainer,
 } from 'recharts';
-import { IntervalType } from '../SelectInterval';
+import { IntervalType } from '@/types/enum';
 
 interface TimelineChartProps {
   data: MachineTimeline[];

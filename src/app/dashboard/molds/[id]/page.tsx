@@ -26,7 +26,9 @@ import { DateRange } from "react-day-picker";
 import { fetchMaintenanceByMoldId } from "@/lib/supabase/fetchAllMaintenance";
 import { fetchMold } from "@/lib/supabase/fetchMolds";
 import Header from "../../header";
-import { IntervalType, SelectInterval } from "@/components/SelectInterval";
+import { IntervalType } from "@/types/enum";
+
+import { SelectInterval } from "@/components/SelectInterval";
 import { fetchMoldHistoryByMoldId } from "@/lib/supabase/fetchMoldHistory";
 import { MoldHistoryTable } from "@/components/molds/moldsHistory";
 import NotificationTabs from "../../notifications/tabs";

@@ -7,7 +7,8 @@ import { SelectStartEndDate } from "@/components/SelectStartEndDate";
 import { useState } from "react";
 import { DateRange } from "react-day-picker";
 import { addDays } from "date-fns";
-import { IntervalType, SelectInterval } from "@/components/SelectInterval";
+import {  SelectInterval } from "@/components/SelectInterval";
+import { IntervalType } from "@/types/enum";
 
 interface RowsProps {
     machines: Machine[];

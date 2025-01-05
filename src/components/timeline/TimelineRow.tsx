@@ -6,7 +6,7 @@ import { Machine, MachineTimeline } from '@/types/supabase';
 import { fetchChartData } from '@/lib/supabase/fetchMachineTimelines';
 import { Card } from '../ui/card';
 import { DateRange } from 'react-day-picker';
-import { IntervalType } from '../SelectInterval';
+import { IntervalType } from '@/types/enum';
 
 interface TimelineRowProps {
   machine: Machine;

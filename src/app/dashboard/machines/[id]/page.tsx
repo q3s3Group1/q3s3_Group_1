@@ -32,11 +32,13 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import Header from "../../header";
-import { IntervalType, SelectInterval } from "@/components/SelectInterval";
+import { SelectInterval } from "@/components/SelectInterval";
 import { fetchMoldHistoryByBoardPort } from "@/lib/supabase/fetchMoldHistory";
 import { MoldHistoryTable } from "../../../../components/molds/moldsHistory";
 import { fetchNotificationsByMachineId } from "@/lib/supabase/notification";
 import NotificationTabs from "../../notifications/tabs";
+import { IntervalType } from "@/types/enum";
+
 
 const chartConfig = {
   // red

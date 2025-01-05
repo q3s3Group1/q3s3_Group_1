@@ -1,6 +1,6 @@
 import { supabase } from './client';
 import { MachineTimeline } from '../../types/supabase';
-import { IntervalType } from '@/components/SelectInterval';
+import { IntervalType } from '@/types/enum';
 
 
 export const fetchChartData = async (
