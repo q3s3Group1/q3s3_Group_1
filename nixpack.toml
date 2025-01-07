@@ -5,5 +5,4 @@ cmd = "npm install --force && npm run build"
 cmd = "npm start"
 
 [packages]
-# Add the nodejs package for Nix
 packages = ["nodejs"]
