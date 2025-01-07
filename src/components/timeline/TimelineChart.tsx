@@ -43,15 +43,12 @@ const TimelineChart: React.FC<TimelineChartProps> = ({ data, interval, hideAxis 
     domain={[0, 5]} />
     )}
     
-    <ReferenceLine y={"5"} stroke="#9CA3AF" strokeDasharray="3 3" />
-    <Line className='z-0 relative' type="monotone" dataKey="total_shots" stroke={lineColor} strokeWidth={2} dot={false} />
-
     {!hideTooltip && (
       <Tooltip
       content={({ active, payload }) => {
         if (active && payload && payload.length) {
           return (
-            <div className="bg-white fixed left-0 p-2 z-50 rounded-lg shadow-md">
+            <div className="bg-white aboslu left-0 p-2 z-50 rounded-lg shadow-md">
               <p className="text-sm text-gray-500">
                 {
                   payload[0].payload.truncated_timestamp ? new Date(payload[0].payload.truncated_timestamp).toLocaleString(
@@ -74,6 +71,9 @@ const TimelineChart: React.FC<TimelineChartProps> = ({ data, interval, hideAxis 
       }}
     />
     )}
+    <ReferenceLine y={"5"} stroke="#9CA3AF" strokeDasharray="3 3" />
+    <Line className='z-0 relative' type="monotone" dataKey="total_shots" stroke={lineColor} strokeWidth={2} dot={false} />
+
   </LineChart>
 </ResponsiveContainer>
 ) : (

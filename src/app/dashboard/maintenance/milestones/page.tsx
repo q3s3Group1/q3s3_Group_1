@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { fetchMolds } from "@/lib/supabase/fetchMolds";
 import Header from "../../header";
 import { MilestoneTable } from "./table";
