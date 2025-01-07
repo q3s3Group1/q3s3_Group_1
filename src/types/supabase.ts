@@ -54,6 +54,7 @@ export interface Group {
 export interface Mold {
     mold_id: number;
     mold_name: string;
+    mold_description: string;
 
     board: number | null;
     port: number | null;

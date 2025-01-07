@@ -38,3 +38,11 @@ body {
 .z-form input, textarea, select {
     @apply block p-3 rounded-lg h-12 border
 }
+
+.method-btn {
+    @apply block p-3 text-center bg-neutral-200 rounded-xl text-sm
+}
+
+.method-btn-select {
+    @apply bg-blue-400 text-neutral-50
+}
