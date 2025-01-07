@@ -16,6 +16,7 @@ import { IntervalType } from "@/types/enum";
 interface SelectIntervalProps {
   interval: IntervalType,
   date?: DateRange,
+  setDate: React.Dispatch<React.SetStateAction<DateRange | undefined>>,
     setInterval: React.Dispatch<React.SetStateAction<IntervalType>>,
     }
 

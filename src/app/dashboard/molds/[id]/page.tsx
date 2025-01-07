@@ -208,6 +208,7 @@ const MachinePage = () => {
          interval={interval}
          date={date}
          setInterval={setInterval}
+         setDate={setDate}
         />
 
        </div>

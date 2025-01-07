@@ -40,6 +40,7 @@ export default function Rows({ machines }: RowsProps) {
             interval={interval}
             setInterval={setInterval}
             date={date}
+            setDate={setDate}
 
           />
           

@@ -34,14 +34,16 @@ BEGIN
         intervals
     LEFT JOIN v_monitoring_data v
     ON
-        CASE 
-            WHEN interval_input = 'minute' THEN DATE_TRUNC('minute', v.timestamp)
-            WHEN interval_input = '5 minute' THEN DATE_TRUNC('minute', v.timestamp) -
-                INTERVAL '1 minute' * (EXTRACT(MINUTE FROM v.timestamp) % 5)
-            WHEN interval_input = 'hour' THEN DATE_TRUNC('hour', v.timestamp)
-            WHEN interval_input = 'day' THEN DATE_TRUNC('day', v.timestamp)
-            WHEN interval_input = 'week' THEN DATE_TRUNC('week', v.timestamp)
-        END = intervals.truncated_timestamp
+        DATE_TRUNC(
+            CASE 
+                WHEN interval_input = 'minute' THEN 'minute'
+                WHEN interval_input = '5 minute' THEN 'minute'
+                WHEN interval_input = 'hour' THEN 'hour'
+                WHEN interval_input = 'day' THEN 'day'
+                WHEN interval_input = 'week' THEN 'week'
+            END, v.timestamp AT TIME ZONE 'UTC'
+        ) = intervals.truncated_timestamp
+        AND (interval_input != '5 minute' OR EXTRACT(MINUTE FROM v.timestamp) % 5 = 0)
         AND v.board = board_input
         AND v.port = port_input
     GROUP BY

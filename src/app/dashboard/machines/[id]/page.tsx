@@ -148,7 +148,7 @@ const MachinePage = () => {
               className="w-min"
             />
 
-            <SelectInterval interval={interval} setInterval={setInterval} />
+            <SelectInterval setDate={setDate} interval={interval} setInterval={setInterval} />
           </div>
         </CardHeader>
         <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">

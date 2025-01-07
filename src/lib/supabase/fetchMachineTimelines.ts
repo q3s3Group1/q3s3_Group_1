@@ -11,7 +11,9 @@ export const fetchChartData = async (
 ): Promise<MachineTimeline[]> => {
   // Normalize startDate and endDate to midnight UTC
   const normalizedStart = new Date(Date.UTC(startDate.getFullYear(), startDate.getMonth(), startDate.getDate()));
-  const normalizedEnd = new Date(Date.UTC(endDate.getFullYear(), endDate.getMonth(), endDate.getDate(), 23, 59, 59));
+  const normalizedEnd = new Date(Date.UTC(endDate.getFullYear(), endDate.getMonth(), endDate.getDate(), 0, 0, 0));
+
+
 
   // Call the Supabase stored procedure
   const { data, error } = await supabase.rpc('get_monitoring_intervals', {
