@@ -41,7 +41,7 @@ export function getNotificationColor(notification: Notification) {
 export function getNotificationHex(notification: Notification) {
     const type = notification.status;
 
-    var color = "#000000";
+    let color = "#000000";
     switch (type) {
         case NotificationStatus.offline:
             color = "#FF0000";
