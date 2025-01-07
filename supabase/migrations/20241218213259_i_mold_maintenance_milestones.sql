@@ -4,7 +4,9 @@ CREATE TABLE i_mold_maintenance_milestones (
     mold_id INT NOT NULL, -- Verwijzing naar de mold_id
     milestone_shots INT NOT NULL, -- Aantal shots waarop onderhoud nodig is
     maintenance_type VARCHAR(255) NOT NULL, -- Type onderhoud
+    
     send_sms BOOLEAN NOT NULL DEFAULT FALSE, -- SMS sturen?
+    sms_sent BOOLEAN NOT NULL DEFAULT FALSE, -- SMS verstuurd?
 
     -- Defaulted
     created_at TIMESTAMP DEFAULT NOW(), -- Tijdstip van aanmaak

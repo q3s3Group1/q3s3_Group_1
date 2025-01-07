@@ -46,10 +46,12 @@ export const MilestoneTable = ({
                     <TableHead>
                         SMS versturen
                     </TableHead>
-                    
+
+
                     <TableHead>
-                       Bij shots / totaal shots
+                       Milestone / Total shots
                     </TableHead>
+
 
 
                    
@@ -99,6 +101,7 @@ export const MilestoneTable = ({
                                 <TableCell>
                                     <MilestoneStatus milestone={milestone} mold={mold} />
                                 </TableCell>
+
 
 
                                 

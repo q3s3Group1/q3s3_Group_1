@@ -9,8 +9,10 @@ interface MilestoneStatusProps {
 
 export const MilestoneStatus = ({ milestone, mold }: MilestoneStatusProps) => {
     // progress
-    const progress = (mold.total_shots / milestone.milestone_shots) * 100;
-
+    let progress = (mold.total_shots / milestone.milestone_shots) * 100;
+    
+    // if progress is over 100 return 100
+    progress = progress > 100 ? 100 : progress;
     return (
         <div className="flex flex-col items-start space-y-2">
             <div className="flex items-center space-x-2">
@@ -21,8 +23,9 @@ export const MilestoneStatus = ({ milestone, mold }: MilestoneStatusProps) => {
                         <XIcon size={24} color="red" />
                     )
                 }
-                <span>{milestone.milestone_shots} / {mold.total_shots}</span>
+                <span>{mold.total_shots} / {milestone.milestone_shots}</span>
             </div>
+
             <Progress value={progress} />
         </div>
     )
