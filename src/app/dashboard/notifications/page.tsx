@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { fetchNotifications } from "@/lib/supabase/notification";
 import Header from "../header";
 import NotificationTabs from "./tabs";

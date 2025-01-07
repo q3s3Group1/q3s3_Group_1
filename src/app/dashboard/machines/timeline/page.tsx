@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import TimelineLegend from "@/components/timeline/TimelineLegend";
 import TimelineRow from "@/components/timeline/TimelineRow";
 import { fetchMachines } from "@/lib/supabase/fetchMachines";

@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 
 import { fetchMachines } from "@/lib/supabase/fetchMachines";
 import {
