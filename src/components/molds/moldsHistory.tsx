@@ -11,6 +11,7 @@ import {
 
 import { MoldHistory } from "@/types/supabase";
 import Link from "next/link";
+import { useEffect } from "react";
 import { DateRange } from "react-day-picker";
 
 // Props
@@ -27,6 +28,20 @@ interface MoldHistoryProps {
 export const MoldHistoryTable = ({ moldsHistory
     , setRange, showMold, showMachine, setBoardPort
  }: MoldHistoryProps) => {
+
+  useEffect(() => {
+    // get the most recent mold history
+  const mostRecentMoldHistory = moldsHistory[0];
+
+  // set the range to the most recent mold history
+  mostRecentMoldHistory && setRange && setRange({
+    from: new Date(mostRecentMoldHistory.start_date),
+    to: new Date(mostRecentMoldHistory.end_date),
+  });
+}
+, [moldsHistory]);
+
+
     return (
       <Table>
         <TableCaption>Matrijs Historie</TableCaption>

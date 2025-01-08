@@ -18,13 +18,17 @@ interface SelectIntervalProps {
   date?: DateRange,
   setDate: React.Dispatch<React.SetStateAction<DateRange | undefined>>,
     setInterval: React.Dispatch<React.SetStateAction<IntervalType>>,
+    autoChangeInterval?: boolean
     }
 
-export function SelectInterval({ interval, setInterval, date
+export function SelectInterval({ interval, setInterval, date, autoChangeInterval = true, setDate
 }: SelectIntervalProps) {
   // if the date range is over a month, change the interval to week, and if it's over a week, change it to day, and if it's over a day, change it to hour
   // if its less than a 2 days, change it to minute
   React.useEffect(() => {
+    if (autoChangeInterval) {
+      return;
+    }
     if (date && date.from && date.to) {
       const diff = date.to.getTime() - date.from.getTime();
       if (diff > 1000 * 60 * 60 * 24 * 30) {
