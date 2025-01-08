@@ -47,21 +47,28 @@ export default function NotificationItem({ notification, onClick }: Notification
         }
             >
             <div className="relative z-20 w-full">
-            <div className={notification.read_at ? "opacity-50" : ""}>
+
+
+            <div className={notification.read_at ? "opacity-50" : ""} onClick={onClick}>
                 <Badge color="blue" className="absolute top-2 right-2">{notification.board} - {notification.port}</Badge>
                 <div className="flex flex-col">
                     {/* Mold_id, machine_id */}
                     <span className="text-sm">
-                        <Link href={`/dashboard/machines/${notification.machine_id}`}>
-                               Machine {notification.machine_id}
-                        </Link>
+                        
 
-                        <span className="mx-1">-</span>
+                        {
+                            notification.machine_id && <Link href={`/dashboard/machines/${notification.machine_id}`}>
+                            Machine {notification.machine_id}
+                     </Link>
+                        }
 
 
-                        <Link href={`/dashboard/molds/${notification.mold_id}`}>
-                               Matrijs {notification.mold_id}
-                        </Link>
+                        {
+                            notification.mold_id && <Link href={`/dashboard/molds/${notification.mold_id}`}>
+                            Matrijs {notification.mold_id}
+                     </Link>
+                        }
+                        
                     </span>
                 <h3 className="text-lg font-semibold">{notification.message}</h3>
                 <p className="text-sm">{

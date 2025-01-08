@@ -1,14 +1,12 @@
 "use client";
 import { Notification } from "@/types/supabase";
-import {
-    Tabs,
-    TabsContent,
-    TabsList,
-    TabsTrigger,
-  } from "@/components/ui/tabs"
+
 import NotificationItem from "./item";
 import { useEffect, useState } from "react";
 import { markAsRead } from "@/lib/supabase/notification";
+import { Tabs } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
+
 
 
 
@@ -17,71 +15,56 @@ interface NotificationTabsProps {
 }
 
 export default function NotificationTabs(props: NotificationTabsProps) {
-    const [notifications, setNotifications] = useState<Notification[]>(props.notifications);
+    const [notifications, setNotifications] = useState<Notification[]>([]);
 
     useEffect(() => {
-        setNotifications(props.notifications);
+        // filter out the read & resolved notifications
+        setNotifications(props.notifications.filter((notification) => !notification.read_at && !notification.resolved_at));
     }
     , [props.notifications]);
+
+    // mark as read and remove notification
+    const markAsReadN = async (id: number) => {
+        await markAsRead(id);
+        setNotifications(notifications.filter((notification) => notification.id !== id));
+    };
 
 
     return (
         <>
-        {notifications.length === 0 ? (
+        {props.notifications.length === 0 ? (
             <p>No notifications found</p>
         ) : (
+            <div>
+                
+                    <div className="flex space-x-4 p-4">
+                    <Button onClick={() => setNotifications(props.notifications.filter((notification) => !notification.read_at && !notification.resolved_at))}>Unread</Button>
+                    
+                    <Button onClick={() => setNotifications(props.notifications.filter((notification) => !notification.resolved_at))}>Unresolved</Button>
+                    <Button onClick={() => setNotifications(props.notifications.filter((notification) => notification.resolved_at))}>Resolved</Button>
+                    {/* Unread and unresolved */}
+                    <Button onClick={() => setNotifications(props.notifications)}>All</Button>
 
-            <Tabs className="w-full" defaultValue="unread">
+                    
+                    </div>
 
-        <TabsList className="flex justify-around w-full">
-            <TabsTrigger value="unread">Ongelezen</TabsTrigger>
-             <TabsTrigger value="all">Alle</TabsTrigger>
-             <TabsTrigger value="read">Gelezen</TabsTrigger>
-        </TabsList>
-
-        <div className="w-full container mx-auto px-2">
-        <TabsContent value="all">
-            <ul className="grid gap-4">
-                {notifications.map((notification) => (
-                    <NotificationItem key={notification.id} notification={notification} onClick={
-                        () => {
-                            markAsRead(notification.id).then(() => {
-                                setNotifications(notifications.map((n) => {
-                                    if (n.id === notification.id) {
-                                        return {
-                                            ...n,
-                                            read_at: new Date()
-                                        }
-                                    }
-                                    return n;
-                                }))
-                            }
-                            )
-                        }
-                    }/>  
+                    <div className="w-full p-4">
+                    {
+                        notifications.length > 0 ? (
+                           <div className="grid grid-cols-1 gap-4">
+                            {notifications.map((notification) => (
+                    <NotificationItem key={notification.id} notification={notification} onClick={() => {
+                        markAsReadN(notification.id);
+                    }} />
                 ))}
-            </ul>
-        </TabsContent>
-
-        <TabsContent value="unread">
-            <ul className="grid gap-4">
-                {notifications.filter((n) => !n.read_at).map((notification) => (
-                    <NotificationItem key={notification.id} notification={notification} />  
-                ))}
-            </ul>
-        </TabsContent>
-
-        <TabsContent value="read">
-            <ul className="grid gap-4">
-                {notifications.filter((n) => n.read_at).map((notification) => (
-                    <NotificationItem key={notification.id} notification={notification} />  
-                ))}
-            </ul>
-        </TabsContent>
-
-        </div>
-
-    </Tabs>
+                           </div>
+                        ) : (
+                            <p>No notifications found</p>
+                        )
+                        
+                    }
+                    </div>
+            </div>
         )}</>
 
             
