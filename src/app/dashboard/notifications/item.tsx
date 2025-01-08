@@ -49,7 +49,7 @@ export default function NotificationItem({ notification, onClick }: Notification
             <div className="relative z-20 w-full">
 
 
-            <div className={notification.read_at ? "opacity-50" : ""} onClick={onClick}>
+            <div className={notification.read_at ? "opacity-80" : ""} >
                 <Badge color="blue" className="absolute top-2 right-2">{notification.board} - {notification.port}</Badge>
                 <div className="flex flex-col">
                     {/* Mold_id, machine_id */}
@@ -70,7 +70,7 @@ export default function NotificationItem({ notification, onClick }: Notification
                         }
                         
                     </span>
-                <h3 className="text-lg font-semibold">{notification.message}</h3>
+                <h3 className="text-lg font-semibold " onClick={onClick}>{notification.message}</h3>
                 <p className="text-sm">{
                     new Date(notification.detected_at).toLocaleString('nl-NL')
                     }</p>
