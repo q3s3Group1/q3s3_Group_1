@@ -15,16 +15,22 @@ interface FactoryGridProps {
 
 export default function FactoryGrid({ machines, currentTime }: FactoryGridProps) {
   const [machineData, setMachineData] = useState<Record<string, { matrijzen: MoldHistory[]; chartData: MachineTimeline[] }>>({});
+  // state current time
+  const [rightNow, setRightNow] = useState(new Date());
+
 
   const today = currentTime;
 
-  const getStatus = (chartData: MachineTimeline[]) => {
-    if (chartData.length === 0) return 'Stilstand';
-    const lastData = chartData[chartData.length - 1];
-    if (lastData.average_shot_time === 0) return 'Stilstand';
-    if (lastData.total_shots === 0) return 'Inactief';
-    return 'Actief';
-  };
+  // every 5 seconds update the current time
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setRightNow(new Date());
+    }, 20000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -35,8 +41,9 @@ export default function FactoryGrid({ machines, currentTime }: FactoryGridProps)
             machine.board,
             machine.port,
             addDays(today, -1),
-            today,
-            IntervalType.Hour
+            rightNow,
+            IntervalType.Hour,
+            true
           );
           return { machineId: machine.machine_id, matrijzen, chartData };
         })
@@ -54,22 +61,12 @@ export default function FactoryGrid({ machines, currentTime }: FactoryGridProps)
     };
 
     fetchData();
-  }, [machines]);
-
-  const sortedMachines = [...machines].sort((a, b) => {
-    const aData = machineData[a.machine_id]?.chartData || [];
-    const bData = machineData[b.machine_id]?.chartData || [];
-    const statusOrder = { Actief: 0, Inactief: 1, Stilstand: 2 };
-    const aStatus = getStatus(aData);
-    const bStatus = getStatus(bData);
-
-    return statusOrder[aStatus] - statusOrder[bStatus];
-  });
+  }, [machines, currentTime]);
 
   return (
     <div className="flex-1 overflow-auto">
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 min-h-0 p-2">
-        {sortedMachines.map((machine) => {
+        {machines.map((machine) => {
           const machineSpecificData = machineData[machine.machine_id];
           return (
             <MachineCard

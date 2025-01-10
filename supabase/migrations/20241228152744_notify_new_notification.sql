@@ -18,8 +18,3 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-
-CREATE TRIGGER notification_trigger
-AFTER INSERT ON public.i_notifications
-FOR EACH ROW
-EXECUTE FUNCTION send_notification_to_edge_function();

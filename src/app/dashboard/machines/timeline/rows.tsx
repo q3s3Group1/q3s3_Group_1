@@ -18,8 +18,8 @@ interface RowsProps {
 export default function Rows({ machines }: RowsProps) {
 
     const [date, setDate] = useState<DateRange | undefined>({
-        from: new Date(2020, 8, 15),
-        to: new Date(2020, 8, 17),
+        from: new Date(),
+        to: addDays(new Date(), 1),
       })
 
     const [interval, setInterval] = useState<IntervalType>(

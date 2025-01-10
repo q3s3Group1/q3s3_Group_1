@@ -63,13 +63,8 @@ export default function MachineCard({ machine, molds, chartData = [] }: MachineC
     }
   };
 
-  const getStatus = (chartData: MachineTimeline[]) => {
-    if (chartData.length === 0) return "Stilstand";
-    const lastData = chartData[chartData.length - 1];
-    if (lastData.average_shot_time === 0) return "Stilstand";
-    if (lastData.total_shots === 0) return "Inactief";
-
-    return "Actief";
+  const getStatus = (machine: Machine) => {
+    return machine.status || "Onbekend";
   };
 
   const medianHourlyShots =
@@ -82,9 +77,9 @@ export default function MachineCard({ machine, molds, chartData = [] }: MachineC
       {/* Machine Info */}
       <div className="relative z-0">
         <div className="flex items-center justify-between mb-4">
-          <div className={`w-3 h-3 rounded-full ${getStatusColor(getStatus(chartData))}`} />
-          <span className={`text-sm px-2.5 py-1 rounded-full ${getStatusBadgeStyle(getStatus(chartData))}`}>
-            {getStatus(chartData)}
+          <div className={`w-3 h-3 rounded-full ${getStatusColor(getStatus(machine))}`} />
+          <span className={`text-sm px-2.5 py-1 rounded-full ${getStatusBadgeStyle(getStatus(machine))}`}>
+            {getStatus(machine)}
           </span>
         </div>
         <h3 className="text-4xl font-bold mb-2">{machine.machine_name || machine.machine_id}</h3>
@@ -118,7 +113,7 @@ export default function MachineCard({ machine, molds, chartData = [] }: MachineC
               <Line
                 type="step"
                 dataKey="total_shots"
-                stroke={getStatusHex(getStatus(chartData))}
+                stroke={getStatusHex(getStatus(machine))}
                 strokeWidth={3}
                 dot={false}
               />

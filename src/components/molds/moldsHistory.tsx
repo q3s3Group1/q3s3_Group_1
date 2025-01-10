@@ -29,17 +29,17 @@ export const MoldHistoryTable = ({ moldsHistory
     , setRange, showMold, showMachine, setBoardPort
  }: MoldHistoryProps) => {
 
-  useEffect(() => {
-    // get the most recent mold history
-  const mostRecentMoldHistory = moldsHistory[0];
+//   useEffect(() => {
+//     // get the most recent mold history
+//   const mostRecentMoldHistory = moldsHistory[0];
 
-  // set the range to the most recent mold history
-  mostRecentMoldHistory && setRange && setRange({
-    from: new Date(mostRecentMoldHistory.start_date),
-    to: new Date(mostRecentMoldHistory.end_date),
-  });
-}
-, [moldsHistory]);
+//   // set the range to the most recent mold history
+//   mostRecentMoldHistory && setRange && setRange({
+//     from: new Date(mostRecentMoldHistory.start_date),
+//     to: new Date(mostRecentMoldHistory.end_date),
+//   });
+// }
+// , [moldsHistory]);
 
 
     return (

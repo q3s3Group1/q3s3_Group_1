@@ -8,7 +8,8 @@ import { fetchMachines } from '@/lib/supabase/fetchMachines';
 
 
 export default function FactoryOverview() {
-  const [currentTime, setCurrentTime] = useState(new Date());
+  const [currentTime, setCurrentTime] = useState(new Date(
+  ));
 
   // machine state
   const [machines, setMachines] = useState<Machine[]>([]);
