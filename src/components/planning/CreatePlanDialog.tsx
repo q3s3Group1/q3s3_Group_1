@@ -167,7 +167,7 @@ export default function CreatePlanDialog(props: Props) {
 
                         </div>
 
-                        <div className={"grid grid-cols-2 items-center gap-3"}>
+                        <div className={`grid grid-cols-2 items-center gap-3 ${isManual ? '' : 'hidden'}`}>
                             <span className={"text-sm font-semibold"}>Monteur</span>
                             <select defaultValue={""} required name="assigned_to" onChange={updateFormValue}>
                                 <option value="" disabled>Selecteer een optie</option>
