@@ -74,7 +74,7 @@ export default async function Page() {
             <TableCell>{machine.total_shots}</TableCell>
                     {/* How long ago? */}
             <TableCell>{
-                machine.last_update ? new Date(machine.last_update).toLocaleString("nl-NL")
+                machine.last_update ? new Date(machine.last_update).toLocaleString()
                  : 'N/A'
                 }</TableCell>
           </TableRow>

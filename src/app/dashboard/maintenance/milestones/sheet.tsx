@@ -15,7 +15,6 @@ import { MoldMaintenance } from "@/types/supabase";
   export default function MilestoneSheet({ molds }: MilestoneSheetProps) {
     return (
         <Sheet>
-  <SheetTrigger>Nieuwe onderhoudsbeurt toevoegen</SheetTrigger>
   <SheetContent>
     <SheetHeader>
       <SheetTitle>Kies matrijs</SheetTitle>

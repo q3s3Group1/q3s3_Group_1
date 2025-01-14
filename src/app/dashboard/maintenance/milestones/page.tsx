@@ -21,9 +21,7 @@ export default async function Page() {
            <Header
               title={"Preventieve onderhoudsplanning"} 
                 description={"Alle preventieve onderhoudsplanningen voor matrijzen"}
-            >
-                <MilestoneSheet molds={molds} />
-            </Header>
+            />
 
             {/* All molds and its milestones, and a way to add a new one */}
             <div className="flex flex-col">

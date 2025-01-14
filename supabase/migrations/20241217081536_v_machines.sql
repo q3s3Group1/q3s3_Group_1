@@ -1,18 +1,18 @@
-create view
+create or replace view
   public.v_machine_status as
 with
   aggregated_monitoring as (
     select
-      monitoring_data_202009.board,
-      monitoring_data_202009.port,
-      max(monitoring_data_202009."timestamp") as last_shot_time,
+      md.board,
+      md.port,
+      max(md."timestamp") as last_shot_time,
       count(*) as total_shots,
-      avg(monitoring_data_202009.shot_time) as avg_shot_time
+      avg(md.shot_time) as avg_shot_time
     from
-      monitoring_data_202009
+      v_monitoring_data md
     group by
-      monitoring_data_202009.board,
-      monitoring_data_202009.port
+      md.board,
+      md.port
   ),
   latest_shots as (
     select
@@ -28,6 +28,8 @@ with
       machine_monitoring_poorten mp
       left join aggregated_monitoring am on am.board = mp.board
       and am.port = mp.port
+    where
+      mp.visible = true
   )
 select
   ls.machine_id,
