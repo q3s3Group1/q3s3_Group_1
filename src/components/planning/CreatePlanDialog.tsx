@@ -111,6 +111,9 @@ export default function CreatePlanDialog(props: Props) {
                                                                  key={index}>{m.mold_name
                                     || m.mold_id
                                 }
+
+                                {/* Shots */}
+                                {` (${m.total_shots} shots)`}
                                 </option>)}
                             </select>
                         </div>
