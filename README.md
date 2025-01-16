@@ -9,4 +9,8 @@ In productie-omgevingen en industriële processen is het essentieel dat machines
 
 * [Next.js Frontend](/src/README.md), een React framework, wordt gebruikt voor de frontend van de applicatie. Next.js biedt server-side rendering, static site generation en een uitgebreide set aan features.
 
+## Demo
+
+Click op de afbeelding om naar het youtube filmpje van de demo te gaan
+
 [![Demo](https://img.youtube.com/vi/62Y2qSYhyps/0.jpg)](https://www.youtube.com/watch?v=62Y2qSYhyps)
