@@ -8,3 +8,5 @@ In productie-omgevingen en industriële processen is het essentieel dat machines
 * [Supabase](/supabase/README.md), een open-source alternatief voor Firebase, wordt gebruikt als database en backend voor de applicatie. Supabase biedt een realtime database, REST API en een authentificatie systeem.
 
 * [Next.js Frontend](/src/README.md), een React framework, wordt gebruikt voor de frontend van de applicatie. Next.js biedt server-side rendering, static site generation en een uitgebreide set aan features.
+
+[![Demo](https://img.youtube.com/vi/62Y2qSYhyps/0.jpg)](https://www.youtube.com/watch?v=62Y2qSYhyps)
