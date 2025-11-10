@@ -16,11 +16,11 @@ interface RowsProps {
 
 
 export default function Rows({ machines }: RowsProps) {
+  const [date, setDate] = useState<DateRange | undefined>({
+    from: new Date(2020, 8, 4), // September 4, 2020 (month is 0-based)
+    to: addDays(new Date(2020, 8, 4), 1), // September 5, 2020
+  });
 
-    const [date, setDate] = useState<DateRange | undefined>({
-        from: new Date(),
-        to: addDays(new Date(), 1),
-      })
 
     const [interval, setInterval] = useState<IntervalType>(
       IntervalType.Hour
