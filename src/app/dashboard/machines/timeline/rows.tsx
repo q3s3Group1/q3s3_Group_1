@@ -4,70 +4,73 @@ import TimelineRow from "@/components/timeline/TimelineRow";
 import { Machine } from "@/types/supabase";
 import Header from "../../header";
 import { SelectStartEndDate } from "@/components/SelectStartEndDate";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { DateRange } from "react-day-picker";
 import { addDays } from "date-fns";
-import {  SelectInterval } from "@/components/SelectInterval";
+import { SelectInterval } from "@/components/SelectInterval";
 import { IntervalType } from "@/types/enum";
+import { fetchMachines } from "@/lib/supabase/fetchMachines";
 
-interface RowsProps {
-    machines: Machine[];
-    }
+export default function Rows({ machines: initialMachines }: { machines: Machine[] }) {
+  const [date, setDate] = useState<DateRange | undefined>({
+    from: new Date(2020, 8, 4),
+    to: addDays(new Date(2020, 8, 4), 1),
+  });
+  const [interval, setInterval] = useState<IntervalType>(IntervalType.Hour);
+  const [machines, setMachines] = useState<Machine[]>(initialMachines);
+  const [loading, setLoading] = useState(false);
 
-    export default function Rows({ machines }: RowsProps) {
-      
-      const [date, setDate] = useState<DateRange | undefined>({
-        from: new Date(),
-        to: addDays(new Date(), 1),
-      })
-      
-      const [interval, setInterval] = useState<IntervalType>(
-        IntervalType.Hour
-      );
-      const refTs: Date | undefined = useMemo(() => date?.to, [date]);
+  
+  const refTs: Date | undefined = useMemo(() => date?.to, [date]);
+
+  useEffect(() => {
+    const run = async () => {
+      setLoading(true);
+      try {
+        const data = await fetchMachines(refTs);
+        setMachines(data);
+      } finally {
+        setLoading(false);
+      }
+    };
+    if (refTs) run();
+  }, [refTs]);
 
   return (
-    
-    <div className="flex flex-col gap-1 ">
-        <div className="sticky top-0 z-10 bg-white shadow-sm">
+    <div className="flex flex-col gap-1">
+      <div className="sticky top-0 z-10 bg-white shadow-sm">
         <Header
-        title={"Historische data"}
-        description="Hier kun je de historische data van de machines shots bekijken"
+          title="Historische data"
+          description="Hier kun je de historische data van de machines shots bekijken"
         >
-
-<div className="flex gap-2">
-<SelectInterval
-            interval={interval}
-            setInterval={setInterval}
-            date={date}
-            setDate={setDate}
-
-          />
-          
-        <SelectStartEndDate
-            date={date}
-            setDate={setDate}
-            className="w-min"
-        />
-</div>
-        
-
+          <div className="flex gap-2">
+            <SelectInterval
+              interval={interval}
+              setInterval={setInterval}
+              date={date}
+              setDate={setDate}
+            />
+            <SelectStartEndDate date={date} setDate={setDate} className="w-min" />
+          </div>
         </Header>
-      <TimelineLegend />
+        <TimelineLegend />
       </div>
+
       <div className="flex-1 overflow-auto px-4">
-      {machines.map((machine) => (
-        <TimelineRow 
-          key={machine.machine_id} 
-          machine={machine} 
-          targetEfficiency={0} 
+        {loading && <div className="p-4 text-sm text-gray-500">Loading…</div>}
+        {!loading && machines.map((machine) => (
+          <TimelineRow
+            key={machine.machine_id}
+            machine={machine}
+            targetEfficiency={0}
             date={date}
             interval={interval}
-            
-        />
-      ))}
+          />
+        ))}
+        {!loading && machines.length === 0 && (
+          <div className="p-4 text-sm text-gray-500">No machines for selected date.</div>
+        )}
       </div>
-         
     </div>
-  )
+  );
 }
