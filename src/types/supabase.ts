@@ -1,3 +1,6 @@
+type IsoTimestamp = string;      // pl. "2020-09-20T12:30:00Z"
+type PgIntervalText = string;
+
 // Mold history
 export interface MoldHistory {
     production_id: number;
@@ -26,23 +29,23 @@ export interface Milestone {
     send_sms: boolean;
     completed: boolean;
 }
-
-export interface MachineTimeline {
-
-    average_shot_time: number;
-    truncated_timestamp: string;
-    total_shots: number;
-}
+export type MachineTimeline = {
+  truncated_timestamp: string;    
+  total_shots: number;           
+  average_shot_time: number | null; 
+};
 
 export interface Machine {
-    machine_id: number;
-    machine_name: string;
-    board: number;
-    port: number;
-    status: 'Actief' | 'Inactief' | 'Stilstand';
-    total_shots: number;
-    avg_shot_time: number;
-    last_update: string;
+  machine_id: number;                 
+  machine_name: string | null;
+  board: number;
+  port: number;
+  mold_name: string | null;
+  last_ts: IsoTimestamp | null;       
+  time_since_last_shot: PgIntervalText | null; 
+  status: 'operational' | 'standby' | 'idle' | 'inactive';
+  total_shots: number;                 
+  avg_shot_time: number;               
 }
 
 export interface Group {

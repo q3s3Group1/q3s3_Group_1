@@ -7,7 +7,7 @@ import { Machine, MachineTimeline } from "@/types/supabase";
 import Header from "../../header";
 import Rows from "./rows";
 
-// extend machine type with timeline
+
 export interface MachineWithData extends Machine {
   data?: MachineTimeline[];
 }
