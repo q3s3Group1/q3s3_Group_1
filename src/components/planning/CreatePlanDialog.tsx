@@ -12,6 +12,7 @@ import {fetchAllMolds} from "@/lib/supabase/fetchMolds";
 import {fetchMechanics} from "@/lib/supabase/fetchMechanics";
 import {formatDateToISO} from "@/lib/utils";
 import {insertNewMoldMaintenanceMilestone} from "@/lib/supabase/insertNewMoldMaintenanceMilestone";
+import {useLanguage} from "@/lib/i18n/LanguageContext";
 
 interface Props {
     formData: Partial<Omit<Maintenance, "id" | "status">>
@@ -19,6 +20,7 @@ interface Props {
 }
 
 export default function CreatePlanDialog(props: Props) {
+    const { t } = useLanguage();
     const [maintenanceForm, setMaintenanceForm] = useState<Partial<Omit<Maintenance, "id" | "status"> & {lifespan: number}>>(props.formData);
 
     const [molds, setMolds] = useState<Mold[]>([]);
@@ -35,21 +37,21 @@ export default function CreatePlanDialog(props: Props) {
 
         if (isManual){
             insertNewMaintenance(maintenanceForm as Required<Omit<Maintenance, "id" | "status">>).then(() => {
-                toast("Onderhoud is ingepland.", {type: "success"});
+                toast(t('planning.maintenanceScheduled'), {type: "success"});
                 setIsOpened(false)
                 props.onCreatedNewPlanning()
 
             }).catch((reason: Error) => {
-                toast("Kon onderhoud niet inplannen.", {type: "error"});
+                toast(t('planning.maintenanceScheduleError'), {type: "error"});
                 console.log(reason)
             })
         }
         else {
             insertNewMoldMaintenanceMilestone(maintenanceForm.mold_id!, maintenanceForm.lifespan!).then(() => {
-                toast("Milestone is ingesteld.", {type: "success"});
+                toast(t('planning.milestoneSet'), {type: "success"});
                 setIsOpened(false)
             }).catch((reason: Error) => {
-                toast("Kon milestone niet instellen.", {type: "error"});
+                toast(t('planning.milestoneSetError'), {type: "error"});
                 console.log(reason)
             })
         }
@@ -81,32 +83,34 @@ export default function CreatePlanDialog(props: Props) {
                 pauseOnHover
                 theme="light"
             />
-            <DialogTrigger className="button"><Plus size={20}/> Onderhoud plannen</DialogTrigger>
+            <DialogTrigger className="button"><Plus size={20}/> {t('planning.scheduleMaintenance')}</DialogTrigger>
             <DialogContent className={"rounded-xl"}>
-                <DialogTitle>Onderhoud plannen</DialogTitle>
+                <DialogTitle>{t('planning.scheduleMaintenance')}</DialogTitle>
                 <form className="" onSubmit={handleSubmit}>
                     <div className={"flex flex-col z-form items-center gap-3 w-full"}>
                         <div className={"grid grid-cols-2 gap-2 w-full h-max"}>
                             <button type={"button"} onClick={() => setIsManual(true)}
-                                    className={isManual ? "method-btn method-btn-select" : 'method-btn'}>Handmatig
+                                    className={isManual ? "method-btn method-btn-select" : 'method-btn'}>
+                                {t('planning.manual')}
                             </button>
                             <button type={"button"} onClick={() => setIsManual(false)}
-                                    className={!isManual ? "method-btn method-btn-select" : 'method-btn'}>Voorspellend
+                                    className={!isManual ? "method-btn method-btn-select" : 'method-btn'}>
+                                {t('planning.predictive')}
                             </button>
                         </div>
 
 
                         <div className={`grid grid-cols-2 items-center gap-3 w-full ${isManual ? '' : 'hidden'}`}>
-                            <span className={"text-sm font-semibold"}>Datum</span>
+                            <span className={"text-sm font-semibold"}>{t('planning.date')}</span>
                             <Input disabled={!isManual} required type={"datetime-local"}
                                    min={formatDateToISO(new Date(Date.now()))}
                                    name="planned_date" onChange={updateFormValue}/>
                         </div>
 
                         <div className={"grid grid-cols-2 items-center gap-3 w-full"}>
-                            <span className={"text-sm font-semibold"}>Matrijs</span>
+                            <span className={"text-sm font-semibold"}>{t('planning.mold')}</span>
                             <select required defaultValue={""} name="mold_id" onChange={updateFormValue}>
-                                <option value="" disabled>Selecteer een optie</option>
+                                <option value="" disabled>{t('planning.selectOption')}</option>
                                 {molds.map((m, index) => <option value={m.mold_id}
                                                                  key={index}>{m.mold_name
                                     || m.mold_id
@@ -119,58 +123,58 @@ export default function CreatePlanDialog(props: Props) {
                         </div>
 
                         <div className={`grid grid-cols-2 items-center gap-3 w-full ${!isManual ? '' : 'hidden'}`}>
-                            <span className={"text-sm font-semibold"}>Levensduur</span>
+                            <span className={"text-sm font-semibold"}>{t('planning.lifespan')}</span>
                             <Input disabled={isManual} required type={"number"}
                                    min={0}
                                    name="lifespan" onChange={updateFormValue}/>
                         </div>
 
                         <div className={`grid grid-cols-2 items-center gap-3 w-full ${isManual ? '' : 'hidden'}`}>
-                            <span className={"text-sm font-semibold"}>Onderhoudstype</span>
+                            <span className={"text-sm font-semibold"}>{t('planning.maintenanceType')}</span>
                             <select disabled={!isManual} defaultValue={""} required name="maintenance_type"
                                     onChange={updateFormValue}>
-                                <option value="" disabled>Selecteer een optie</option>
-                                <option value={"Preventative"}>Preventief</option>
-                                <option value={"Corrective"}>Correctief</option>
+                                <option value="" disabled>{t('planning.selectOption')}</option>
+                                <option value={"Preventative"}>{t('planning.preventive')}</option>
+                                <option value={"Corrective"}>{t('planning.corrective')}</option>
                             </select>
                         </div>
 
                         <div className={`grid grid-cols-2 items-center gap-3 w-full ${isManual ? '' : 'hidden'}`}>
-                            <span className={"text-sm font-semibold"}>Onderhoudsactie</span>
+                            <span className={"text-sm font-semibold"}>{t('planning.maintenanceAction')}</span>
                             <select disabled={!isManual} defaultValue={""} required name="maintenance_action"
                                     onChange={updateFormValue}>
-                                <option value="" disabled>Selecteer een optie</option>
-                                <option>Kalibreren</option>
-                                <option>Poetsen</option>
-                                <option>Inspecteren</option>
-                                <option>Smeren</option>
-                                <option>Koelingskanalen controleren</option>
-                                <option>Spuitneus reinigen</option>
-                                <option>Bevestigingen aanspannen</option>
-                                <option>Hot-runner controleren</option>
-                                <option>Polijsten</option>
-                                <option>Afdichtingen vervangen</option>
-                                <option>Sluitkracht testen</option>
-                                <option>Geleiders reviseren</option>
-                                <option>Elektrische aansluitingen inspecteren</option>
-                                <option>Ontgassen</option>
-                                <option>Uitlijning controleren</option>
-                                <option>Slijtstrippen vervangen</option>
-                                <option>Temperatuurzones controleren</option>
+                                <option value="" disabled>{t('planning.selectOption')}</option>
+                                <option>{t('planning.actions.calibrate')}</option>
+                                <option>{t('planning.actions.clean')}</option>
+                                <option>{t('planning.actions.inspect')}</option>
+                                <option>{t('planning.actions.lubricate')}</option>
+                                <option>{t('planning.actions.checkCooling')}</option>
+                                <option>{t('planning.actions.cleanNozzle')}</option>
+                                <option>{t('planning.actions.tightenFasteners')}</option>
+                                <option>{t('planning.actions.checkHotRunner')}</option>
+                                <option>{t('planning.actions.polish')}</option>
+                                <option>{t('planning.actions.replaceSeals')}</option>
+                                <option>{t('planning.actions.testClampForce')}</option>
+                                <option>{t('planning.actions.reviseGuides')}</option>
+                                <option>{t('planning.actions.inspectElectrical')}</option>
+                                <option>{t('planning.actions.degas')}</option>
+                                <option>{t('planning.actions.checkAlignment')}</option>
+                                <option>{t('planning.actions.replaceWearStrips')}</option>
+                                <option>{t('planning.actions.checkTemperature')}</option>
                             </select>
                         </div>
 
                         <div className={`grid grid-cols-2 items-center gap-3 ${isManual ? '' : 'hidden'}`}>
-                            <span className={"text-sm font-semibold"}>Beschrijving</span>
+                            <span className={"text-sm font-semibold"}>{t('planning.description')}</span>
                             <input disabled={!isManual} type='text' required name="description"
                                    onChange={updateFormValue}/>
 
                         </div>
 
                         <div className={`grid grid-cols-2 items-center gap-3 ${isManual ? '' : 'hidden'}`}>
-                            <span className={"text-sm font-semibold"}>Monteur</span>
+                            <span className={"text-sm font-semibold"}>{t('planning.mechanic')}</span>
                             <select disabled={!isManual} defaultValue={""} required name="assigned_to" onChange={updateFormValue}>
-                                <option value="" disabled>Selecteer een optie</option>
+                                <option value="" disabled>{t('planning.selectOption')}</option>
                                 {mechanics.map((mechanic) => (
                                     <option value={mechanic.id}
                                             key={mechanic.id}>{mechanic.name} ({mechanic.specialization})</option>
@@ -182,7 +186,7 @@ export default function CreatePlanDialog(props: Props) {
                     </div>
 
                     <div className={"w-full flex mt-4"}>
-                        <button type={"submit"} className="ml-auto button"><Plus size={20}/> Plannen</button>
+                        <button type={"submit"} className="ml-auto button"><Plus size={20}/> {t('planning.schedule')}</button>
                     </div>
                 </form>
 

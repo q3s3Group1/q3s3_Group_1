@@ -10,8 +10,11 @@ import { addDays } from "date-fns";
 import { SelectInterval } from "@/components/SelectInterval";
 import { IntervalType } from "@/types/enum";
 import { fetchMachines } from "@/lib/supabase/fetchMachines";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 export default function Rows({ machines: initialMachines }: { machines: Machine[] }) {
+  const { t } = useLanguage();
+
   const [date, setDate] = useState<DateRange | undefined>({
     from: new Date(2020, 8, 4),
     to: addDays(new Date(2020, 8, 4), 1),
@@ -20,7 +23,6 @@ export default function Rows({ machines: initialMachines }: { machines: Machine[
   const [machines, setMachines] = useState<Machine[]>(initialMachines);
   const [loading, setLoading] = useState(false);
 
-  // ref_ts = a kiválasztott kezdődátum (from)
   const refTs: Date | undefined = useMemo(() => date?.from, [date]);
 
   useEffect(() => {
@@ -40,8 +42,8 @@ export default function Rows({ machines: initialMachines }: { machines: Machine[
     <div className="flex flex-col gap-1">
       <div className="sticky top-0 z-10 bg-white shadow-sm">
         <Header
-          title="Historische data"
-          description="Hier kun je de historische data van de machines shots bekijken"
+          title={t("machines.history")}
+          description={t("machines.historyDescription", { /* optional params */ })}
         >
           <div className="flex gap-2">
             <SelectInterval
@@ -57,7 +59,7 @@ export default function Rows({ machines: initialMachines }: { machines: Machine[
       </div>
 
       <div className="flex-1 overflow-auto px-4">
-        {loading && <div className="p-4 text-sm text-gray-500">Loading…</div>}
+        {loading && <div className="p-4 text-sm text-gray-500">{t("common.loading")}</div>}
         {!loading && machines.map((machine) => (
           <TimelineRow
             key={machine.machine_id}
@@ -68,7 +70,7 @@ export default function Rows({ machines: initialMachines }: { machines: Machine[
           />
         ))}
         {!loading && machines.length === 0 && (
-          <div className="p-4 text-sm text-gray-500">No machines for selected date.</div>
+          <div className="p-4 text-sm text-gray-500">{t("machines.noMachinesForDate")}</div>
         )}
       </div>
     </div>

@@ -1,118 +1,108 @@
-import { Button } from "@/components/ui/button";
-import {
-    Table,
-    TableBody,
-    TableCaption,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-  } from "@/components/ui/table"
+"use client"
 
-import { MoldHistory } from "@/types/supabase";
-import Link from "next/link";
-import { useEffect } from "react";
-import { DateRange } from "react-day-picker";
+import { Button } from "@/components/ui/button"
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+
+import { MoldHistory } from "@/types/supabase"
+import Link from "next/link"
+import { DateRange } from "react-day-picker"
+import { useLanguage } from "@/lib/i18n/LanguageContext"
 
 // Props
 interface MoldHistoryProps {
-    moldsHistory: MoldHistory[];
-
-    setRange?: (range: DateRange) => void;
-
-    showMold?: boolean;
-    showMachine?: boolean;
-    setBoardPort?: (boardPort: { board: number, port: number }) => void;
+  moldsHistory: MoldHistory[]
+  setRange?: (range: DateRange) => void
+  showMold?: boolean
+  showMachine?: boolean
+  setBoardPort?: (boardPort: { board: number; port: number }) => void
 }
 
-export const MoldHistoryTable = ({ moldsHistory
-    , setRange, showMold, showMachine, setBoardPort
- }: MoldHistoryProps) => {
+export const MoldHistoryTable = ({
+  moldsHistory,
+  setRange,
+  showMold,
+  showMachine,
+  setBoardPort,
+}: MoldHistoryProps) => {
+  const { t } = useLanguage()
 
-//   useEffect(() => {
-//     // get the most recent mold history
-//   const mostRecentMoldHistory = moldsHistory[0];
+  return (
+    <Table>
+      <TableCaption>{t("molds.historyTableTitle")}</TableCaption>
 
-//   // set the range to the most recent mold history
-//   mostRecentMoldHistory && setRange && setRange({
-//     from: new Date(mostRecentMoldHistory.start_date),
-//     to: new Date(mostRecentMoldHistory.end_date),
-//   });
-// }
-// , [moldsHistory]);
+      <TableHeader>
+        <TableRow>
+          {showMold && <TableHead>{t("molds.mold")}</TableHead>}
+          {showMachine && <TableHead>{t("machines.machine")}</TableHead>}
+          <TableHead>{t("general.start")}</TableHead>
+          <TableHead>{t("general.end")}</TableHead>
+          <TableHead>{t("molds.shots")}</TableHead>
+          {setRange && <TableHead>{t("general.viewData")}</TableHead>}
+        </TableRow>
+      </TableHeader>
 
+      <TableBody>
+        {moldsHistory.map((moldHistory) => (
+          <TableRow key={moldHistory.mold_id}>
+            {showMold && (
+              <TableCell>
+                <Link
+                  className="text-blue-500 hover:underline"
+                  href={`/dashboard/molds/${moldHistory.mold_id}`}
+                >
+                  {moldHistory.mold_name || moldHistory.mold_id}
+                </Link>
+              </TableCell>
+            )}
 
-    return (
-      <Table>
-        <TableCaption>Matrijs Historie</TableCaption>
-        <TableHeader>
-          <TableRow>
-            {showMold && <TableHead>Matrijs</TableHead>}
-            {showMachine && <TableHead>Machine</TableHead>}
-            <TableHead>Start</TableHead>
-            <TableHead>Eind</TableHead>
+            {showMachine && (
+              <TableCell>
+                <Link
+                  className="text-blue-500 hover:underline"
+                  href={`/dashboard/machines/${moldHistory.machine_id}`}
+                >
+                  {moldHistory.board} - {moldHistory.port},{" "}
+                  {moldHistory.machine_id}
+                </Link>
+              </TableCell>
+            )}
 
-            <TableHead>Shots</TableHead>
+            <TableCell>{moldHistory.start_date}</TableCell>
+            <TableCell>{moldHistory.end_date}</TableCell>
 
-            {/* Bekijk data */}
-            {setRange && <TableHead>Bekijk data</TableHead>}
+            <TableCell>{moldHistory.real_amount}</TableCell>
+
+            {setRange && (
+              <TableCell>
+                <Button
+                  onClick={() => {
+                    setRange({
+                      from: new Date(moldHistory.start_date),
+                      to: new Date(moldHistory.end_date),
+                    })
+
+                    setBoardPort &&
+                      setBoardPort({
+                        board: moldHistory.board,
+                        port: moldHistory.port,
+                      })
+                  }}
+                >
+                  {t("general.view")}
+                </Button>
+              </TableCell>
+            )}
           </TableRow>
-        </TableHeader>
-        <TableBody>
-          {moldsHistory.map((moldHistory) => (
-            <TableRow key={moldHistory.mold_id}>
-              {showMold && (
-                <TableCell>
-                  <Link
-                    className="text-blue-500 hover:underline"
-                    href={`/dashboard/molds/${moldHistory.mold_id}`}
-                    passHref
-                  >
-                    {moldHistory.mold_name || moldHistory.mold_id}
-                  </Link>
-                </TableCell>
-              )}
-              {showMachine && (
-                <TableCell>
-                  <Link
-                    href={`/dashboard/machines/${moldHistory.machine_id}`}
-                    passHref
-                    className="text-blue-500 hover:underline"
-                  >
-                    {moldHistory.board} - {moldHistory.port},{" "}
-                    {moldHistory.machine_id}
-                  </Link>
-                </TableCell>
-              )}
-
-              <TableCell>{moldHistory.start_date}</TableCell>
-              <TableCell>{moldHistory.end_date}</TableCell>
-
-              <TableCell>{moldHistory.real_amount}</TableCell>
-
-              {setRange && (
-                <TableCell>
-                  <Button
-                    onClick={() => {
-                      setRange({
-                        from: new Date(moldHistory.start_date),
-                        to: new Date(moldHistory.end_date),
-                      });
-
-                      setBoardPort &&
-                        setBoardPort({
-                          board: moldHistory.board,
-                          port: moldHistory.port,
-                        });
-                    }}
-                  >
-                    Bekijk
-                  </Button>
-                </TableCell>
-              )}
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    );
+        ))}
+      </TableBody>
+    </Table>
+  )
 }
