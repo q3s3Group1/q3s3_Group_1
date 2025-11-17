@@ -10,21 +10,21 @@ export const fetchChartData = async (
   interval: IntervalType,
   realtime = false
 ): Promise<MachineTimeline[]> => {
-  let normalizedStart = new Date(startDate);
-  let normalizedEnd = new Date(endDate);
+  let normalizedEnd: Date;
+  const normalizedStart = new Date(
+    Date.UTC(startDate.getFullYear(), startDate.getMonth(), startDate.getDate())
+  );
 
-  normalizedStart = new Date(Date.UTC(startDate.getFullYear(), startDate.getMonth(), startDate.getDate()));
-
-  if (!realtime) {
-    // Normalize startDate and endDate to midnight UTC
-   normalizedEnd = new Date(Date.UTC(endDate.getFullYear(), endDate.getMonth(), endDate.getDate(), 0, 0, 0));
-
-  } else {
+  if (realtime) {
     normalizedEnd = new Date(Date.now() + 1 * 60 * 60 * 1000);
+  } else {
+    normalizedEnd = new Date(
+      Date.UTC(endDate.getFullYear(), endDate.getMonth(), endDate.getDate(), 0, 0, 0)
+    );
   }
 
   // Call the Supabase stored procedure
-  const { data, error } = await supabase.rpc('get_monitoring_intervals', {
+  const { data, error } = await supabase.rpc('get_monitoring_intervals_v2', {
     board_input: board,
     port_input: port,
     start_date: normalizedStart.toISOString(),
@@ -60,7 +60,7 @@ export const fetchRealtimeData = async (
 
     const interval = IntervalType.Hour;
     // Call the Supabase stored procedure
-    const { data, error } = await supabase.rpc('get_monitoring_intervals', {
+  const { data, error } = await supabase.rpc('get_monitoring_intervals_v2', {
       board_input: board,
       port_input: port,
       start_date: startDate.toISOString(),

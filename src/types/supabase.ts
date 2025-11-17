@@ -1,6 +1,3 @@
-type IsoTimestamp = string;      // pl. "2020-09-20T12:30:00Z"
-type PgIntervalText = string;
-
 // Mold history
 export interface MoldHistory {
     production_id: number;
@@ -27,7 +24,9 @@ export interface Milestone {
     milestone_shots: number;
     maintenance_type: string;
     send_sms: boolean;
-    completed: boolean;
+    sms_sent: boolean;
+    created_at: string;
+    updated_at: string;
 }
 export type MachineTimeline = {
   truncated_timestamp: string;    
@@ -41,8 +40,8 @@ export interface Machine {
   board: number;
   port: number;
   mold_name: string | null;
-  last_ts: IsoTimestamp | null;       
-  time_since_last_shot: PgIntervalText | null; 
+    last_ts: string | null;       
+    time_since_last_shot: string | null; 
   status: 'operational' | 'standby' | 'idle' | 'inactive';
   total_shots: number;                 
   avg_shot_time: number;               
@@ -57,7 +56,7 @@ export interface Group {
 export interface Mold {
     mold_id: number;
     mold_name: string;
-    mold_description: string;
+    mold_description?: string;
 
     board: number | null;
     port: number | null;
@@ -71,8 +70,8 @@ export interface Mold {
 
 // Extend mold with maintaince
 export interface MoldMaintenance extends Mold {
-    milestone_shots: number;
-    maintenance_status: number;
+    milestone_shots: number | null;
+    maintenance_status: 'Maintenance Required' | 'OK';
 }
 
 
@@ -91,9 +90,9 @@ export interface MaintenanceFull {
     mechanic_id: number;
     maintenance_type: "Preventative" | "Corrective";
     description: string;
+    maintenance_description?: string;
     mold_name: string;
     mold_id: number;
-    mold_description: string;
     id: number;
     planned_date: Date;
     maintenance_action: string;
