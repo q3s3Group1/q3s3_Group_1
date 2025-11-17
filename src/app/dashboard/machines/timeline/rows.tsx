@@ -20,8 +20,8 @@ export default function Rows({ machines: initialMachines }: { machines: Machine[
   const [machines, setMachines] = useState<Machine[]>(initialMachines);
   const [loading, setLoading] = useState(false);
 
-  // ref_ts = a kiválasztott kezdődátum (from)
-  const refTs: Date | undefined = useMemo(() => date?.from, [date]);
+  
+  const refTs: Date | undefined = useMemo(() => date?.to, [date]);
 
   useEffect(() => {
     const run = async () => {

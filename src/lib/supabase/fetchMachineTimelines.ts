@@ -2,6 +2,14 @@ import { supabase } from './client';
 import { MachineTimeline } from '../../types/supabase';
 import { IntervalType } from '@/types/enum';
 
+// helpers for utc 
+const utcStartOfDay = (d: Date) =>
+  new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate(), 0, 0, 0, 0));
+
+const utcNextMidnight = (d: Date) =>
+  new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate() + 1, 0, 0, 0, 0));
+
+
 export const fetchChartData = async (
   board: number,
   port: number,
@@ -10,30 +18,28 @@ export const fetchChartData = async (
   interval: IntervalType,
   realtime = false
 ): Promise<MachineTimeline[]> => {
-  let normalizedEnd: Date;
-  const normalizedStart = new Date(
-    Date.UTC(startDate.getFullYear(), startDate.getMonth(), startDate.getDate())
-  );
 
-  if (realtime) {
-    normalizedEnd = new Date(Date.now() + 1 * 60 * 60 * 1000);
-  } else {
-    normalizedEnd = new Date(
-      Date.UTC(endDate.getFullYear(), endDate.getMonth(), endDate.getDate(), 0, 0, 0)
-    );
-  }
+  let normalizedStart = utcStartOfDay(startDate);
+  let normalizedEnd: Date = utcNextMidnight(endDate);
 
-  // Call the Supabase stored procedure
-  const { data, error } = await supabase.rpc('get_monitoring_intervals_v2', {
+
+if (!realtime) {
+  // half-open window: [start, end)
+  let normalizedEnd = utcNextMidnight(endDate);
+
+} else {
+
+  let normalizedEnd = new Date(Date.now() + 1 * 60 * 60 * 1000);
+}
+
+
+  const { data, error } = await supabase.rpc('get_monitoring_intervals', {
     board_input: board,
     port_input: port,
     start_date: normalizedStart.toISOString(),
     end_date: normalizedEnd.toISOString(),
     interval_input: interval,
   });
-
-  // Log response for debugging
-  console.log('fetchChartData', { data, error });
 
   if (error) {
     throw new Error(`Error fetching chart data: ${error.message}`);
@@ -42,38 +48,25 @@ export const fetchChartData = async (
   return data || [];
 };
 
-
-// fetch realtime timeline
 export const fetchRealtimeData = async (
   board: number,
   port: number
 ): Promise<MachineTimeline[]> => {
-  
-
-  // start date, 12 hours ago
   const startDate = new Date(Date.now() - 12 * 60 * 60 * 1000);
-
-  // end date, now
   const endDate = new Date(Date.now() + 1 * 60 * 60 * 1000);
+  const interval = IntervalType.Hour;
 
+  const { data, error } = await supabase.rpc('get_monitoring_intervals', {
+    board_input: board,
+    port_input: port,
+    start_date: startDate.toISOString(),
+    end_date: endDate.toISOString(),
+    interval_input: interval,
+  });
 
+  if (error) {
+    throw new Error(`Error fetching chart data: ${error.message}`);
+  }
 
-    const interval = IntervalType.Hour;
-    // Call the Supabase stored procedure
-  const { data, error } = await supabase.rpc('get_monitoring_intervals_v2', {
-      board_input: board,
-      port_input: port,
-      start_date: startDate.toISOString(),
-      end_date: endDate.toISOString(),
-      interval_input: interval,
-    });
-  
-    // Log response for debugging
-    console.log('fetchChartData', { data, error });
-  
-    if (error) {
-      throw new Error(`Error fetching chart data: ${error.message}`);
-    }
-  
-    return data || [];
+  return data || [];
 };
