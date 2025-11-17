@@ -1,6 +1,6 @@
 "use client";
 import {ChevronLeft, ChevronRight} from "lucide-react";
-import {useEffect, useState} from "react";
+import {useCallback, useEffect, useState} from "react";
 import {addDays} from "date-fns";
 import {getDayName, sameDay} from "@/lib/utils";
 import CreatePlanDialog from "./planning/CreatePlanDialog";
@@ -45,10 +45,12 @@ export default function PlanningCalendar(props: Props) {
             fetchMechanic(props.mechanic).then((retrievedMechanic) => {
                 setMechanic(retrievedMechanic)
             })
+        } else {
+            setMechanic(null);
         }
-    });
+    }, [props.mechanic]);
 
-    function refreshCalendar() {
+    const refreshCalendar = useCallback(() => {
         let fetchedMaintenancePlans: MaintenanceFull[] = []
 
         fetchAllMaintenance(currentDate, addDays(currentDate, 7), props.mechanic).then((fetchedPlans) => {
@@ -62,11 +64,11 @@ export default function PlanningCalendar(props: Props) {
             }
             setWeekDays(weekDaysTemp);
         })
-    }
+    }, [currentDate, props.mechanic]);
 
     useEffect(() => {
         refreshCalendar()
-    }, [currentDate])
+    }, [currentDate, refreshCalendar])
 
     return (
 

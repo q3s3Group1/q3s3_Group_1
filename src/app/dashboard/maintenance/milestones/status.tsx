@@ -8,22 +8,26 @@ interface MilestoneStatusProps {
 }
 
 export const MilestoneStatus = ({ milestone, mold }: MilestoneStatusProps) => {
-    // progress
-    let progress = (mold.total_shots / milestone.milestone_shots) * 100;
-    
-    // if progress is over 100 return 100
-    progress = progress > 100 ? 100 : progress;
+    const targetShots = milestone.milestone_shots > 0 ? milestone.milestone_shots : null;
+    const progress = targetShots
+        ? Math.min(100, (mold.total_shots / targetShots) * 100)
+        : 0;
+    const isCompleted = targetShots ? mold.total_shots >= targetShots : false;
+    const label = targetShots
+        ? `${mold.total_shots} / ${targetShots}`
+        : `${mold.total_shots} shots`;
+
     return (
         <div className="flex flex-col items-start space-y-2">
             <div className="flex items-center space-x-2">
                 {
-                    progress >= 100 ? (
+                    isCompleted ? (
                         <CheckIcon size={24} color="green" />
                     ) : (
                         <XIcon size={24} color="red" />
                     )
                 }
-                <span>{mold.total_shots} / {milestone.milestone_shots}</span>
+                <span>{label}</span>
             </div>
 
             <Progress value={progress} />

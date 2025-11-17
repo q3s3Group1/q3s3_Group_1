@@ -28,7 +28,11 @@ export default async function Page() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {machines.map((m) => (
+            {machines.map((m) => {
+              const avgShotTime =
+                typeof m.avg_shot_time === 'number' ? m.avg_shot_time : Number(m.avg_shot_time ?? 0);
+
+              return (
               <TableRow key={m.machine_id}>
                 <TableCell className="flex items-center justify-start gap-2">
                   <StatusIndicator status={m.status} />
@@ -43,12 +47,11 @@ export default async function Page() {
                 <TableCell className="text-right">{m.time_since_last_shot ?? 'N/A'}</TableCell>
                 <TableCell className="text-right">{m.total_shots?.toLocaleString?.() ?? 0}</TableCell>
                 <TableCell className="text-right">
-                  {typeof (m as any).avg_shot_time === 'number'
-                    ? (m as any).avg_shot_time.toFixed(2)
-                    : '0.00'}
+                    {Number.isFinite(avgShotTime) ? avgShotTime.toFixed(2) : '0.00'}
                 </TableCell>
               </TableRow>
-            ))}
+              );
+            })}
           </TableBody>
           <TableFooter>
             <TableRow>

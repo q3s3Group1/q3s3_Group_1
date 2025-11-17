@@ -20,12 +20,10 @@ interface NotificationItemProps {
 export default function NotificationItem({ notification, onClick }: NotificationItemProps) {
     const [chartData, setChartData] = useState<MachineTimeline[]>([]);
 
-    const startDate = new Date(notification.detected_at);
-
-    const endDate = addDays(startDate, 1);
-
-
     useEffect(() => {
+        const startDate = new Date(notification.detected_at);
+        const endDate = addDays(startDate, 1);
+
         const loadData = async () => {
         if (notification.board && notification.port) {
 
@@ -41,11 +39,11 @@ export default function NotificationItem({ notification, onClick }: Notification
 
     
     return (
-        <div className={`flex items-center p-4 rounded-lg shadow-md relative overflow-hidden border-l-8 cursor-pointer ${getNotificationColor(notification)} hover:border-opacity-80 transition-colors duration-300 hover:shadow-lg`}
-        onClick={
-            onClick
-        }
-            >
+        <button
+        type="button"
+        className={`flex w-full items-center p-4 text-left rounded-lg shadow-md relative overflow-hidden border-l-8 ${getNotificationColor(notification)} hover:border-opacity-80 transition-colors duration-300 hover:shadow-lg`}
+        onClick={onClick}
+        >
             <div className="relative z-20 w-full">
 
 
@@ -70,7 +68,7 @@ export default function NotificationItem({ notification, onClick }: Notification
                         }
                         
                     </span>
-                <h3 className="text-lg font-semibold " onClick={onClick}>{notification.message}</h3>
+                <h3 className="text-lg font-semibold ">{notification.message}</h3>
                 <p className="text-sm">{
                     new Date(notification.detected_at).toLocaleString('nl-NL')
                     }</p>
@@ -86,6 +84,6 @@ export default function NotificationItem({ notification, onClick }: Notification
 
             </div>
 
-        </div>
+        </button>
     );
 }

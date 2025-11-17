@@ -11,7 +11,6 @@ import {
 
 import { MoldHistory } from "@/types/supabase";
 import Link from "next/link";
-import { useEffect } from "react";
 import { DateRange } from "react-day-picker";
 
 // Props
@@ -99,11 +98,12 @@ export const MoldHistoryTable = ({ moldsHistory
                         to: new Date(moldHistory.end_date),
                       });
 
-                      setBoardPort &&
+                      if (setBoardPort) {
                         setBoardPort({
                           board: moldHistory.board,
                           port: moldHistory.port,
                         });
+                      }
                     }}
                   >
                     Bekijk

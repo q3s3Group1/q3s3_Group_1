@@ -2,7 +2,8 @@ import { supabase } from './client';
 import { MachineTimeline } from '../../types/supabase';
 import { IntervalType } from '@/types/enum';
 
-// helpers for utc 
+const HOUR_IN_MS = 60 * 60 * 1000;
+
 const utcStartOfDay = (d: Date) =>
   new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate(), 0, 0, 0, 0));
 
@@ -18,19 +19,10 @@ export const fetchChartData = async (
   interval: IntervalType,
   realtime = false
 ): Promise<MachineTimeline[]> => {
-
-  let normalizedStart = utcStartOfDay(startDate);
-  let normalizedEnd: Date = utcNextMidnight(endDate);
-
-
-if (!realtime) {
-  // half-open window: [start, end)
-  let normalizedEnd = utcNextMidnight(endDate);
-
-} else {
-
-  let normalizedEnd = new Date(Date.now() + 1 * 60 * 60 * 1000);
-}
+  const normalizedStart = realtime ? startDate : utcStartOfDay(startDate);
+  const normalizedEnd = realtime
+    ? new Date(Date.now() + HOUR_IN_MS)
+    : utcNextMidnight(endDate);
 
 
   const { data, error } = await supabase.rpc('get_monitoring_intervals', {
@@ -52,8 +44,8 @@ export const fetchRealtimeData = async (
   board: number,
   port: number
 ): Promise<MachineTimeline[]> => {
-  const startDate = new Date(Date.now() - 12 * 60 * 60 * 1000);
-  const endDate = new Date(Date.now() + 1 * 60 * 60 * 1000);
+  const startDate = new Date(Date.now() - 12 * HOUR_IN_MS);
+  const endDate = new Date(Date.now() + HOUR_IN_MS);
   const interval = IntervalType.Hour;
 
   const { data, error } = await supabase.rpc('get_monitoring_intervals', {
