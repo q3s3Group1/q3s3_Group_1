@@ -1,7 +1,8 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine } from "recharts";
-import { Machine, MachineTimeline, Mold, MoldHistory } from "@/types/supabase";
+import { LineChart, Line, XAxis, YAxis, ReferenceLine, ResponsiveContainer } from "recharts";
+import { Machine, MachineTimeline, MoldHistory } from "@/types/supabase";
+import StatusIndicator from "@/components/timeline/StatusIndicator";
 
 interface MachineCardProps {
   machine: Machine;
@@ -15,7 +16,7 @@ export default function MachineCard({ machine, molds, chartData = [] }: MachineC
 
   useEffect(() => {
     // Simulate loading state for chart data and molds
-    const chartTimeout = setTimeout(() => setIsChartLoading(false), 500); // Adjust delay as needed
+    const chartTimeout = setTimeout(() => setIsChartLoading(false), 500);
     const moldsTimeout = setTimeout(() => setIsMoldsLoading(false), 500);
 
     return () => {
@@ -23,6 +24,24 @@ export default function MachineCard({ machine, molds, chartData = [] }: MachineC
       clearTimeout(moldsTimeout);
     };
   }, [chartData, molds]);
+
+  const getStatus = (machine: Machine) => machine.status || "Unknown";
+
+  // Map Dutch statuses to English for StatusIndicator
+  const mapStatusToEnglish = (
+    status: string
+  ): "operational" | "standby" | "idle" | "inactive" => {
+    switch (status) {
+      case "Actief":
+        return "operational";
+      case "Inactief":
+        return "standby";
+      case "Stilstand":
+        return "inactive";
+      default:
+        return "inactive";
+    }
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -63,10 +82,6 @@ export default function MachineCard({ machine, molds, chartData = [] }: MachineC
     }
   };
 
-  const getStatus = (machine: Machine) => {
-    return machine.status || "Onbekend";
-  };
-
   const medianHourlyShots =
     chartData.length > 0
       ? chartData.reduce((acc, item) => acc + item.total_shots, 0) / chartData.length
@@ -85,6 +100,11 @@ export default function MachineCard({ machine, molds, chartData = [] }: MachineC
         <h3 className="text-4xl font-bold mb-2">{machine.machine_name || machine.machine_id}</h3>
       </div>
 
+      {/* Status Indicator */}
+      <div className="mb-4">
+        <StatusIndicator status={mapStatusToEnglish(getStatus(machine))} />
+      </div>
+
       {/* Background Chart */}
       <div className="absolute scale-105 transform inset-0 z-0 opacity-30">
         {isChartLoading ? (
@@ -93,12 +113,7 @@ export default function MachineCard({ machine, molds, chartData = [] }: MachineC
           <ResponsiveContainer width="100%" height="100%">
             <LineChart
               data={chartData}
-              margin={{
-                top: 5,
-                right: 0,
-                bottom: 0,
-                left: 0,
-              }}
+              margin={{ top: 5, right: 0, bottom: 0, left: 0 }}
             >
               <XAxis
                 dataKey="truncated_timestamp"
@@ -106,7 +121,7 @@ export default function MachineCard({ machine, molds, chartData = [] }: MachineC
                 stroke="#ccc"
                 tickFormatter={(value) => {
                   const date = new Date(value);
-                  return date.toLocaleString("nl-NL", { hour: "2-digit", minute: "2-digit" });
+                  return date.toLocaleString("en-GB", { hour: "2-digit", minute: "2-digit" });
                 }}
               />
               <YAxis hide={true} />
@@ -126,15 +141,12 @@ export default function MachineCard({ machine, molds, chartData = [] }: MachineC
       {/* Molds */}
       <div className="flex flex-wrap justify-around gap-2 mt-2">
         {isMoldsLoading
-          ? Array(3)
-              .fill(null)
-              .map((_, idx) => (
-                <div key={idx} className="w-full h-4 bg-gray-700 rounded-full animate-pulse mb-2"></div>
-              ))
-          : molds &&
-            molds.map((matrijs) => (
-              <div className="w-full" key={matrijs.mold_id}>
-                <div className="text-sm font-medium mb-2">{matrijs.mold_name || matrijs.mold_id}</div>
+          ? Array(3).fill(null).map((_, idx) => (
+              <div key={idx} className="w-full h-4 bg-gray-700 rounded-full animate-pulse mb-2" />
+            ))
+          : molds?.map((mold) => (
+              <div className="w-full" key={mold.mold_id}>
+                <div className="text-sm font-medium mb-2">{mold.mold_name || mold.mold_id}</div>
               </div>
             ))}
       </div>
