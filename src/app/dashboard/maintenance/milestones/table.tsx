@@ -1,19 +1,15 @@
-import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
 import {
     Table,
     TableBody,
     TableCaption,
     TableCell,
-    TableFooter,
     TableHead,
     TableHeader,
     TableRow,
   } from "@/components/ui/table"
 
-import { Milestone, MoldHistory, MoldMaintenance } from "@/types/supabase";
+import { Milestone, MoldMaintenance } from "@/types/supabase";
 import Link from "next/link";
-import { DateRange } from "react-day-picker";
 import { MilestoneStatus } from "./status";
 import { CheckIcon, XIcon } from "lucide-react";
 
@@ -59,18 +55,15 @@ export const MilestoneTable = ({
             </TableHeader>
             <TableBody>
                 {
-                    milestones.map((milestone, index) => {
+                    milestones.map((milestone) => {
                         const mold = molds.find(mold => mold.mold_id === milestone.mold_id);
 
                         if (!mold) {
                             return null;
                         }
 
-                        // progress
-                        const progress = (milestone.milestone_shots / mold.total_shots) * 100;
-
                         return (
-                            <TableRow key={index}>
+                            <TableRow key={milestone.id}>
                                 <TableCell className="flex items-center space-x-2">
                                     {mold.board ? (
                                         <><CheckIcon size={24} color="green" /> Ja</>

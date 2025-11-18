@@ -9,6 +9,7 @@ import {useEffect, useState} from "react";
 import {removeMaintenanceGroup} from "@/lib/supabase/createMaintenanceGroup";
 import {Group} from "lucide-react";
 import {fetchGroup} from "@/lib/supabase/fetchGroup";
+import {useLanguage} from "@/lib/i18n/LanguageContext";
 
 interface WeekDay {
     dayDate: Date,
@@ -26,6 +27,8 @@ interface MaintenanceGroup {
 }
 
 export default function WeekDayList(props: Props) {
+    const { t } = useLanguage();
+    
     function maintenanceDroppedOn(item: { id: number, planned_date: Date }) {
         const newDate = new Date(props.weekDay.dayDate)
 
@@ -34,11 +37,11 @@ export default function WeekDayList(props: Props) {
 
         updateMaintenanceDate(item.id, newDate).then(() => {
             removeMaintenanceGroup(item.id).then()
-            toast("Datum van onderhoudsbeurt is aangepast.", {type: 'success'})
+            toast(t('planning.dateUpdated'), {type: 'success'})
             props.weekDay.dayDate = newDate
             props.onMaintenanceEdited()
         }).catch((e) => {
-            toast("Kon datum van onderhoudsbeurt niet aanpassen.", {type: "error"})
+            toast(t('planning.dateUpdateError'), {type: "error"})
             console.error(e)
         });
     }
@@ -72,15 +75,18 @@ export default function WeekDayList(props: Props) {
             }}>
             <div
                 className={"w-full h-full flex items-center align-center justify-center " + (props.weekDay.maintenancePlans.length == 0 ? "" : "hidden")}>
-                                    <span
-                                        className={"block text-sm text-neutral-400"}>Er is vandaag niks gepland.</span>
+                <span className={"block text-sm text-neutral-400"}>
+                    {t('planning.nothingPlannedToday')}
+                </span>
             </div>
             {sortedGroups.entries().map(m => (
                 <div key={m[0]} className="flex flex-col gap-2 w-full p-2 bg-blue-50 rounded">
                     <div className={"flex items-center gap-2"}>
-                        <span className="text-sm text-black/90">Route</span>
+                        <span className="text-sm text-black/90">{t('planning.route')}</span>
                         <Group size={17} className={"mr-auto"} />
-                        <span className={"text-xs text-black/70"}>{m[1].length} {m[1].length == 1 ? 'item' : 'items'}</span>
+                        <span className={"text-xs text-black/70"}>
+                            {t('planning.itemCount', { count: m[1].length })}
+                        </span>
                     </div>
                     {
                         m[1].map(mm => (
@@ -90,7 +96,7 @@ export default function WeekDayList(props: Props) {
                                                           maintenancePlan={mm}/>
                                 </DialogTrigger>
                                 <DialogContent className={"rounded-xl"}>
-                                    <DialogTitle>Onderhoudsbeurt</DialogTitle>
+                                    <DialogTitle>{t('planning.maintenanceSession')}</DialogTitle>
                                     <FullMaintenanceDetails onEdited={props.onMaintenanceEdited}
                                                             maintenance={mm}/>
                                 </DialogContent>
@@ -106,7 +112,7 @@ export default function WeekDayList(props: Props) {
                                               maintenancePlan={maintenancePlan}/>
                     </DialogTrigger>
                     <DialogContent className={"rounded-xl"}>
-                        <DialogTitle>Onderhoudsbeurt</DialogTitle>
+                        <DialogTitle>{t('planning.maintenanceSession')}</DialogTitle>
                         <FullMaintenanceDetails onEdited={props.onMaintenanceEdited}
                                                 maintenance={maintenancePlan}/>
                     </DialogContent>

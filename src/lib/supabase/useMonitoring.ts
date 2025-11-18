@@ -3,6 +3,7 @@ import { supabase } from './client';
 import { MonitoringData } from '@/types/supabase';
 
 const MAX_DATA_POINTS = 20;
+const MONITORING_TABLES = ['monitoring_data_202009', 'monitoring_data_202010'] as const;
 
 export function useMonitoringData(board: number, port: number) {
   const [data, setData] = useState<MonitoringData[]>([]);
@@ -13,58 +14,77 @@ export function useMonitoringData(board: number, port: number) {
     const fetchInitialData = async () => {
       try {
         const { data: initialData, error: fetchError } = await supabase
-          .from('monitoring_data_202009')
+          .from('v_monitoring_data')
           .select('id, shot_time, timestamp, board, port, mac_address')
           .eq('board', board)
           .eq('port', port)
-          .order('timestamp', { ascending: true })
+          .order('timestamp', { ascending: false })
           .limit(MAX_DATA_POINTS);
 
         if (fetchError) throw fetchError;
-        
-        const transformedData = (initialData || []).map(item => ({
-          ...item,
-          shot_time: Number(item.shot_time),
-          mac_address: item.mac_address,
-        }));
-        
+
+        const transformedData = (initialData || [])
+          .map((item) => ({
+            ...item,
+            shot_time: Number(item.shot_time),
+          }))
+          .sort(
+            (a, b) =>
+              new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
+          );
+
         setData(transformedData);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to fetch monitoring data');
+        setError(
+          err instanceof Error ? err.message : 'Failed to fetch monitoring data'
+        );
       } finally {
         setIsLoading(false);
       }
     };
 
+    const handleRealtimeInsert = (payload: { new: MonitoringData }) => {
+      setData((currentData) => {
+        const newDataPoint = {
+          ...payload.new,
+          shot_time: Number(payload.new.shot_time),
+        };
+        const updatedData = [...currentData, newDataPoint];
+        return updatedData.slice(-MAX_DATA_POINTS);
+      });
+    };
+
     const subscribeToChanges = () => {
-      return supabase.channel(`monitoring-changes-${board}-${port}`)
-        .on(
-          'postgres_changes',
-          {
-            event: 'INSERT',
-            schema: 'public',
-            table: 'monitoring_data_202009',
-            filter: `board=eq.${board}&port=eq.${port}`,
-          },
-          (payload) => {
-            setData(currentData => {
-              const newDataPoint = {
-                ...payload.new as MonitoringData,
-                shot_time: Number(payload.new.shot_time),
-              };
-              const updatedData = [...currentData, newDataPoint];
-              return updatedData.slice(-MAX_DATA_POINTS);
-            });
-          }
-        )
-        .subscribe();
+      const channels: ReturnType<typeof supabase.channel>[] = [];
+
+      for (const table of MONITORING_TABLES) {
+        const channel = supabase
+          .channel(`monitoring-changes-${table}-${board}-${port}`)
+          .on(
+            'postgres_changes',
+            {
+              event: 'INSERT',
+              schema: 'public',
+              table,
+              filter: `board=eq.${board}&port=eq.${port}`,
+            },
+            handleRealtimeInsert
+          )
+          .subscribe();
+
+        channels.push(channel);
+      }
+
+      return channels;
     };
 
     fetchInitialData();
-    const channel = subscribeToChanges();
+    const channels = subscribeToChanges();
 
     return () => {
-      supabase.removeChannel(channel);
+      for (const channel of channels) {
+        supabase.removeChannel(channel);
+      }
     };
   }, [board, port]);
 

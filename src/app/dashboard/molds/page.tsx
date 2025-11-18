@@ -22,6 +22,7 @@ export default async function Page() {
     const maintenance_interval = 100000;
     // calculate levels duur
     const calculateLevensduurLeft = (mold: MoldMaintenance) => {
+      const milestoneShots = mold.milestone_shots ?? 0;
         
       // return a number between 0 and 100
       // if low shots, return 0
@@ -30,8 +31,7 @@ export default async function Page() {
       // return 0
 
       // if high shots, return 100
-
-      const shots = mold.total_shots - mold.milestone_shots;
+  const shots = mold.total_shots - milestoneShots;
       
       if (shots <= 0) {
         return 0;

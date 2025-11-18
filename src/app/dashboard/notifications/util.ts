@@ -4,7 +4,7 @@ import { Notification, NotificationStatus } from "@/types/supabase";
 export function getNotificationColor(notification: Notification) {
     const type = notification.status;
 
-    var color = "border-gray-500";
+    let color = "border-gray-500";
     switch (type) {
         case NotificationStatus.offline:
             color = "border-red-500";

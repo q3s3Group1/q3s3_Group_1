@@ -1,9 +1,9 @@
 "use client"
 
 import * as React from 'react'
-import {  Bell, Cog, Cpu, Home, Power, Shield, Wrench } from 'lucide-react'
+import { Bell, Cog, Cpu, Shield, Wrench } from 'lucide-react'
 import { usePathname } from 'next/navigation'
-
+import { LanguageSelector } from '@/components/LanguageSelector'
 import { cn } from '@/lib/utils'
 import {
   Sidebar,
@@ -22,39 +22,40 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import Link from 'next/link'
+import { useLanguage } from '@/lib/i18n/LanguageContext'
 
+// Menu items but with translation keys
 const menuItems = [
   { 
     icon: Cpu, 
-    label: 'Machines', 
+    label: 'nav.machines',            // Machines
     href: '/dashboard/machines',
     subItems: [
-      { label: 'Alle machines', href: '/dashboard/machines' },
-      { label: 'Historische data', href: '/dashboard/machines/timeline' },
+      { label: 'machines.all', href: '/dashboard/machines' },
+      { label: 'machines.history', href: '/dashboard/machines/timeline' },
     ]
   },
-  // Molds
   { 
     icon: Shield, 
-    label: 'Matrijzen', 
+    label: 'nav.molds',               // Matrijzen
     href: '/dashboard/molds',
     subItems: [
-      { label: 'Levensduur', href: '/dashboard/molds' },
+      { label: 'molds.lifetime', href: '/dashboard/molds' },
     ]
   },
   {
     icon: Wrench,
-    label: 'Onderhoud',
+    label: 'nav.maintenance',         // Onderhoud
     href: '/dashboard/maintenance',
     subItems: [
-      { label: 'Kalender', href: '/dashboard/maintenance' },
-      { label: 'Monteurs', href: '/dashboard/maintenance/mechanics' },
-      { label: 'Preventieve planning', href: '/dashboard/maintenance/milestones' },
+      { label: 'maintenance.calendar', href: '/dashboard/maintenance' },
+      { label: 'nav.mechanics', href: '/dashboard/maintenance/mechanics' },
+      { label: 'milestones.title', href: '/dashboard/maintenance/milestones' },
     ]
   },
   { 
     icon: Bell, 
-    label: 'Meldingen', 
+    label: 'nav.notifications',
     href: '/dashboard/notifications',
     badge: 3
   },
@@ -62,18 +63,18 @@ const menuItems = [
 
 export function AppSidebar() {
   const pathname = usePathname()
+  const { t } = useLanguage()
 
   return (
     <Sidebar className="border-r border-zinc-200 bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900">
       <SidebarHeader className="border-b border-zinc-200 dark:border-zinc-800 h-20">
         <div className="flex items-center gap-2 px-6 py-4">
-          <img
-            src="/logo.svg"
-            alt="Logo"
-            className="h-8 w-auto"
-          />
+          <img src="/logo.svg" alt="Logo" className="h-8 w-auto" />
         </div>
       </SidebarHeader>
+
+      <LanguageSelector />
+
       <SidebarContent>
         <ScrollArea className="h-[calc(100vh-5rem)]">
           <SidebarMenu>
@@ -89,8 +90,9 @@ export function AppSidebar() {
                   >
                     <div className="flex items-center gap-3">
                       <item.icon className="h-5 w-5" />
-                      <span>{item.label}</span>
+                      <span>{t(item.label)}</span>
                     </div>
+
                     {item.badge && (
                       <Badge variant="destructive" className="ml-auto">
                         {item.badge}
@@ -98,6 +100,7 @@ export function AppSidebar() {
                     )}
                   </Link>
                 </SidebarMenuButton>
+
                 {item.subItems && (
                   <SidebarMenuSub>
                     {item.subItems.map((subItem) => (
@@ -106,7 +109,9 @@ export function AppSidebar() {
                           asChild
                           isActive={pathname === subItem.href}
                         >
-                          <a href={subItem.href}>{subItem.label}</a>
+                          <a href={subItem.href}>
+                            {t(subItem.label)}
+                          </a>
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>
                     ))}
@@ -117,6 +122,7 @@ export function AppSidebar() {
           </SidebarMenu>
         </ScrollArea>
       </SidebarContent>
+
       <SidebarFooter className="border-t border-zinc-200 dark:border-zinc-800">
         <SidebarMenu>
           <SidebarMenuItem>
@@ -129,22 +135,23 @@ export function AppSidebar() {
                 )}
               >
                 <Cog className="h-5 w-5" />
-                <span>Settings</span>
+                <span>{t('nav.settings')}</span>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
+
         <div className="p-4">
           <Link href="/factory">
-          <Button className="w-full" variant="outline">
-            <Wrench className="mr-2 h-4 w-4" />
-            Factory View Mode
-          </Button>
+            <Button className="w-full" variant="outline">
+              <Wrench className="mr-2 h-4 w-4" />
+              {t('nav.factoryView')}
+            </Button>
           </Link>
         </div>
       </SidebarFooter>
+
       <SidebarRail />
     </Sidebar>
   )
 }
-
