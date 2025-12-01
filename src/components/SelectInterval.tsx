@@ -44,10 +44,6 @@ export function SelectInterval({ interval, setInterval, date, autoChangeInterval
   }
   , [date]);
 
-
-
-
-
   return (
     <Select onValueChange={(value) => setInterval(value as IntervalType)} value={interval}>
       <SelectTrigger className="w-[180px]">
@@ -61,8 +57,6 @@ export function SelectInterval({ interval, setInterval, date, autoChangeInterval
             <SelectItem value={IntervalType.Hour}>Shots per hour</SelectItem>
             <SelectItem value={IntervalType.Day}>Shots per day</SelectItem>
             <SelectItem value={IntervalType.Week}>Shots per week</SelectItem>
-            
-
         </SelectGroup>
       </SelectContent>
     </Select>
