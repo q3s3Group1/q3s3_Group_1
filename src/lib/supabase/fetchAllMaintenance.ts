@@ -52,11 +52,11 @@ export async function fetchMaintenance(id: number): Promise<MaintenanceFull> {
     return mapped;
 }
 
-// get by mold_id
-export async function fetchMaintenanceByMoldId(mold_id: number): Promise<MaintenanceFull[]> {
+// get by machine_id
+export async function fetchMaintenanceByMachineId(machine_id: number): Promise<MaintenanceFull[]> {
     const {data, error} = await supabase
         .from('v_maintenance')
-        .select('*').eq("mold_id", mold_id)
+        .select('*').eq("machine_id", machine_id)
 
     if (error) {
         throw new Error(`Error fetching maintenance: ${error.message}`);

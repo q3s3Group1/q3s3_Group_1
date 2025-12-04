@@ -1,10 +1,10 @@
 import { Progress } from "@/components/ui/progress";
-import { Milestone, MoldMaintenance } from "@/types/supabase";
+import { Milestone, MachineMaintenance } from "@/types/supabase";
 import { CheckIcon, XIcon } from "lucide-react";
 
 interface MilestoneStatusProps {
     milestone: Milestone;
-    mold: MoldMaintenance;
+    mold: MachineMaintenance;
 }
 
 export const MilestoneStatus = ({ milestone, mold }: MilestoneStatusProps) => {

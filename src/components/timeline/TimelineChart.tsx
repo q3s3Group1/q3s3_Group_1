@@ -43,7 +43,6 @@ const TimelineChart: React.FC<TimelineChartProps> = ({
 
   const displayedData = zoomDomain || data;
 
-  // Mouse events
   const handleMouseDown = (e: React.MouseEvent) => {
     if (!chartRef.current) return;
     const rect = chartRef.current.getBoundingClientRect();
@@ -92,8 +91,6 @@ const TimelineChart: React.FC<TimelineChartProps> = ({
   setDragStart(null);
   setDragEnd(null);
 };
-
-
 
   const handleResetZoom = () => setZoomDomain(null);
 

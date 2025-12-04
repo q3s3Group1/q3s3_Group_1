@@ -37,7 +37,7 @@ export default function FullMaintenanceDetails(props: Props) {
             maintenance_type: editedForm.maintenance_type,
             maintenance_action: editedForm.maintenance_action,
             planned_date: new Date(editedForm.planned_date),
-            mold_id: editedForm.mold_id
+            machine_id: editedForm.machine_id
         }).then(() => {
             toast(t('maintenance.updated'), {type: 'success'})
             props.onEdited()
@@ -56,8 +56,8 @@ export default function FullMaintenanceDetails(props: Props) {
         return (
             <form onSubmit={handleFormSubmit} className="block w-full h-full z-form">
                 <div className="grid grid-cols-2 gap-4">
-                    <span className="block font-semibold">{t('maintenance.mold')}</span>
-                    <span>{props.maintenance.mold_name || props.maintenance.mold_id}</span>
+                    <span className="block font-semibold">{t('maintenance.machine')}</span>
+                    <span>{props.maintenance.machine_name || props.maintenance.machine_id}</span>
 
                     <span className="block font-semibold">{t('maintenance.plannedFor')}</span>
                     <Input onChange={updateFormValue} name="planned_date" type='datetime-local'
@@ -95,8 +95,8 @@ export default function FullMaintenanceDetails(props: Props) {
         return (
             <div className="block w-full h-full">
                 <div className="grid grid-cols-2 gap-4">
-                    <span className="block font-semibold">{t('maintenance.mold')}</span>
-                    <span>{props.maintenance.mold_name || props.maintenance.mold_id}</span>
+                    <span className="block font-semibold">{t('maintenance.machine')}</span>
+                    <span>{props.maintenance.machine_name || props.maintenance.machine_id}</span>
 
                     <span className="block font-semibold">{t('maintenance.plannedFor')}</span>
                     <span>{new Intl.DateTimeFormat(language === 'nl' ? "nl" : "en", {

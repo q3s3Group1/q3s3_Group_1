@@ -6,10 +6,10 @@ import {
     SheetTitle,
     SheetTrigger,
   } from "@/components/ui/sheet"
-import { MoldMaintenance } from "@/types/supabase";
+import { MachineMaintenance } from "@/types/supabase";
 
   interface MilestoneSheetProps {
-    molds: MoldMaintenance[];
+    molds: MachineMaintenance[];
 }
 
   export default function MilestoneSheet({ molds }: MilestoneSheetProps) {

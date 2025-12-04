@@ -8,7 +8,7 @@ import {
     TableRow,
   } from "@/components/ui/table"
 
-import { Milestone, MoldMaintenance } from "@/types/supabase";
+import { Milestone, MachineMaintenance } from "@/types/supabase";
 import Link from "next/link";
 import { MilestoneStatus } from "./status";
 import { CheckIcon, XIcon } from "lucide-react";
@@ -16,7 +16,7 @@ import { CheckIcon, XIcon } from "lucide-react";
 // Props
 interface MilestoneProps {
     milestones: Milestone[];
-    molds: MoldMaintenance[];
+    molds: MachineMaintenance[];
 }
 
 export const MilestoneTable = ({ 

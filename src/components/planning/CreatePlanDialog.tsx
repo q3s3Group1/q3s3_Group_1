@@ -4,26 +4,27 @@ import {Dialog, DialogContent, DialogTitle, DialogTrigger} from "@/components/ui
 import {Plus} from "lucide-react";
 import {Input} from "@/components/ui/input";
 import {ChangeEvent, FormEvent, useEffect, useState} from "react";
-import {Maintenance, Mechanic, Mold} from "@/types/supabase";
+import {Machine, MaintenanceMachine, Mechanic} from "@/types/supabase";
 import 'react-toastify/dist/ReactToastify.css';
 import {toast, ToastContainer} from "react-toastify";
 import {insertNewMaintenance} from "@/lib/supabase/insertNewMaintenance";
-import {fetchAllMolds} from "@/lib/supabase/fetchMolds";
 import {fetchMechanics} from "@/lib/supabase/fetchMechanics";
 import {formatDateToISO} from "@/lib/utils";
-import {insertNewMoldMaintenanceMilestone} from "@/lib/supabase/insertNewMoldMaintenanceMilestone";
+import {insertNewMachineMaintenanceMilestone} from "@/lib/supabase/insertNewMachineMaintenanceMilestone";
 import {useLanguage} from "@/lib/i18n/LanguageContext";
+import { fetchMachines } from "@/lib/supabase/fetchMachines";
+import { machine } from "os";
 
 interface Props {
-    formData: Partial<Omit<Maintenance, "id" | "status">>
+    formData: Partial<Omit<MaintenanceMachine, "id" | "status">>
     onCreatedNewPlanning: () => void
 }
 
 export default function CreatePlanDialog(props: Props) {
     const { t } = useLanguage();
-    const [maintenanceForm, setMaintenanceForm] = useState<Partial<Omit<Maintenance, "id" | "status"> & {lifespan: number}>>(props.formData);
+    const [maintenanceForm, setMaintenanceForm] = useState<Partial<Omit<MaintenanceMachine, "id" | "status"> & {lifespan: number}>>(props.formData);
 
-    const [molds, setMolds] = useState<Mold[]>([]);
+    const [machines, setMachines] = useState<Machine[]>([]);
     const [mechanics, setMechanics] = useState<Mechanic[]>([]);
     const [isOpened, setIsOpened] = useState<boolean>(false);
     const [isManual, setIsManual] = useState<boolean>(true);
@@ -36,7 +37,7 @@ export default function CreatePlanDialog(props: Props) {
         e.preventDefault()
 
         if (isManual){
-            insertNewMaintenance(maintenanceForm as Required<Omit<Maintenance, "id" | "status">>).then(() => {
+            insertNewMaintenance(maintenanceForm as Required<Omit<MaintenanceMachine, "id" | "status">>).then(() => {
                 toast(t('planning.maintenanceScheduled'), {type: "success"});
                 setIsOpened(false)
                 props.onCreatedNewPlanning()
@@ -47,7 +48,7 @@ export default function CreatePlanDialog(props: Props) {
             })
         }
         else {
-            insertNewMoldMaintenanceMilestone(maintenanceForm.mold_id!, maintenanceForm.lifespan!).then(() => {
+            insertNewMachineMaintenanceMilestone(maintenanceForm.machine_id!, maintenanceForm.lifespan!).then(() => {
                 toast(t('planning.milestoneSet'), {type: "success"});
                 setIsOpened(false)
             }).catch((reason: Error) => {
@@ -65,7 +66,7 @@ export default function CreatePlanDialog(props: Props) {
     }
 
     useEffect(() => {
-        fetchAllMolds().then((fetchedMolds) => setMolds(fetchedMolds));
+        fetchMachines().then((fetchedMachines) => setMachines(fetchedMachines));
         fetchMechanics().then((mechanics) => setMechanics(mechanics));
     }, []);
 
@@ -108,12 +109,12 @@ export default function CreatePlanDialog(props: Props) {
                         </div>
 
                         <div className={"grid grid-cols-2 items-center gap-3 w-full"}>
-                            <span className={"text-sm font-semibold"}>{t('planning.mold')}</span>
-                            <select required defaultValue={""} name="mold_id" onChange={updateFormValue}>
+                            <span className={"text-sm font-semibold"}>{t('planning.machine')}</span>
+                            <select required defaultValue={""} name="machine_id" onChange={updateFormValue}>
                                 <option value="" disabled>{t('planning.selectOption')}</option>
-                                {molds.map((m, index) => <option value={m.mold_id}
-                                                                 key={index}>{m.mold_name
-                                    || m.mold_id
+                                {machines.map((m, index) => <option value={m.machine_id}
+                                                                 key={index}>{m.machine_name
+                                    || m.machine_id
                                 }
 
                                 {/* Shots */}

@@ -1,9 +1,8 @@
-import { Maintenance } from "@/types/supabase";
+import { MaintenanceMachine } from "@/types/supabase";
 import { supabase } from "./client";
 
 
-export async function insertNewMaintenance(maintenance: Omit<Maintenance, "id" | "status">) {
-
+export async function insertNewMaintenance(maintenance: Omit<MaintenanceMachine, "id" | "status">) {
     
 
     const {error} = await supabase

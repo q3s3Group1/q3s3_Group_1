@@ -56,7 +56,7 @@ export default function PlanningCalendarTile(props: Props) {
             key={props.maintenancePlan.id}>
             <div className="flex">
                 <span className="block text-sm uppercase font-bold mr-auto">
-                    {props.maintenancePlan.mold_name}
+                    {props.maintenancePlan.machine_name}
                 </span>
                 <span className="block text-xs">
                     {new Intl.DateTimeFormat(language === 'nl' ? 'nl' : 'en', {timeStyle: 'short'}).format(props.maintenancePlan.planned_date)}
