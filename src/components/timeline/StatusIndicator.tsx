@@ -21,6 +21,8 @@ export default function StatusIndicator({ status }: StatusIndicatorProps) {
         return "bg-orange-500 border-orange-600";
       case "inactive":
         return "bg-gray-500 border-gray-600";
+      case "failure":
+        return "bg-red-600 border-red-700";
       default:
         return "bg-gray-400 border-gray-500";
     }
@@ -30,9 +32,14 @@ export default function StatusIndicator({ status }: StatusIndicatorProps) {
     switch (status) {
       case "operational":
         return <PowerIcon className={classname} />;
+
       case "standby":
       case "idle":
         return <PauseIcon className={classname} />;
+
+      case "failure":
+        return <AlertOctagon className={classname} />;
+
       case "inactive":
       default:
         return <AlertOctagon className={classname} />;
