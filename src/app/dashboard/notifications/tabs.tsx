@@ -28,12 +28,10 @@ export default function NotificationTabs({
   const [dialogOpen, setDialogOpen] = useState(false);
   const [markingId, setMarkingId] = useState<number | null>(null);
 
-  // sync initial props (already sorted newest→oldest)
   useEffect(() => {
     setNotifications(initialNotifications);
   }, [initialNotifications]);
 
-  // visible list according to active tab
   const visibleNotifications = useMemo(() => {
     return activeTab === "unread"
       ? notifications.filter((n) => !n.read_at)
@@ -52,16 +50,14 @@ export default function NotificationTabs({
   try {
     await markAsRead(notification.id);
 
-    const now = new Date(); // ✅ Date, matches Notification["read_at"]
+    const now = new Date(); 
 
-    // update list
     setNotifications((prev) =>
       prev.map((n) =>
         n.id === notification.id ? { ...n, read_at: now } : n
       )
     );
 
-    // update dialog item
     setSelected((prev) =>
       prev && prev.id === notification.id
         ? { ...prev, read_at: now }
@@ -81,7 +77,7 @@ export default function NotificationTabs({
 
   return (
     <>
-      {/* Tabs header */}
+      {/* tabs header */}
       <div className="flex space-x-2 p-4">
         <Button
           variant={activeTab === "unread" ? "default" : "outline"}
@@ -98,7 +94,7 @@ export default function NotificationTabs({
         </Button>
       </div>
 
-      {/* List */}
+      {/* list */}
       <div className="w-full p-4">
         {visibleNotifications.length ? (
           <div className="grid grid-cols-1 gap-4">
