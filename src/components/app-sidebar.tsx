@@ -23,6 +23,7 @@ import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import Link from 'next/link'
 import { useLanguage } from '@/lib/i18n/LanguageContext'
+import { useUnreadNotifCount } from '@/hooks/useUnreadNotifCount'
 
 // Menu items but with translation keys
 const menuItems = [
@@ -54,16 +55,19 @@ const menuItems = [
     ]
   },
   { 
-    icon: Bell, 
-    label: 'nav.notifications',
-    href: '/dashboard/notifications',
-    badge: 3
-  },
+  icon: Bell, 
+  label: 'nav.notifications',
+  href: '/dashboard/notifications',
+  // badge removed – handled dynamically in render
+},
+
 ]
 
 export function AppSidebar() {
   const pathname = usePathname()
   const { t } = useLanguage()
+  const unreadNotifications = useUnreadNotifCount()
+
 
   return (
     <Sidebar className="border-r border-zinc-200 bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900">
@@ -92,12 +96,13 @@ export function AppSidebar() {
                       <item.icon className="h-5 w-5" />
                       <span>{t(item.label)}</span>
                     </div>
-
-                    {item.badge && (
+                    {item.href === '/dashboard/notifications' && unreadNotifications > 0 && (
                       <Badge variant="destructive" className="ml-auto">
-                        {item.badge}
+                        {unreadNotifications}
                       </Badge>
                     )}
+
+
                   </Link>
                 </SidebarMenuButton>
 
