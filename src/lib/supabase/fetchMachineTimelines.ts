@@ -10,6 +10,22 @@ const utcStartOfDay = (d: Date) =>
 const utcNextMidnight = (d: Date) =>
   new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate() + 1, 0, 0, 0, 0));
 
+const resolveViewName = (interval: IntervalType): string => {
+  switch (interval) {
+    case IntervalType.Minute:
+      return 'v_timeline_minute';
+    case IntervalType.FiveMinutes:
+      return 'v_timeline_5min';
+    case IntervalType.Hour:
+      return 'v_timeline_hour';
+    case IntervalType.Day:
+      return 'v_timeline_day';
+    case IntervalType.Week:
+      return 'v_timeline_week';
+    default:
+      return 'v_timeline_minute';
+  }
+};
 
 export const fetchChartData = async (
   board: number,
@@ -24,20 +40,28 @@ export const fetchChartData = async (
     ? new Date(Date.now() + HOUR_IN_MS)
     : utcNextMidnight(endDate);
 
+  const viewName = resolveViewName(interval);
 
-  const { data, error } = await supabase.rpc('get_monitoring_intervals', {
-    board_input: board,
-    port_input: port,
-    start_date: normalizedStart.toISOString(),
-    end_date: normalizedEnd.toISOString(),
-    interval_input: interval,
-  });
+  let query = supabase
+    .from(viewName)
+    .select('bucket, total_shots, average_shot_time, board, port')
+    .eq('board', board)
+    .eq('port', port)
+    .gte('bucket', normalizedStart.toISOString())
+    .lte('bucket', normalizedEnd.toISOString())
+    .order('bucket', { ascending: true });
+
+  const { data, error } = await query;
 
   if (error) {
     throw new Error(`Error fetching chart data: ${error.message}`);
   }
 
-  return data || [];
+  return (data || []).map((item: any) => ({
+    truncated_timestamp: item.bucket,
+    total_shots: item.total_shots,
+    average_shot_time: Number(item.average_shot_time),
+  }));
 };
 
 export const fetchRealtimeData = async (
@@ -46,19 +70,14 @@ export const fetchRealtimeData = async (
 ): Promise<MachineTimeline[]> => {
   const startDate = new Date(Date.now() - 12 * HOUR_IN_MS);
   const endDate = new Date(Date.now() + HOUR_IN_MS);
-  const interval = IntervalType.Hour;
 
-  const { data, error } = await supabase.rpc('get_monitoring_intervals', {
-    board_input: board,
-    port_input: port,
-    start_date: startDate.toISOString(),
-    end_date: endDate.toISOString(),
-    interval_input: interval,
-  });
-
-  if (error) {
-    throw new Error(`Error fetching chart data: ${error.message}`);
-  }
-
-  return data || [];
+  // reuse main function, just with realtime = true & hourly buckets
+  return fetchChartData(
+    board,
+    port,
+    startDate,
+    endDate,
+    IntervalType.Hour,
+    true
+  );
 };

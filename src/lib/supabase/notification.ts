@@ -4,7 +4,9 @@ import { Notification } from '@/types/supabase';
 export const fetchNotifications = async (): Promise<Notification[]> => {
   const { data, error } = await supabase
     .from('v_notifications')
-    .select('*');
+    .select('*')
+    .order('detected_at', { ascending: false });
+
 
   if (error) {
     throw new Error(`Error fetching machine timelines: ${error.message}`);

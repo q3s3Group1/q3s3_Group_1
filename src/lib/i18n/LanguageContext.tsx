@@ -1,7 +1,7 @@
 // lib/i18n/LanguageContext.tsx
 "use client"
 
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useState, ReactNode } from 'react';
 
 type Language = 'nl' | 'en';
 
@@ -33,6 +33,7 @@ export const translations = {
     'common.add': 'Toevoegen',
     'common.save': 'Opslaan',
     'common.cancel': 'Annuleren',
+    'common.refresh': 'Verversen',
     
     // Mold History Table
     'moldHistory.caption': 'Matrijs Historie',
@@ -61,22 +62,46 @@ export const translations = {
     'mechanics.specialization': 'Specialisatie',
     'mechanics.planning': 'planning',
     'mechanics.total': 'Totaal: {count} monteurs',
+    'mechanics.dashboardTitle': 'Monteursdashboard',
+    'mechanics.dashboardDescription': 'Toon geplande en afgeronde onderhoudstaken voor deze monteur.',
+    'mechanics.dashboardLink': 'Dashboard',
+    'mechanics.dashboardTotalsLabel': 'Overzicht',
+    'mechanics.dashboardTotals': 'Aankomend: {upcoming} · Verleden: {past}',
+    'mechanics.dashboardListTitle': 'Onderhoudstaken',
+    'mechanics.dashboardListSubtitle': 'Kies een taak om details te bekijken.',
     
     // Maintenance Page
     'maintenance.title': 'Onderhoud',
     'maintenance.description': 'Plan hier het onderhoud van de machines.',
     'maintenance.mechanicDescription': 'Plan hier het onderhoud van de molds.',
+    'maintenance.upcoming': 'Aankomende onderhoudsbeurten',
+    'maintenance.past': 'Eerdere onderhoudsbeurten',
+    'maintenance.upcomingShort': 'Aankomend',
+    'maintenance.pastShort': 'Verleden',
+    'maintenance.noUpcoming': 'Geen aankomende onderhoudstaken.',
+    'maintenance.noPast': 'Geen eerdere onderhoudstaken.',
+    'maintenance.detailsTitle': 'Onderhoudsdetails',
+    'maintenance.noSelection': 'Selecteer een onderhoudsbeurt om details te zien.',
+    'maintenance.status': 'Status',
+    'maintenance.status.planned': 'Gepland',
+    'maintenance.status.busy': 'Bezig',
+    'maintenance.status.finished': 'Afgerond',
+    'maintenance.start': 'Start onderhoud',
+    'maintenance.finish': 'Onderhoud afgerond',
+    'maintenance.statusUpdated': 'Onderhoudsstatus is bijgewerkt.',
+    'maintenance.statusUpdateError': 'Kon onderhoudsstatus niet bijwerken.',
+    'maintenance.loadError': 'Kon onderhoud niet ophalen.',
     
     // Milestones
     'milestones.title': 'Preventieve onderhoudsplanning',
     'milestones.description': 'Alle preventieve onderhoudsplanningen voor matrijzen',
     'milestones.caption': 'Welke type onderhoud bij hoeveel shots',
-    'milestones.moldActive': 'Matrijs actief',
-    'milestones.mold': 'Matrijs',
+    'milestones.machineActive': 'Machine actief',
+    'milestones.machine': 'Machine',
     'milestones.type': 'Type',
     'milestones.sendSms': 'SMS versturen',
     'milestones.milestone': 'Milestone / Total shots',
-    'milestones.chooseMold': 'Kies matrijs',
+    'milestones.chooseMachine': 'Kies machine',
     // Calendar
     'calendar.maintenancePlanning': 'Onderhoudsplanning',
     'calendar.newPlanning': 'Nieuwe Planning',
@@ -95,7 +120,7 @@ export const translations = {
     'planning.manual': 'Handmatig',
     'planning.predictive': 'Voorspellend',
     'planning.date': 'Datum',
-    'planning.mold': 'Matrijs',
+    'planning.machine': 'Machine',
     'planning.selectOption': 'Selecteer een optie',
     'planning.lifespan': 'Levensduur',
     'planning.maintenanceType': 'Onderhoudstype',
@@ -125,7 +150,7 @@ export const translations = {
     'planning.actions.replaceWearStrips': 'Slijtstrippen vervangen',
     'planning.actions.checkTemperature': 'Temperatuurzones controleren',
      // Maintenance
-    'maintenance.mold': 'Matrijs',
+    'maintenance.machine': 'Machine',
     'maintenance.plannedFor': 'Gepland voor',
     'maintenance.type': 'Onderhoudstype',
     'maintenance.preventive': 'Preventief',
@@ -160,10 +185,12 @@ export const translations = {
 "molds.historyTableTitle": "Matrijs Historie",
 "machines.machine": "Machine",
 "general.start": "Start",
-"general.end": "Eind",
+"general.end": "Laatst aangepast",
 "molds.shots": "Shots",
 "general.viewData": "Bekijk data",
 "general.view": "Bekijk",
+"planning.timeSinceLastShot": "Tijd sinds laatste shot",
+"general.total": "Totaal",
 // Status translations
   "status.operational": "Operationeel",
   "status.standby": "Stand-by",
@@ -175,7 +202,8 @@ export const translations = {
     "common.loading": "Laden…",
   },
   en: {
-    // Status translations
+    "planning.timeSinceLastShot": "Time Since Last Shot",
+    "general.total": "Total Shots",
     
     "machines.historyDescription": "Here you can view the historical data of the machines",
     "machines.noMachinesForDate": "No machines for the selected date",
@@ -184,14 +212,14 @@ export const translations = {
   "status.standby": "Standby",
   "status.idle": "Idle",
   "status.inactive": "Inactive",
-  "status.unknown": "Unknown status",
+  "status.unknown": "Status",
     "molds.historyTableTitle": "Mold History",
 "machines.machine": "Machine",
 "general.start": "Start",
-"general.end": "End",
+"general.end": "Last Update",
 "molds.shots": "Shots",
 "general.viewData": "View Data",
-"general.view": "View",
+"general.view": "Average Shot Time",
     'nav.notifications': 'Notifications',
 'machines.all': 'All machines',
 'machines.history': 'History data',
@@ -213,7 +241,7 @@ export const translations = {
     'planning.groupCreated': 'Group created.',
     'planning.groupCreateError': 'Could not create group.',
     // Maintenance
-    'maintenance.mold': 'Mold',
+    'maintenance.machine': 'Machine',
     'maintenance.plannedFor': 'Planned for',
     'maintenance.type': 'Maintenance type',
     'maintenance.preventive': 'Preventive',
@@ -234,7 +262,7 @@ export const translations = {
     'planning.manual': 'Manual',
     'planning.predictive': 'Predictive',
     'planning.date': 'Date',
-    'planning.mold': 'Mold',
+    'planning.machine': 'Machine',
     'planning.selectOption': 'Select an option',
     'planning.lifespan': 'Lifespan',
     'planning.maintenanceType': 'Maintenance Type',
@@ -289,6 +317,7 @@ export const translations = {
     'common.add': 'Add',
     'common.save': 'Save',
     'common.cancel': 'Cancel',
+    'common.refresh': 'Refresh',
     
     // Mold History Table
     'moldHistory.caption': 'Mold History',
@@ -317,27 +346,51 @@ export const translations = {
     'mechanics.specialization': 'Specialization',
     'mechanics.planning': 'planning',
     'mechanics.total': 'Total: {count} mechanics',
+    'mechanics.dashboardTitle': 'Mechanic dashboard',
+    'mechanics.dashboardDescription': 'View planned and past maintenances assigned to this mechanic.',
+    'mechanics.dashboardLink': 'Dashboard',
+    'mechanics.dashboardTotalsLabel': 'Overview',
+    'mechanics.dashboardTotals': 'Upcoming: {upcoming} · Past: {past}',
+    'mechanics.dashboardListTitle': 'Maintenance tasks',
+    'mechanics.dashboardListSubtitle': 'Pick a task to view its full details.',
     
     // Maintenance Page
     'maintenance.title': 'Maintenance',
     'maintenance.description': 'Plan maintenance for machines here.',
     'maintenance.mechanicDescription': 'Plan maintenance for molds here.',
+    'maintenance.upcoming': 'Upcoming maintenances',
+    'maintenance.past': 'Past maintenances',
+    'maintenance.upcomingShort': 'Upcoming',
+    'maintenance.pastShort': 'Past',
+    'maintenance.noUpcoming': 'No upcoming maintenances.',
+    'maintenance.noPast': 'No past maintenances.',
+    'maintenance.detailsTitle': 'Maintenance details',
+    'maintenance.noSelection': 'Select a maintenance task to see the details.',
+    'maintenance.status': 'Status',
+    'maintenance.status.planned': 'Planned',
+    'maintenance.status.busy': 'In progress',
+    'maintenance.status.finished': 'Finished',
+    'maintenance.start': 'Start maintenance',
+    'maintenance.finish': 'Maintenance finished',
+    'maintenance.statusUpdated': 'Maintenance status has been updated.',
+    'maintenance.statusUpdateError': 'Could not update maintenance status.',
+    'maintenance.loadError': 'Could not load mechanic maintenance.',
     
     // Milestones
     'milestones.title': 'Preventive Maintenance Planning',
-    'milestones.description': 'All preventive maintenance schedules for molds',
+    'milestones.description': 'All preventive maintenance schedules for machines',
     'milestones.caption': 'Which type of maintenance at how many shots',
-    'milestones.moldActive': 'Mold active',
-    'milestones.mold': 'Mold',
+    'milestones.machineActive': 'Machine active',
+    'milestones.machine': 'Machine',
     'milestones.type': 'Type',
     'milestones.sendSms': 'Send SMS',
     'milestones.milestone': 'Milestone / Total shots',
-    'milestones.chooseMold': 'Choose mold',
+    'milestones.chooseMachine': 'Choose machine',
   }
 };
 
-export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [language, setLanguageState] = useState<Language>('nl');
+export function LanguageProvider({ children }: Readonly<{ children: ReactNode }>) {
+  const [language, setLanguage] = useState<Language>('nl');
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
@@ -345,32 +398,33 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     // Load saved language preference
     const saved = localStorage.getItem('language') as Language;
     if (saved && (saved === 'nl' || saved === 'en')) {
-      setLanguageState(saved);
+      setLanguage(saved);
     }
   }, []);
 
-  const setLanguage = (lang: Language) => {
-    setLanguageState(lang);
+  const changeLanguage = useCallback((lang: Language) => {
+    setLanguage(lang);
     if (isClient) {
       localStorage.setItem('language', lang);
     }
-  };
+  }, [isClient]);
 
-  const t = (key: string, params?: Record<string, string | number>): string => {
+  const t = useCallback((key: string, params?: Record<string, string | number>): string => {
     let translation = translations[language][key as keyof typeof translations['nl']] || key;
     
     // Replace parameters like {count}
     if (params) {
-      Object.entries(params).forEach(([k, v]) => {
+      for (const [k, v] of Object.entries(params)) {
         translation = translation.replace(`{${k}}`, String(v));
-      });
+      }
     }
     
     return translation;
-  };
+  }, [language]);
+  const contextValue = useMemo(() => ({ language, setLanguage: changeLanguage, t }), [language, changeLanguage, t]);
 
   return (
-    <LanguageContext.Provider value={{ language, setLanguage, t }}>
+    <LanguageContext.Provider value={contextValue}>
       {children}
     </LanguageContext.Provider>
   );

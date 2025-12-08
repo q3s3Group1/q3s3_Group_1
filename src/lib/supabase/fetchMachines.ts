@@ -124,7 +124,7 @@ export const fetchMachines = async (refTs?: Date | string): Promise<Machine[]> =
 
   try {
     const { data, error } = await supabase
-      .from('v_machine_status')
+      .from('mv_machine_status')
       .select('*')
       .order('status', { ascending: false })
       .order('machine_name', { ascending: true, nullsFirst: false });
@@ -157,7 +157,7 @@ export const fetchMachine = async (
 
   try {
     const { data, error } = await supabase
-      .from('v_machine_status')
+      .from('mv_machine_status')
       .select('*')
       .eq('machine_id', machine_id)
       .maybeSingle();

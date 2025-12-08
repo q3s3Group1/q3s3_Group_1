@@ -7,7 +7,7 @@ import { supabase } from './client';
 // with machine id as parameter
 export const fetchMilestones = async (): Promise<Milestone[]> => {
   const { data, error } = await supabase
-    .from('i_mold_maintenance_milestones')
+    .from('i_machine_maintenance_milestones')
     .select('*');
 
   if (error) {

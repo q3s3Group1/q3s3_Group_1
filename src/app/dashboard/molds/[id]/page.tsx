@@ -23,7 +23,7 @@ import { fetchChartData } from "@/lib/supabase/fetchMachineTimelines";
 import { MachineTimeline, MaintenanceFull, Mold, MoldHistory, Notification } from "@/types/supabase";
 import { SelectStartEndDate } from "@/components/SelectStartEndDate";
 import { DateRange } from "react-day-picker";
-import { fetchMaintenanceByMoldId } from "@/lib/supabase/fetchAllMaintenance";
+import { fetchMaintenanceByMachineId } from "@/lib/supabase/fetchAllMaintenance";
 import { fetchMold } from "@/lib/supabase/fetchMolds";
 import Header from "../../header";
 import { IntervalType } from "@/types/enum";
@@ -32,7 +32,7 @@ import { SelectInterval } from "@/components/SelectInterval";
 import { fetchMoldHistoryByMoldId } from "@/lib/supabase/fetchMoldHistory";
 import { MoldHistoryTable } from "@/components/molds/moldsHistory";
 import NotificationTabs from "../../notifications/tabs";
-import { fetchNotificationsByMoldId } from "@/lib/supabase/notification";
+import { fetchNotificationsByMachineId } from "@/lib/supabase/notification";
 import { LineChart } from "lucide-react";
 
 export interface BoardPort {
@@ -67,7 +67,7 @@ const MachinePage = () => {
 
   useEffect(() => {
     // notifcations
-    fetchNotificationsByMoldId(parseInt(id as string)).then((data) => {
+    fetchNotificationsByMachineId(parseInt(id as string)).then((data) => {
       setNotifications(data);
     });
   }
@@ -91,7 +91,7 @@ const MachinePage = () => {
 
 
 
-        const maintenanceData = await fetchMaintenanceByMoldId(
+        const maintenanceData = await fetchMaintenanceByMachineId(
           parseInt(id as string)
         );
 

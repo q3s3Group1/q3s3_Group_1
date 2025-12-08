@@ -19,7 +19,7 @@ create table
   public.i_maintenance_plans (
     id serial not null,
     planned_date timestamp with time zone not null,
-    mold_id integer not null,
+    machine_id integer not null,
     maintenance_type character varying(20) not null,
     description text not null,
     assigned_to integer not null,

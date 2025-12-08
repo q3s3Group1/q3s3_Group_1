@@ -20,7 +20,7 @@ export interface MoldHistory {
 
 export interface Milestone {
     id: number;
-    mold_id: number;
+    machine_id: number;
     milestone_shots: number;
     maintenance_type: string;
     send_sms: boolean;
@@ -69,6 +69,11 @@ export interface Mold {
 }
 
 // Extend mold with maintaince
+export interface MachineMaintenance extends Machine {
+    milestone_shots: number | null;
+    maintenance_status: 'Maintenance Required' | 'OK';
+}
+
 export interface MoldMaintenance extends Mold {
     milestone_shots: number | null;
     maintenance_status: 'Maintenance Required' | 'OK';
@@ -91,8 +96,8 @@ export interface MaintenanceFull {
     maintenance_type: "Preventative" | "Corrective";
     description: string;
     maintenance_description?: string;
-    mold_name: string;
-    mold_id: number;
+    machine_name: string;
+    machine_id: number;
     id: number;
     planned_date: Date;
     maintenance_action: string;
@@ -109,7 +114,18 @@ export interface Mechanic {
     specialization: string;
 }
 
-export interface Maintenance {
+export interface MaintenanceMachine {
+    id: number;
+    planned_date: Date
+    machine_id: number,
+    maintenance_type: "Preventative" | "Corrective",
+    description: string,
+    assigned_to: number,
+    status: "Planned" | "Busy" | "Finished"
+    maintenance_action: string
+}
+
+export interface MaintenanceMold {
     id: number;
     planned_date: Date
     mold_id: number,
@@ -147,6 +163,5 @@ export interface Notification {
     read_at?: Date;
     resolved_at?: Date;
 
-    mold_id?: number;
     machine_id?: number;
 }

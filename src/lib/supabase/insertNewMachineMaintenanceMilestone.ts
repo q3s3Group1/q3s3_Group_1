@@ -1,16 +1,15 @@
-import {MaintenanceMold} from "@/types/supabase";
 import {supabase} from "@/lib/supabase/client";
 
-export async function insertNewMoldMaintenanceMilestone(moldId: number, milestone: number) {
+export async function insertNewMachineMaintenanceMilestone(machineId: number, milestone: number) {
     const newMilestone = {
-        mold_id: moldId,
+        machine_id: machineId,
         milestone_shots: milestone,
         maintenance_type: "Preventative",
         send_sms: true
     }
 
     const {error} = await supabase
-        .from('i_mold_maintenance_milestones')
+        .from('i_machine_maintenance_milestones')
         .insert(newMilestone)
 
     if (error) {
