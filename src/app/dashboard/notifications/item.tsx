@@ -62,8 +62,8 @@ export default function NotificationItem({ notification, onClick }: Notification
 
 
                         {
-                            notification.mold_id && <Link href={`/dashboard/molds/${notification.mold_id}`}>
-                            Matrijs {notification.mold_id}
+                            notification.machine_id && <Link href={`/dashboard/molds/${notification.machine_id}`}>
+                            Matrijs {notification.machine_id}
                      </Link>
                         }
                         
@@ -80,8 +80,17 @@ export default function NotificationItem({ notification, onClick }: Notification
             "></div>
 
             <div className="absolute top-0 right-0 bottom-0 w-full z-0 opacity-50">
-            <TimelineChart data={chartData} interval={IntervalType.Hour} hideAxis hideTooltip lineColor={lineColor} />
-
+        {chartData.length > 0 && (
+            <div className="absolute top-0 right-0 bottom-0 w-full z-0 opacity-50">
+                <TimelineChart
+                data={chartData}
+                interval={IntervalType.Hour}
+                hideAxis
+                hideTooltip
+                lineColor={lineColor}
+                />
+            </div>
+            )}
             </div>
 
         </button>
