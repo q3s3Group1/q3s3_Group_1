@@ -3,7 +3,7 @@ create view
 SELECT DISTINCT
   ma.id,
   ma.planned_date,
-  ma.mold_id,
+  ma.machine_id,
   ma.maintenance_type,
   ma.description AS maintenance_description,
   ma.assigned_to,
@@ -13,9 +13,10 @@ SELECT DISTINCT
   me.name AS mechanic_name,
   me.id AS mechanic_id,
   me.specialization AS mechanic_specialization,
-  vm.mold_name
+  vm.mold_name,
+  vm.machine_name
 FROM
   i_maintenance_plans ma
 LEFT JOIN i_mechanics me ON me.id = ma.assigned_to
-LEFT JOIN v_molds vm ON vm.mold_id = ma.mold_id;
+LEFT JOIN v_machine_activity vm ON vm.machine_id = ma.machine_id;
 ;
