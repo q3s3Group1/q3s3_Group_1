@@ -32,6 +32,7 @@ export default function MechanicDashboard({mechanicId}: Readonly<MechanicDashboa
     const [isLoading, setIsLoading] = useState(true);
     const [isRefreshing, setIsRefreshing] = useState(false);
     const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
+    const [isMounted, setIsMounted] = useState(false);
 
     const loadData = useCallback(async (options?: { silent?: boolean }) => {
         if (options?.silent) {
@@ -46,6 +47,10 @@ export default function MechanicDashboard({mechanicId}: Readonly<MechanicDashboa
             ]);
 
             setMechanic(mechanicResponse);
+            // debug: log the fetched maintenance rows client-side
+            // eslint-disable-next-line no-console
+            console.debug('[MechanicDashboard] fetched maintenance count:', maintenanceResponse?.length, 'sample:', maintenanceResponse?.slice(0,3));
+
             const sorted = [...maintenanceResponse].sort((a, b) => a.planned_date.getTime() - b.planned_date.getTime());
             setMaintenance(sorted);
         } catch (error) {
@@ -63,6 +68,11 @@ export default function MechanicDashboard({mechanicId}: Readonly<MechanicDashboa
     useEffect(() => {
         loadData();
     }, [loadData]);
+
+    // avoid hydration mismatch by only rendering the full UI after client mount
+    useEffect(() => {
+        setIsMounted(true);
+    }, []);
 
     const {upcoming, past} = useMemo(() => {
         const now = new Date();
@@ -116,6 +126,10 @@ export default function MechanicDashboard({mechanicId}: Readonly<MechanicDashboa
             {t('common.loading')}
         </div>
     );
+
+    if (!isMounted) {
+        return renderLoadingState();
+    }
 
     return (
         <div className="flex flex-col gap-6">

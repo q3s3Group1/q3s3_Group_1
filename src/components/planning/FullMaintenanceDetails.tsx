@@ -113,8 +113,12 @@ export default function FullMaintenanceDetails(props: Props) {
                     <span className="block font-semibold">{t('maintenance.assignedMechanic')}</span>
                     <span>{props.maintenance.mechanic_name} ({props.maintenance.mechanic_specialization})</span>
 
-                    <span></span>
+                    <span className="block font-semibold">Status</span>
+                    <span>{props.maintenance.status}</span>
+
+                    { props.maintenance.status != 'Finished' && (
                     <button onClick={() => setEditing(true)} className="button">{t('common.edit')}</button>
+                    )}
                 </div>
             </div>
         )
