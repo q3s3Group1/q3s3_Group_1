@@ -10,6 +10,7 @@ import { addDays } from "date-fns";
 import { SelectInterval } from "@/components/SelectInterval";
 import { IntervalType } from "@/types/enum";
 import { fetchMachines } from "@/lib/supabase/fetchMachines";
+import { fetchEnergyData } from "@/lib/supabase/fetchEnergyData";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 export default function Rows({ machines: initialMachines }: { machines: Machine[] }) {
@@ -27,10 +28,13 @@ export default function Rows({ machines: initialMachines }: { machines: Machine[
   const refTs: Date | undefined = useMemo(() => date?.to, [date]);
 
   useEffect(() => {
-    const run = async () => {
+
+      const run = async () => {
       setLoading(true);
       try {
         const data = await fetchMachines(refTs);
+
+
         setMachines(data);
       } finally {
         setLoading(false);

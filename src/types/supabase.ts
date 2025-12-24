@@ -165,3 +165,22 @@ export interface Notification {
 
     machine_id?: number;
 }
+
+export interface EnergyKPI {
+    energy_id: number;
+    board: number | null;
+    port: number | null;
+
+
+    start_timestamp: Date;
+    end_timestamp: Date;
+    shots: number;
+
+    energy_kwh: number;
+    kwh_per_1000_shots: number;
+}
+
+export interface MachineTimelineWithEnergy extends MachineTimeline {
+    energy_kwh?: number | null;
+}
+

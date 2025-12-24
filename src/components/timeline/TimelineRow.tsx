@@ -1,12 +1,13 @@
-"use client"; 
-import React, { useEffect, useState } from 'react';
+"use client";
+import React, {useEffect, useMemo, useState} from 'react';
 import StatusIndicator from './StatusIndicator';
 import TimelineChart from './TimelineChart';
-import { Machine, MachineTimeline } from '@/types/supabase';
+import {EnergyKPI, Machine, MachineTimeline} from '@/types/supabase';
 import { fetchChartData } from '@/lib/supabase/fetchMachineTimelines';
 import { Card } from '../ui/card';
 import { DateRange } from 'react-day-picker';
 import { IntervalType } from '@/types/enum';
+import {fetchEnergyKPI} from "@/lib/supabase/fetchEnergyData";
 
 interface TimelineRowProps {
   machine: Machine;
@@ -22,26 +23,91 @@ const TimelineRow: React.FC<TimelineRowProps> = ({
   date,
   interval,
 }) => {
-  const [liveData, setLiveData] = useState<MachineTimeline[]>([]);
+  const [shotsData, setShotsData] = useState<MachineTimeline[]>([]);
+  const [energyData, setEnergyData] = useState<EnergyKPI[]>([]);
 
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (date?.from && date?.to) {
-        const data = await fetchChartData(
-          machine.board,
-          machine.port,
-          date.from,
-          date.to,
-          interval
-        );
-        setLiveData(data);
-      }
-    };
-    fetchData();
-  }, [machine.board, machine.port, date, interval]);
 
-  return (
+  //
+  //   useEffect(() => {
+  //   const fetchData = async () => {
+  //     if (date?.from && date?.to) {
+  //       const data = await fetchChartData(
+  //         machine.board,
+  //         machine.port,
+  //         date.from,
+  //         date.to,
+  //         interval
+  //       );
+  //       setLiveData(data);
+  //     }
+  //   };
+  //   fetchData();
+  // }, [machine.board, machine.port, date, interval]);
+
+
+    useEffect(() => {
+        if (!date?.from || !date?.to) return;
+
+        const start: Date = date.from;
+        const end: Date = date.to;
+
+        const load = async () => {
+            const shots = await fetchChartData(
+                machine.board,
+                machine.port,
+                start,
+                end,
+                interval
+            );
+            setShotsData(shots);
+
+            if (
+                interval === IntervalType.Hour ||
+                interval === IntervalType.Day ||
+                interval === IntervalType.Week
+            ) {
+                const energy = await fetchEnergyKPI(
+                    machine.board,
+                    machine.port,
+                    start,
+                    end,
+                    interval
+                );
+                setEnergyData(energy);
+            } else {
+                setEnergyData([]);
+            }
+        };
+
+
+        load();
+    }, [machine.board, machine.port, date, interval]);
+
+
+    useEffect(() => {
+        console.log("Energy data updated:", energyData);
+    }, [energyData]);
+
+
+    const chartData = useMemo(() => {
+        if (energyData.length === 0) return shotsData;
+
+        return shotsData.map(point => {
+            const energy = energyData.find(e =>
+                new Date(e.start_timestamp) <= new Date(point.truncated_timestamp) &&
+                new Date(e.end_timestamp) > new Date(point.truncated_timestamp)
+            );
+
+            return {
+                ...point,
+                energy_kwh: energy?.energy_kwh ?? null,
+            };
+        });
+    }, [shotsData, energyData]);
+
+
+    return (
     <Card style={style} className="mb-2">
         <div className="flex items-center h-12">
           <div className="w-32 flex items-center text-left px-4">
@@ -55,9 +121,14 @@ const TimelineRow: React.FC<TimelineRowProps> = ({
             </div>
           </div>
           <div className="flex-1 h-full">
+              {/*<TimelineChart*/}
+              {/*    interval={interval}*/}
+              {/*    data={liveData}/>*/}
               <TimelineChart
                   interval={interval}
-                  data={liveData}/>
+                  data={chartData}
+              />
+
           </div>
         </div>
     </Card>
@@ -65,3 +136,6 @@ const TimelineRow: React.FC<TimelineRowProps> = ({
 };
 
 export default React.memo(TimelineRow);
+
+
+
