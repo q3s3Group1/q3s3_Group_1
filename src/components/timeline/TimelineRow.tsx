@@ -7,7 +7,7 @@ import { fetchChartData } from '@/lib/supabase/fetchMachineTimelines';
 import { Card } from '../ui/card';
 import { DateRange } from 'react-day-picker';
 import { IntervalType } from '@/types/enum';
-import {fetchEnergyKPI} from "@/lib/supabase/fetchEnergyData";
+import {fetchEnergyData} from "@/lib/supabase/fetchEnergyData";
 
 interface TimelineRowProps {
   machine: Machine;
@@ -53,29 +53,35 @@ const TimelineRow: React.FC<TimelineRowProps> = ({
         const end: Date = date.to;
 
         const load = async () => {
-            const shots = await fetchChartData(
-                machine.board,
-                machine.port,
-                start,
-                end,
-                interval
-            );
-            setShotsData(shots);
-
-            if (
-                interval === IntervalType.Hour ||
-                interval === IntervalType.Day ||
-                interval === IntervalType.Week
-            ) {
-                const energy = await fetchEnergyKPI(
+            try {
+                const shots = await fetchChartData(
                     machine.board,
                     machine.port,
                     start,
                     end,
                     interval
                 );
-                setEnergyData(energy);
-            } else {
+                setShotsData(shots);
+
+                if (
+                    interval === IntervalType.Hour ||
+                    interval === IntervalType.Day ||
+                    interval === IntervalType.Week
+                ) {
+                    const energy = await fetchEnergyData(
+                        machine.board,
+                        machine.port,
+                        start,
+                        end,
+                        interval
+                    );
+                    setEnergyData(energy);
+                } else {
+                    setEnergyData([]);
+                }
+            } catch (error) {
+                console.error('Error loading data for machine', machine.machine_id, error);
+                setShotsData([]);
                 setEnergyData([]);
             }
         };
@@ -91,7 +97,7 @@ const TimelineRow: React.FC<TimelineRowProps> = ({
 
 
     const chartData = useMemo(() => {
-        if (energyData.length === 0) return shotsData;
+        if (energyData.length === 0) return shotsData.map(point => ({ ...point, energy_kwh: null }));
 
         return shotsData.map(point => {
             const energy = energyData.find(e =>

@@ -141,12 +141,16 @@ const TimelineChart: React.FC<TimelineChartProps> = ({
               <XAxis
                 dataKey="truncated_timestamp"
                 tick={{ fontSize: 10 }}
-                tickFormatter={(value) => value && formatTimestampToInterval(value, interval)}
+                tickFormatter={(value) => value ? formatTimestampToInterval(value, interval) : ''}
               />
             )}
 
             {!hideAxis && (
-              <YAxis tick={{ fontSize: 10 }} tickFormatter={(value) => value.toFixed(0)} domain={[0, 5]} />
+              <YAxis yAxisId="left" tick={{ fontSize: 10 }} tickFormatter={(value) => value.toFixed(0)} domain={[0, 5]} />
+            )}
+
+            {!hideAxis && (
+              <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 10 }} tickFormatter={(value) => value.toFixed(2)} />
             )}
 
             {!hideTooltip && (
@@ -160,17 +164,23 @@ const TimelineChart: React.FC<TimelineChartProps> = ({
                 }}
                 content={({ active, payload }) => {
                   if (active && payload && payload.length) {
+                    const data = payload[0].payload;
                     return (
                       <div className="p-2">
                         <p className="text-sm text-gray-700">
-                          {payload[0].payload.truncated_timestamp
-                            ? new Date(payload[0].payload.truncated_timestamp).toLocaleString('nl-NL')
-                            : ''}
+                          {data.truncated_timestamp
+                            ? new Date(data.truncated_timestamp).toLocaleString('nl-NL')
+                            : 'Invalid time'}
                         </p>
-                        <p className="text-sm text-gray-700">Shots: {payload[0].payload.total_shots}</p>
+                        <p className="text-sm text-gray-700">Shots: {data.total_shots}</p>
                         <p className="text-sm text-gray-700">
-                          Avg shot time: {payload[0].payload.average_shot_time.toFixed(2)}s
+                          Avg shot time: {data.average_shot_time?.toFixed(2)}s
                         </p>
+                        {data.energy_kwh !== null && (
+                          <p className="text-sm text-gray-700">
+                            Energy: {data.energy_kwh.toFixed(2)} kWh
+                          </p>
+                        )}
                       </div>
                     );
                   }
@@ -179,8 +189,9 @@ const TimelineChart: React.FC<TimelineChartProps> = ({
               />
             )}
 
-            <ReferenceLine y={5} stroke="#9CA3AF" strokeDasharray="3 3" />
-            <Line type="monotone" dataKey="total_shots" stroke={lineColor} strokeWidth={2} dot={false} />
+            <ReferenceLine y={5} stroke="#9CA3AF" strokeDasharray="3 3" yAxisId="left" />
+            <Line type="monotone" dataKey="total_shots" stroke={lineColor} strokeWidth={2} dot={false} yAxisId="left" />
+            <Line type="monotone" dataKey="energy_kwh" stroke="red" strokeWidth={2} dot={false} yAxisId="right" />
           </LineChart>
         </ResponsiveContainer>
       </div>

@@ -11,7 +11,7 @@ const energySupported = (interval: IntervalType) =>
 
 
 
-export async function fetchEnergyKPI(
+export async function fetchEnergyData(
     board: number,
     port: number,
     start: Date,

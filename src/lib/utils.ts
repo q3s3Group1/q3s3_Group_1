@@ -32,7 +32,7 @@ export function formatTimestampToInterval(timestamp: string, interval: IntervalT
     switch (interval) {
         case 'minute':
             return `${hours}:${minutes}`;
-        case '5 minute':
+        case '5min':
             return `${hours}:${minutes}`;
         case 'hour':
             return `${hours}:${minutes}`;

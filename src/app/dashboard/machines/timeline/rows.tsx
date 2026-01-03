@@ -33,9 +33,10 @@ export default function Rows({ machines: initialMachines }: { machines: Machine[
       setLoading(true);
       try {
         const data = await fetchMachines(refTs);
-
-
         setMachines(data);
+      } catch (error) {
+        console.error('Error fetching machines:', error);
+        // Keep initial machines or set to empty
       } finally {
         setLoading(false);
       }
