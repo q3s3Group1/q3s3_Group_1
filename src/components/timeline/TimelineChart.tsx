@@ -146,11 +146,11 @@ const TimelineChart: React.FC<TimelineChartProps> = ({
             )}
 
             {!hideAxis && (
-              <YAxis yAxisId="left" tick={{ fontSize: 10 }} tickFormatter={(value) => value.toFixed(0)} domain={[0, 5]} />
+              <YAxis yAxisId="left"  stroke={lineColor} tick={{ fontSize: 10 }} tickFormatter={(value) => value.toFixed(0)} domain={[0, 5]} />
             )}
 
             {!hideAxis && (
-              <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 10 }} tickFormatter={(value) => value.toFixed(2)} />
+              <YAxis yAxisId="right"  stroke="red" orientation="right" tick={{ fontSize: 10 }} tickFormatter={(value) => value.toFixed(2)} />
             )}
 
             {!hideTooltip && (
