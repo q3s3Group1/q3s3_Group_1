@@ -75,9 +75,6 @@ const MachinePage = () => {
   }
   , [id]);
 
-
-
-
   useEffect(() => {
     const loadData = async () => {
       if (!id) return;

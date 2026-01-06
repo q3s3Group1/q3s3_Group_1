@@ -40,6 +40,7 @@ export const fetchChartData = async (
     ? new Date(Date.now() + HOUR_IN_MS)
     : utcNextMidnight(endDate);
 
+
   const viewName = resolveViewName(interval);
 
   let query = supabase

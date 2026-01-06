@@ -105,7 +105,7 @@ export default function CreatePlanDialog(props: Props) {
                             <span className={"text-sm font-semibold"}>{t('planning.date')}</span>
                             <Input disabled={!isManual} required type={"datetime-local"}
                                    // min={formatDateToISO(new Date(2020, 7,28))}
-                                   max={formatDateToISO(new Date(2020, 8,4))}
+                                   min={formatDateToISO(new Date(2020, 8,4))}
                                    name="planned_date" onChange={updateFormValue}/>
                         </div>
 

@@ -10,7 +10,6 @@ import { addDays } from "date-fns";
 import { SelectInterval } from "@/components/SelectInterval";
 import { IntervalType } from "@/types/enum";
 import { fetchMachines } from "@/lib/supabase/fetchMachines";
-import { fetchEnergyData } from "@/lib/supabase/fetchEnergyData";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 export default function Rows({ machines: initialMachines }: { machines: Machine[] }) {

@@ -30,7 +30,7 @@ export default function PlanningCalendar(props: Props) {
 
 
     function getCurrentDateStartingMonday() {
-        let date = new Date(2020, 8, 30)
+        let date = new Date()
         const difference = date.getDay() - 1
         date = addDays(date, -difference)
         return date

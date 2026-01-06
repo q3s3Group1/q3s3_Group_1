@@ -27,25 +27,6 @@ const TimelineRow: React.FC<TimelineRowProps> = ({
   const [energyData, setEnergyData] = useState<EnergyKPI[]>([]);
 
 
-
-  //
-  //   useEffect(() => {
-  //   const fetchData = async () => {
-  //     if (date?.from && date?.to) {
-  //       const data = await fetchChartData(
-  //         machine.board,
-  //         machine.port,
-  //         date.from,
-  //         date.to,
-  //         interval
-  //       );
-  //       setLiveData(data);
-  //     }
-  //   };
-  //   fetchData();
-  // }, [machine.board, machine.port, date, interval]);
-
-
     useEffect(() => {
         if (!date?.from || !date?.to) return;
 
@@ -90,10 +71,10 @@ const TimelineRow: React.FC<TimelineRowProps> = ({
         load();
     }, [machine.board, machine.port, date, interval]);
 
-
-    useEffect(() => {
-        console.log("Energy data updated:", energyData);
-    }, [energyData]);
+    //
+    // useEffect(() => {
+    //     console.log("Energy data updated:", energyData);
+    // }, [energyData]);
 
 
     const chartData = useMemo(() => {
